@@ -7,11 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        // Permite que seu frontend acesse qualquer rota do backend
-        registry.addMapping("/**")
-                .allowedOrigins("*") // Em produção, você trocaria o "*" pela URL do site
-                .allowedMethods("GET", "POST", "PUT", "DELETE");
-    }
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    // Permite que seu frontend acesse qualquer rota do backend
+    registry
+        .addMapping("/**")
+        .allowedOrigins("*") // Em produção, você trocaria o "*" pela URL do site
+        .allowedMethods("GET", "POST", "PUT", "DELETE");
+  }
 }
