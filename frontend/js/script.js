@@ -9,4 +9,24 @@ async function testarConexao() {
         console.error("Erro ao conectar no backend. Verifique se ele está rodando na porta 8081!");
     }
 }
-testarConexao();   
+testarConexao();
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const track = document.querySelector(".slider-track");
+    const slides = document.querySelectorAll(".slider-track img");
+
+    let index = 0;
+
+    function proximoSlide() {
+        index++;
+        if (index >= slides.length) {
+            index = 0;
+        }
+
+        track.style.transform = `translateX(-${index * 100}vw)`;
+    }
+
+    setInterval(proximoSlide, 4000);
+
+});

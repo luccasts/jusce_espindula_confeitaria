@@ -1,32 +1,32 @@
-<!-- Pura base aqui, é só arrumar depois (tô usando coisas do site da Club como referência)-->
-
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Jusce Confeiteira</title>
-        <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
-        <link
-        rel="stylesheet"
-        href="plugins/flickity/flickity.css"
-        media="screen"
-        />
-        <link
-        rel="stylesheet"
-        href="https://necolas.github.io/normalize.css/8.0.1/normalize.css"
-        />
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jusce Confeitaria</title>
 
-        <link rel="stylesheet" href="css/main.css" />
-        <link rel="stylesheet" href="css/media-query.css" />
-        <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
-    </head>
-    <body>
+    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
 
-    <header>
-        <div class="logo_jusce">
-            <img src="images/logo_jusce_png.png" alt="Logo Jusce">
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="top-header">
+
+    <div class="logo-area">
+        <img src="images/logo_jusce_png.png" alt="Logo Jusce">
+    </div>
+
+    <div class="info-bar">
+        <div class="contact">
+            <span><i class="lni lni-whatsapp"></i> +55 (75) 98837-3099</span>
+            <span><i class="lni lni-instagram"></i> @jusce.confeitaria</span>
         </div>
+
         <nav>
             <ul>
                 <li><a href="#">Início</a></li>
@@ -36,14 +36,30 @@
                 <li><a href="#">Placeholder2</a></li>
             </ul>
         </nav>
-    </header>
-    <!-- HERO -->
+    </div>
+
+</header>
+
+<!-- HERO -->
 <section class="hero">
+
+    <div class="slider-container">
+        <div class="slider-track">
+            <img src="images/imagem-1.jpg">
+            <img src="images/imagem-2.jpg">
+            <img src="images/imagem-3.jpg">
+            <img src="images/imagem-4.jpg">
+            <img src="images/imagem-5.jpg">
+            
+        </div>
+    </div>
+
     <div class="hero-content">
-        <h1>Doces que encantam momentos</h1>
+        <h1>Confeitaria e afeto para adoçar seus momentos</h1>
         <p>Bolos artesanais feitos com amor e ingredientes selecionados.</p>
         <a href="#" class="btn-primary">Ver Bolos</a>
     </div>
+
 </section>
 
 <!-- SOBRE -->
@@ -51,8 +67,8 @@
     <div class="container">
         <h2>Sobre a Jusce</h2>
         <p>
-            TEXTO EM ABERTO PARA ADICIONAR SOBRE A DOCERIA
-
+            Aqui você pode adicionar um texto falando sobre a confeitaria,
+            tradição, qualidade dos ingredientes e o carinho em cada detalhe.
         </p>
     </div>
 </section>
@@ -63,6 +79,7 @@
         <h2>Nossos Bolos</h2>
 
         <div class="cards">
+
             <div class="card">
                 <img src="https://via.placeholder.com/300x200" alt="Bolo Chocolate">
                 <h3>Bolo de Chocolate</h3>
@@ -83,12 +100,15 @@
                 <p>Combinação irresistível e delicada.</p>
                 <button class="btn-secondary">Adicionar ao Carrinho</button>
             </div>
+
         </div>
     </div>
 </section>
-    <footer>
-        <h3>Footer placeholder</h3>
-    </footer>
+
+<footer>
+    <p>© 2026 Jusce Confeitaria - Todos os direitos reservados</p>
+</footer>
     <script src="js/script.js"></script>
-    </body>
+</body>
+
 </html>
