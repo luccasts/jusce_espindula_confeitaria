@@ -102,7 +102,7 @@ Agora vamos rodar o servidor.
 
 ---
 
-## 🔌 Documentação da Rota de Teste (Integração)
+## 🔌 Rota de Teste (Integração)
 
 Para validar se o Frontend consegue se comunicar com o Backend, utilize o endpoint de teste abaixo.
 
