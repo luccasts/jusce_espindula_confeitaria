@@ -31,6 +31,32 @@ body {
   flex-wrap: wrap;
 }
 
+
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.contact a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact a, /*Para não ficar roxo depois de clicar no link */
+.contact a:visited {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: flex;
+}
+
+
 .contact span {
   margin-right: 25px;
   font-size: 14px;
@@ -130,9 +156,32 @@ section {
 }
 
 .sobre p {
-  max-width: 700px;
-  margin: 20px auto;
   font-size: 18px;
+  line-height: 1.8;
+  color: #333;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+.sobre {
+   background: linear-gradient(135deg, #fff8f6, #ffe5e0); border-radius: 12px;
+   padding: 100px 40px;
+}
+
+.sobre h2 {
+   font-size: 32px; font-weight: 700; color: #7c3f3f; margin-bottom: 20px;
+}
+
+.sobre h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background-color: #e75480; margin: 10px auto;
+  border-radius: 2px; 
 }
 
 /* ================= CARDS ================= */

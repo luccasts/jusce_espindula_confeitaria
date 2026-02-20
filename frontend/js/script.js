@@ -30,3 +30,5 @@ document.addEventListener("DOMContentLoaded", function () {
     setInterval(proximoSlide, 4000);
 
 });
+
+
