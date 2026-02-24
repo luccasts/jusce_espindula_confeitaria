@@ -100,6 +100,20 @@ header hr.color-hr {
     background: #c49c51;
   }
 
+@media (max-width: 768px) {
+  .info-container {
+      flex-direction: column;
+  }
+
+  .divisor {
+      display: none;
+  }
+
+  .info-item {
+      margin-bottom: 20px;
+  }
+}
+
   /*CONTATO*/
   #section-localizacao-contato {
     flex-direction: column;
