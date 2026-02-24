@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class Usuario {
+public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class Usuario {
   @Column(length = 20)
   private String telefone;
 
-  public Usuario() {}
+  public User() {}
 
   // Getters e Setters
   public Long getId() {
