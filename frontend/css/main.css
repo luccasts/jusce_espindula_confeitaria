@@ -9,7 +9,23 @@ body {
   background-color: #ffffff;
 }
 
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
 /* ================= HEADER ================= */
+
+
 
 .logo-area {
   background-color: #facbca;
@@ -31,6 +47,60 @@ body {
   flex-wrap: wrap;
 }
 
+/* ================= MENU RESPONSIVO ================= */
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .info-bar {
+    position: relative;
+  }
+
+  .contact {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #8c513c;
+
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+  }
+
+  nav ul {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+  }
+
+  nav ul li {
+    padding: 15px 0;
+    text-align: center;
+  }
+
+  nav.active {
+    max-height: 300px; /* altura suficiente para caber os links no mobile */
+  }
+
+}
 
 .contact {
   display: flex;
@@ -244,6 +314,32 @@ section {
   height: 3px;
   background-color: #facbca; margin: 10px auto;
   border-radius: 2px; 
+}
+
+/* ================= PAINEL DE ADMINISTRADOR ================= */
+
+.login-container {
+    width: 350px;
+    margin: 100px auto;
+    padding: 40px;
+    background: #f8d7da;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background: #8c513c;
+    color: white;
+    border: none;
+    cursor: pointer;
 }
 
 /* ================= CARDS ================= */
