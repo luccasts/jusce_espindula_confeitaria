@@ -31,4 +31,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+// ===== MOSTRAR / OCULTAR SENHA =====
+document.addEventListener("DOMContentLoaded", function () {
 
+    const togglePassword = document.getElementById("togglePassword");
+    const senhaInput = document.getElementById("senha");
+
+    if (togglePassword && senhaInput) {
+
+        togglePassword.addEventListener("click", function () {
+
+            const type = senhaInput.getAttribute("type") === "password" ? "text" : "password";
+            senhaInput.setAttribute("type", type);
+
+        });
+
+    }
+
+});

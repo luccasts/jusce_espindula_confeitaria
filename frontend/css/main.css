@@ -316,30 +316,115 @@ section {
   border-radius: 2px; 
 }
 
-/* ================= PAINEL DE ADMINISTRADOR ================= */
+/* ================= LOGIN ADMIN MODERNO ================= */
 
-.login-container {
-    width: 350px;
-    margin: 100px auto;
-    padding: 40px;
-    background: #f8d7da;
-    border-radius: 10px;
-    text-align: center;
+.admin-login-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fff8f6, #ffe5e0);
+  padding: 40px 20px;
 }
 
-.login-container input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px 35px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  text-align: center;
+  animation: fadeIn 0.6s ease;
 }
 
-.login-container button {
-    width: 100%;
-    padding: 10px;
-    background: #8c513c;
-    color: white;
-    border: none;
-    cursor: pointer;
+.login-header i {
+  font-size: 40px;
+  color: #8c513c;
+  margin-bottom: 10px;
+}
+
+.login-header h2 {
+  margin-bottom: 5px;
+  color: #8c513c;
+}
+
+.login-header p {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 25px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-group i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8c513c;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 40px;
+  border-radius: 30px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-group input:focus {
+  border-color: #8c513c;
+  box-shadow: 0 0 0 3px rgba(140,81,60,0.1);
+}
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #8c513c;
+}
+
+.btn-login {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 30px;
+  background: #8c513c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-login:hover {
+  background: #a8654c;
+  transform: translateY(-2px);
+}
+
+.erro-msg {
+  margin-top: 15px;
+  font-size: 14px;
+  color: red;
+}
+
+/* animação suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ================= CARDS ================= */

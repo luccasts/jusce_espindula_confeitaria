@@ -45,19 +45,38 @@
 
 </header>
 
-<main>
+<main class="admin-login-page">
 
-<div class="login-container">
-    <h2>Área Administrativa</h2>
+    <div class="login-card">
+        
+        <div class="login-header">
+            <i class="lni lni-lock-alt"></i>
+            <h2>Área Administrativa</h2>
+            <p>Acesso restrito</p>
+        </div>
 
-    <form id="loginForm">
-        <input type="text" id="usuario" placeholder="Usuário" required>
-        <input type="password" id="senha" placeholder="Senha" required>
-        <button type="submit">Entrar</button>
-    </form>
+        <form id="loginForm">
 
-    <p id="erro"></p>
-</div>
+            <div class="input-group">
+                <i class="lni lni-user"></i>
+                <input type="text" id="usuario" placeholder="Usuário" required>
+            </div>
+
+            <div class="input-group">
+                <i class="lni lni-lock"></i>
+                <input type="password" id="senha" placeholder="Senha" required>
+                <span class="toggle-password" id="togglePassword">
+                    <i class="lni lni-eye"></i>
+                </span>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar</button>
+
+        </form>
+
+        <p id="erro" class="erro-msg"></p>
+
+    </div>
 
 </main>
 
