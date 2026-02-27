@@ -138,9 +138,53 @@
           <p>Combinação irresistível e delicada.</p>
           <button class="btn-secondary">Adicionar ao Carrinho</button>
         </div>
+
+        <div class="card">
+          <img src="images/monte_seu_bolo.png" alt="Monte seu bolo">
+          <h3>Monte Seu Bolo</h3>
+          <p>Monte o seu bolo da forma que ama.</p>
+          <button class="btn-secondary" onclick="abrirMontador()">
+          Clique aqui
+          </button>
+        </div>
       </div>
     </div>
   </section>
+
+<section class="montador-overlay" id="montadorOverlay">
+  <div class="montador-box">
+
+    <span class="fechar" onclick="fecharMontador()">×</span>
+
+    <h2>Monte Seu Bolo 🎂</h2>
+
+    <div class="opcao">
+      <h3>Massa</h3>
+      <button onclick="selecionar(this)">Chocolate</button>
+      <button onclick="selecionar(this)">Baunilha</button>
+      <button onclick="selecionar(this)">Red Velvet</button>
+    </div>
+
+    <div class="opcao">
+      <h3>Recheio</h3>
+      <button onclick="selecionar(this)">Ninho</button>
+      <button onclick="selecionar(this)">Morango</button>
+      <button onclick="selecionar(this)">Brigadeiro</button>
+    </div>
+
+    <div class="opcao">
+      <h3>Cobertura</h3>
+      <button onclick="selecionar(this)">Ganache</button>
+      <button onclick="selecionar(this)">Chantilly</button>
+      <button onclick="selecionar(this)">Buttercream</button>
+    </div>
+
+    <button class="btn-login" style="margin-top:20px;">
+      Finalizar Pedido
+    </button>
+
+  </div>
+</section>
 
 </main>
 

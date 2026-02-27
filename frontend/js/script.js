@@ -82,3 +82,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+
+function abrirMontador() {
+  document.getElementById("montadorOverlay").classList.add("active");
+}
+
+function fecharMontador() {
+  document.getElementById("montadorOverlay").classList.remove("active");
+}
+
+function selecionar(botao) {
+  const grupo = botao.parentElement;
+  const botoes = grupo.querySelectorAll("button");
+
+  botoes.forEach(btn => btn.classList.remove("selected"));
+  botao.classList.add("selected");
+}

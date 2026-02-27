@@ -590,3 +590,70 @@ footer {
     background: rgba(255,255,255,0.14);
   }
 }
+/* ================= MONTADOR ================= */
+
+.montador-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.montador-overlay.active {
+  display: flex;
+}
+
+.montador-box {
+  background: #fff;
+  width: 95%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+  position: relative;
+}
+
+.montador-box h2 {
+  color: #8c513c;
+  margin-bottom: 20px;
+}
+
+.opcao {
+  margin-bottom: 20px;
+}
+
+.opcao h3 {
+  margin-bottom: 10px;
+  color: #8c513c;
+}
+
+.opcao button {
+  margin: 5px;
+  padding: 8px 15px;
+  border-radius: 20px;
+  border: 1px solid #8c513c;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.opcao button:hover {
+  background: #facbca;
+}
+
+.opcao button.selected {
+  background: #8c513c;
+  color: white;
+}
+
+.fechar {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 25px;
+  cursor: pointer;
+}
