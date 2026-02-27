@@ -1,3 +1,4 @@
+
 * {
   margin: 0;
   padding: 0;
@@ -25,8 +26,6 @@ main {
 
 /* ================= HEADER ================= */
 
-
-
 .logo-area {
   background-color: #facbca;
   padding: 20px 0;
@@ -47,60 +46,7 @@ main {
   flex-wrap: wrap;
 }
 
-/* ================= MENU RESPONSIVO ================= */
-
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 28px;
-  color: white;
-  cursor: pointer;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-
-  .info-bar {
-    position: relative;
-  }
-
-  .contact {
-    display: none;
-  }
-
-  .menu-toggle {
-    display: block;
-  }
-
-  nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: #8c513c;
-
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-  }
-
-  nav ul {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 0;
-  }
-
-  nav ul li {
-    padding: 15px 0;
-    text-align: center;
-  }
-
-  nav.active {
-    max-height: 300px; /* altura suficiente para caber os links no mobile */
-  }
-
-}
+/* ================= CONTATO ================= */
 
 .contact {
   display: flex;
@@ -117,15 +63,14 @@ main {
   font-weight: 600;
 }
 
-.contact a, /*Para não ficar roxo depois de clicar no link */
+.contact a,
 .contact a:visited {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.3s;
-    display: flex;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+  display: flex;
 }
-
 
 .contact span {
   margin-right: 25px;
@@ -135,6 +80,8 @@ main {
 .contact i {
   margin-right: 8px;
 }
+
+/* ================= NAV (DESKTOP) ================= */
 
 nav ul {
   list-style: none;
@@ -156,18 +103,86 @@ nav ul li a:hover {
   opacity: 0.7;
 }
 
+/* ================= MENU TOGGLE (HAMBURGER) ================= */
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.menu-toggle:focus {
+  outline: 2px solid rgba(255,255,255,0.35);
+  outline-offset: 2px;
+}
+
+.menu-toggle .bar {
+  display: block;
+  width: 28px;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.menu-toggle .bar + .bar {
+  margin-top: 6px;
+}
+
+/* vira X */
+.menu-toggle.active .bar:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+.menu-toggle.active .bar:nth-child(2) {
+  opacity: 0;
+}
+.menu-toggle.active .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
 /* ================= HERO ================= */
 
 .hero {
+  position: relative;
   height: 85vh;
-  background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-  url("https://via.placeholder.com/1600x900") center/cover no-repeat;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: #fff;
   padding: 20px;
+}
+
+.slider-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -2;
+}
+
+.slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 1s ease-in-out;
+}
+
+.slider-track img {
+  width: 100vw;
+  height: 85vh;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: -1;
 }
 
 .hero-content h1 {
@@ -181,7 +196,7 @@ nav ul li a:hover {
   margin-bottom: 30px;
 }
 
-/* BOTÕES */
+/* ================= BOTÕES ================= */
 
 .btn-primary {
   background-color: #fff;
@@ -226,7 +241,7 @@ section {
 }
 
 .info-box {
-  background-color: #facbca; /* rosa semelhante */
+  background-color: #facbca;
   border: 2px solid #8c513c;
   border-radius: 12px;
   padding: 30px;
@@ -269,22 +284,12 @@ section {
   letter-spacing: 1px;
 }
 
-@media (max-width: 768px) { /* Responsividade dessa parte */
+/* ================= SOBRE ================= */
 
-  .info-container {
-    flex-direction: column;
-  }
-
-  .divisor {
-    width: 100%;
-    height: 1px;
-    margin: 20px 0;
-  }
-
-  .info-item {
-    padding: 0;
-  }
-
+.sobre {
+  background: linear-gradient(135deg, #fff8f6, #ffe5e0);
+  border-radius: 12px;
+  padding: 100px 40px;
 }
 
 .sobre p {
@@ -295,16 +300,13 @@ section {
   margin: 0 auto;
   text-align: center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
-}
-
-.sobre {
-   background: linear-gradient(135deg, #fff8f6, #ffe5e0); border-radius: 12px;
-   padding: 100px 40px;
 }
 
 .sobre h2 {
-   font-size: 32px; font-weight: 700; color: #8c513c; margin-bottom: 20px;
+  font-size: 32px;
+  font-weight: 700;
+  color: #8c513c;
+  margin-bottom: 20px;
 }
 
 .sobre h2::after {
@@ -312,8 +314,9 @@ section {
   display: block;
   width: 60px;
   height: 3px;
-  background-color: #facbca; margin: 10px auto;
-  border-radius: 2px; 
+  background-color: #facbca;
+  margin: 10px auto;
+  border-radius: 2px;
 }
 
 /* ================= LOGIN ADMIN MODERNO ================= */
@@ -415,7 +418,6 @@ section {
   color: red;
 }
 
-/* animação suave */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -473,42 +475,118 @@ footer {
   padding: 20px;
 }
 
-.hero {
-  position: relative;
-  height: 85vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: #fff;
+/* ================= RESPONSIVIDADE GERAL ================= */
+
+@media (max-width: 768px) {
+  .info-container {
+    flex-direction: column;
+  }
+
+  .divisor {
+    width: 100%;
+    height: 1px;
+    margin: 20px 0;
+  }
+
+  .info-item {
+    padding: 0;
+  }
 }
 
-.slider-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: -2;
+/* ================= MENU MOBILE (SIDEBAR COM OVERLAY) ================= */
+
+.nav-overlay {
+  display: none;
 }
 
-.slider-track {
-  display: flex;
-  height: 100%;
-  transition: transform 1s ease-in-out;
-}
+@media (max-width: 768px) {
 
-.slider-track img {
-  width: 100vw;
-  height: 85vh;
-  object-fit: cover;
-  flex-shrink: 0;
-}
+  .info-bar {
+    padding: 12px 18px;
+    position: relative;
+  }
 
-.hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: -1;
-}
+  .contact {
+    display: none;
+  }
 
+  .menu-toggle {
+    display: block;
+    position: relative;
+    z-index: 1001;
+    background: rgba(255,255,255,0.12);
+  }
+
+  .menu-toggle.active {
+    background: rgba(255,255,255,0.18);
+  }
+
+  /* overlay */
+  .nav-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+    z-index: 998;
+  }
+
+  .nav-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* nav vira drawer lateral */
+  #navMenu {
+    position: fixed;
+    top: 0;
+    right: -85%;
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
+    background: #8c513c;
+    overflow: auto;
+    transition: right .25s ease;
+    z-index: 999;
+    border-left: 1px solid rgba(255,255,255,0.15);
+    padding: 24px 16px;
+
+    max-height: none;
+  }
+
+  #navMenu.active {
+    right: 0;
+  }
+
+  #navMenu ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 8px 0 0;
+    margin: 0;
+  }
+
+  #navMenu ul li {
+    padding: 0;
+    display: block;
+  }
+
+  #navMenu ul li a {
+    display: block;
+    width: 100%;
+    padding: 14px 12px;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  #navMenu ul li a:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.14);
+  }
+}

@@ -1,87 +1,86 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jusce Confeitaria</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jusce Confeitaria</title>
 
-    <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
+  <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
 
-    <link rel="stylesheet" href="css/main.css" />
-    <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header class="top-header">
+  <div class="logo-area">
+    <img src="images/logo_jusce_png.png" alt="Logo Jusce">
+  </div>
 
-    <div class="logo-area">
-        <img src="images/logo_jusce_png.png" alt="Logo Jusce">
+  <div class="info-bar">
+    <div class="contact">
+      <a href="https://wa.me/5575988373099" target="_blank">
+        <i class="lni lni-whatsapp"></i>
+        +55 (75) 98837-3099
+      </a>
+      <a href="https://www.instagram.com/jusce.confeitaria/" target="_blank">
+        <i class="lni lni-instagram"></i>
+        @jusce.confeitaria
+      </a>
     </div>
 
-    <div class="info-bar">
-        <div class="contact">
-            <a href="https://wa.me/5575988373099" target="_blank">
-                <i class="lni lni-whatsapp"></i>
-                +55 (75) 98837-3099
-            </a>
-            <a href="https://www.instagram.com/jusce.confeitaria/" target="_blank">
-                <i class="lni lni-instagram"></i>
-                @jusce.confeitaria
-            </a>
-        </div>
+    <!-- HAMBURGER (mesmo do index) -->
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
 
-        <nav>
-            <ul>
-                <li><a href="index.html">Início</a></li>
-                <li><a href="#">Bolos</a></li>
-                <li><a href="#">Carrinho</a></li>
-                <li><a href="#">Placeholder2</a></li>
-            </ul>
-        </nav>
-    </div>
-
+    <nav id="navMenu">
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="#">Bolos</a></li>
+        <li><a href="#">Carrinho</a></li>
+        <li><a href="#">Placeholder2</a></li>
+      </ul>
+    </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
+  </div>
 </header>
 
 <main class="admin-login-page">
-
-    <div class="login-card">
-        
-        <div class="login-header">
-            <i class="lni lni-lock-alt"></i>
-            <h2>Área Administrativa</h2>
-            <p>Acesso restrito</p>
-        </div>
-
-        <form id="loginForm">
-
-            <div class="input-group">
-                <i class="lni lni-user"></i>
-                <input type="text" id="usuario" placeholder="Usuário" required>
-            </div>
-
-            <div class="input-group">
-                <i class="lni lni-lock"></i>
-                <input type="password" id="senha" placeholder="Senha" required>
-                <span class="toggle-password" id="togglePassword">
-                    <i class="lni lni-eye"></i>
-                </span>
-            </div>
-
-            <button type="submit" class="btn-login">Entrar</button>
-
-        </form>
-
-        <p id="erro" class="erro-msg"></p>
-
+  <div class="login-card">
+    <div class="login-header">
+      <i class="lni lni-lock-alt"></i>
+      <h2>Área Administrativa</h2>
+      <p>Acesso restrito</p>
     </div>
 
+    <form id="loginForm">
+      <div class="input-group">
+        <i class="lni lni-user"></i>
+        <input type="text" id="usuario" placeholder="Usuário" required>
+      </div>
+
+      <div class="input-group">
+        <i class="lni lni-lock"></i>
+        <input type="password" id="senha" placeholder="Senha" required>
+        <span class="toggle-password" id="togglePassword">
+          <i class="lni lni-eye"></i>
+        </span>
+      </div>
+
+      <button type="submit" class="btn-login">Entrar</button>
+    </form>
+
+    <p id="erro" class="erro-msg"></p>
+  </div>
 </main>
 
 <footer>
-    <p>© 2026 Jusce Confeitaria - Todos os direitos reservados</p>
+  <p>© 2026 Jusce Confeitaria - Todos os direitos reservados</p>
 </footer>
 
 <script src="js/script.js"></script>
