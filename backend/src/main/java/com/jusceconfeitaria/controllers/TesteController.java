@@ -1,4 +1,4 @@
-package com.jusceconfeitaria.controller;
+package com.jusceconfeitaria.controllers;
 
 import java.util.Collections;
 import java.util.Map;

@@ -1,6 +1,8 @@
 package com.jusceconfeitaria.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,8 @@ public class Categoria {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotBlank(message = "O nome da categoria é obrigatório!")
+  @Size(min = 3, message = "O nome deve ter pelo menos 3 caracteres")
   @Column(nullable = false, length = 100)
   private String nome;
 

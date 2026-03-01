@@ -1,6 +1,7 @@
 package com.jusceconfeitaria.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 @Entity
@@ -18,6 +19,7 @@ public class Pedido {
   private Integer statusPedido;
 
   // Relacionamento: Vários pedidos pertencem a um Usuário (Cliente)
+  @NotNull(message = "O pedido precisa estar vinculado a um cliente")
   @ManyToOne
   @JoinColumn(name = "usuario_id", nullable = false)
   private User

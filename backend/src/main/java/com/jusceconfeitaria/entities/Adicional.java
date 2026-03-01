@@ -1,6 +1,9 @@
 package com.jusceconfeitaria.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,9 +16,12 @@ public class Adicional {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotBlank(message = "O nome do adicional é obrigatório")
   @Column(nullable = false, length = 100)
   private String nome;
 
+  @NotNull(message = "O preço do adicional é obrigatório")
+  @PositiveOrZero(message = "O preço não pode ser negativo")
   @Column(precision = 10, scale = 2)
   private BigDecimal precoAdicional;
 

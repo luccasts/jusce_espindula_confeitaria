@@ -1,6 +1,9 @@
 package com.jusceconfeitaria.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,18 +16,22 @@ public class Produto {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotBlank(message = "O nome do produto é obrigatório")
   @Column(nullable = false, length = 150)
   private String nome;
 
   @Column(columnDefinition = "TEXT")
   private String descricao;
 
+  @NotNull(message = "O preço do produto é obrigatório")
+  @Positive(message = "O preço deve ser maior que zero")
   @Column(nullable = false, precision = 10, scale = 2)
   private BigDecimal preco;
 
   private String imagemUrl;
 
   // Relacionamento: Vários Produtos pertencem a Uma Categoria
+  @NotNull(message = "A categoria do produto é obrigatória")
   @ManyToOne
   @JoinColumn(name = "categoria_id", nullable = false)
   private Categoria categoria;
