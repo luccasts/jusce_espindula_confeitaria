@@ -39,11 +39,11 @@
 
     <nav id="navMenu">        
       <ul>
-        <li><a href="#">Início</a></li>
+        <li><a href="index.html">Início</a></li>
         <li><a href="#">Bolos</a></li>
-        <li><a href="#">Carrinho</a></li>
+        <li><a href="pedidos.html">Pedidos</a></li>
         <li><a href="admin.html">Painel Administrativo</a></li>
-        <li><a href="#">Placeholder2</a></li>
+        <li><a href="galeria.hmtl">Galeria</a></li>
       </ul>
     </nav>
     <div class="nav-overlay" id="navOverlay"></div>
@@ -122,21 +122,42 @@
           <img src="images/bolo_chocolate_placeholder.png" alt="Bolo Chocolate">
           <h3>Bolo de Chocolate</h3>
           <p>Recheio cremoso e cobertura especial.</p>
-          <button class="btn-secondary">Adicionar ao Carrinho</button>
+          <button class="btn-secondary"
+          onclick="adicionarCarrinho(
+          'Bolo de Chocolate',
+          'Recheio cremoso e cobertura especial',
+          'images/bolo_chocolate_placeholder.png'
+          )">
+          Adicionar ao Carrinho
+          </button>
         </div>
 
         <div class="card">
           <img src="images/bolo_morango.png" alt="Bolo Morango">
           <h3>Bolo de Morango</h3>
           <p>Leve, fresco e perfeito para festas.</p>
-          <button class="btn-secondary">Adicionar ao Carrinho</button>
+          <button class="btn-secondary"
+          onclick="adicionarCarrinho(
+          'Bolo de Morango',
+          'Leve, fresco e perfeito para festas',
+          'images/bolo_morango.png'
+          )">
+          Adicionar ao Carrinho
+          </button>
         </div>
 
         <div class="card">
           <img src="images/bolo_ninho.png" alt="Bolo Ninho">
           <h3>Bolo Ninho</h3>
           <p>Combinação irresistível e delicada.</p>
-          <button class="btn-secondary">Adicionar ao Carrinho</button>
+          <button class="btn-secondary"
+          onclick="adicionarCarrinho(
+          'Bolo Ninho',
+          'Combinação irresistível e delicada',
+          'images/bolo_ninho.png'
+          )">
+          Adicionar ao Carrinho
+          </button>
         </div>
 
         <div class="card">

@@ -98,3 +98,77 @@ function selecionar(botao) {
   botoes.forEach(btn => btn.classList.remove("selected"));
   botao.classList.add("selected");
 }
+
+// ===== LOGIN ADMIN =====
+
+const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+
+  loginForm.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const usuario = document.getElementById("usuario").value;
+    const senha = document.getElementById("senha").value;
+    const erro = document.getElementById("erro");
+
+    // usuário e senha do administrador
+    const adminUser = "admin";
+    const adminPass = "1234";
+
+    if(usuario === adminUser && senha === adminPass){
+
+      // cria sessão
+      sessionStorage.setItem("adminLogado", "true");
+
+      // redireciona para o painel
+      window.location.href = "dashboard.html";
+
+    } else {
+
+      erro.textContent = "Usuário ou senha incorretos.";
+
+    }
+
+  });
+
+}
+
+// ===== PROTEÇÃO DO DASHBOARD =====
+
+if (window.location.pathname.includes("dashboard.html")) {
+
+  const logado = sessionStorage.getItem("adminLogado");
+
+  if (logado !== "true") {
+    window.location.href = "admin.html";
+  }
+
+  const logout = document.getElementById("logout");
+
+  if (logout) {
+    logout.addEventListener("click", function () {
+      sessionStorage.removeItem("adminLogado");
+      window.location.href = "admin.html";
+    });
+  }
+
+}
+
+// ================= CARRINHO =================
+
+function adicionarCarrinho(nome, descricao, imagem) {
+
+  let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+  carrinho.push({
+    nome: nome,
+    descricao: descricao,
+    imagem: imagem
+  });
+
+  localStorage.setItem("carrinho", JSON.stringify(carrinho));
+
+  alert("Produto adicionado ao carrinho!");
+}

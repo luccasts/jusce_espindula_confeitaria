@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - Jusce Confeitaria</title>
+  <title>Painel Administrativo - Jusce Confeitaria</title>
 
   <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
-
 </head>
 
 <body>
@@ -31,8 +30,7 @@
       </a>
     </div>
 
-    <!-- HAMBURGER (mesmo do index) -->
-    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+    <button class="menu-toggle" id="menuToggle">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
@@ -46,37 +44,50 @@
         <li><a href="galeria.html">Galeria</a></li>
       </ul>
     </nav>
+
     <div class="nav-overlay" id="navOverlay"></div>
   </div>
 </header>
 
-<main class="admin-login-page">
-  <div class="login-card">
-    <div class="login-header">
-      <i class="lni lni-lock-alt"></i>
-      <h2>Área Administrativa</h2>
-      <p>Acesso restrito</p>
-    </div>
+<!-- ================= DASHBOARD ================= -->
 
-    <form id="loginForm">
-      <div class="input-group">
-        <i class="lni lni-user"></i>
-        <input type="text" id="usuario" placeholder="Usuário" required>
-      </div>
+<main>
 
-      <div class="input-group">
-        <i class="lni lni-lock"></i>
-        <input type="password" id="senha" placeholder="Senha" required>
-        <span class="toggle-password" id="togglePassword">
-          <i class="lni lni-eye"></i>
-        </span>
-      </div>
+<section class="container">
 
-      <button type="submit" class="btn-login">Entrar</button>
-    </form>
+<h2 class="titulo">Painel Administrativo</h2>
 
-    <p id="erro" class="erro-msg"></p>
-  </div>
+<div class="cards">
+
+<div class="card">
+<i class="lni lni-plus" style="font-size:40px; margin-top:20px;"></i>
+<h3>Adicionar Produto</h3>
+<p>Cadastrar novos bolos ou doces no site.</p>
+<button class="btn-secondary">Adicionar</button>
+</div>
+
+<div class="card">
+<i class="lni lni-pencil" style="font-size:40px; margin-top:20px;"></i>
+<h3>Editar Produto</h3>
+<p>Alterar informações de produtos existentes.</p>
+<button class="btn-secondary">Editar</button>
+</div>
+
+<div class="card">
+<i class="lni lni-trash" style="font-size:40px; margin-top:20px;"></i>
+<h3>Remover Produto</h3>
+<p>Excluir produtos do catálogo.</p>
+<button class="btn-secondary">Remover</button>
+</div>
+
+</div>
+
+<div style="text-align:center; margin-top:40px;">
+<button class="btn-secondary" id="logout">Sair do Painel</button>
+</div>
+
+</section>
+
 </main>
 
 <footer>
