@@ -1,54 +1,80 @@
--- 1. Tabela de Usuários (Independente)
+-- 1. Roles & Users
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
 CREATE TABLE users (
-    id_users INT AUTO_INCREMENT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    role_id INT NOT NULL,
+    name VARCHAR(150),
     email VARCHAR(255) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL, -- ex: 'ADMIN', 'CLIENTE'
-    tempo_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    ultima_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    password_hash VARCHAR(255) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user_role FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
--- 2. Tabela de Categorias (Independente)
-CREATE TABLE categorias (
-    id_categorias INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    tempo_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    ultima_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- 2. Storefront (Products)
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    display_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
--- 3. Tabela de Adicionais (Independente)
-CREATE TABLE adicionais (
-    id_adicionais INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    preco DECIMAL(10, 2) NOT NULL,
-    tempo_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    ultima_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id INT NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    image_url VARCHAR(255),
+    display_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    CONSTRAINT fk_product_category FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
--- 4. Tabela de Produtos (Depende de Users e Categorias)
-CREATE TABLE produtos (
-    id_produtos INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(150) NOT NULL,
-    preco DECIMAL(10, 2) NOT NULL,
-    id_categorias INT NOT NULL,
-    id_users INT NOT NULL,
-    tempo_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    ultima_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    -- Chaves Estrangeiras (Relacionamentos)
-    CONSTRAINT fk_produtos_categoria FOREIGN KEY (id_categorias) REFERENCES categorias(id_categorias),
-    CONSTRAINT fk_produtos_usuario FOREIGN KEY (id_users) REFERENCES users(id_users)
+-- 3. Build Your Cake (Customization)
+CREATE TABLE cake_sizes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(100) NOT NULL,
+    base_price DECIMAL(10, 2) NOT NULL,
+    display_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE
 );
 
--- 5. Tabela Intermediária (Depende de Produtos e Adicionais)
-CREATE TABLE produtos_adicionais (
-    id_produtos_adicionais INT AUTO_INCREMENT PRIMARY KEY,
-    id_produto INT NOT NULL,
-    id_adicionais INT NOT NULL,
-    tempo_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    ultima_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE option_groups (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    min_selection INT DEFAULT 1,
+    max_selection INT DEFAULT 2,
+    is_required BOOLEAN DEFAULT TRUE
+);
 
-    -- Chaves Estrangeiras
-    CONSTRAINT fk_pa_produto FOREIGN KEY (id_produto) REFERENCES produtos(id_produtos),
-    CONSTRAINT fk_pa_adicional FOREIGN KEY (id_adicionais) REFERENCES adicionais(id_adicionais)
+CREATE TABLE cake_options (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    group_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    image_url VARCHAR(255),
+    is_active BOOLEAN DEFAULT TRUE,
+    CONSTRAINT fk_option_group FOREIGN KEY (group_id) REFERENCES option_groups(id)
+);
+
+CREATE TABLE option_prices_by_size (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    option_id INT NOT NULL,
+    size_id INT NOT NULL,
+    additional_price DECIMAL(10, 2) NOT NULL,
+    CONSTRAINT fk_price_option FOREIGN KEY (option_id) REFERENCES cake_options(id),
+    CONSTRAINT fk_price_size FOREIGN KEY (size_id) REFERENCES cake_sizes(id)
+);
+
+-- 4. Logs
+CREATE TABLE order_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    clicked_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    order_details TEXT,
+    CONSTRAINT fk_log_user FOREIGN KEY (user_id) REFERENCES users(id)
 );
