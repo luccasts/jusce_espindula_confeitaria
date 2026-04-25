@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jusce Confeitaria</title>
+
+  <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
+</head>
+
+<body>
+
+<header class="top-header">
+  <div class="logo-area">
+    <img src="images/logo_jusce_png.png" alt="Logo Jusce">
+  </div>
+
+  <div class="info-bar">
+    <div class="contact">
+      <a href="https://wa.me/5575988373099" target="_blank">
+        <i class="lni lni-whatsapp"></i>
+        +55 (75) 98837-3099
+      </a>
+      <a href="https://www.instagram.com/jusce.confeitaria/" target="_blank">
+        <i class="lni lni-instagram"></i>
+        @jusce.confeitaria
+      </a>
+    </div>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <nav id="navMenu">
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="#">Bolos</a></li>
+        <li><a href="pedidos.html">Pedidos</a></li>
+        <li><a href="admin.html">Painel Administrativo</a></li>
+        <li><a href="galeria.html">Galeria</a></li>
+      </ul>
+    </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="slider-container">
+      <div class="slider-track">
+        <img src="images/imagem-1.jpg" alt="Bolo artesanal">
+        <img src="images/imagem-2.jpg" alt="Bolo artesanal">
+        <img src="images/imagem-3.jpg" alt="Bolo artesanal">
+        <img src="images/imagem-4.jpg" alt="Bolo artesanal">
+        <img src="images/imagem-5.jpg" alt="Bolo artesanal">
+      </div>
+    </div>
+
+    <div class="hero-content">
+      <h1>Confeitaria e afeto para adoçar seus momentos</h1>
+      <p>Bolos artesanais feitos com amor e ingredientes selecionados.</p>
+      <a href="#bolos" class="btn-primary">Ver Bolos</a>
+    </div>
+
+    <div class="slider-dots" id="sliderDots">
+      <button class="dot active" data-index="0"></button>
+      <button class="dot" data-index="1"></button>
+      <button class="dot" data-index="2"></button>
+      <button class="dot" data-index="3"></button>
+      <button class="dot" data-index="4"></button>
+    </div>
+  </section>
+
+  <!-- INFO BOX -->
+  <section style="padding: 60px 20px;">
+    <div class="info-box">
+      <h2 class="titulo">ATENÇÃO!</h2>
+
+      <div class="info-container">
+        <div class="info-item">
+          <img src="images/calendario.png" alt="Calendário">
+          <p>Encomende com antecedência mínima de 2 dias</p>
+        </div>
+
+        <div class="divisor"></div>
+
+        <div class="info-item">
+          <img src="images/carrinho.png" alt="Carrinho">
+          <p>É necessário o pagamento de 50% do valor no ato do pedido, e os outros 50% devem ser pagos na retirada</p>
+        </div>
+
+        <div class="divisor"></div>
+
+        <div class="info-item">
+          <img src="images/cartao.png" alt="Cartão">
+          <p>Aceitamos dinheiro e PIX</p>
+        </div>
+
+        <div class="divisor"></div>
+
+        <div class="info-item">
+          <img src="images/verificado.png" alt="Verificado">
+          <p>A retirada é realizada no local</p>
+        </div>
+      </div>
+
+      <p class="endereco">AV. ANTONIO CARLOS MAGALHÃES, 426, CENTENÁRIO</p>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section class="sobre">
+    <div class="container">
+      <h2>Sobre a Jusce</h2>
+      <p>
+        "Meu nome é Jusce Espíndula e atuo na confeitaria há 20 anos. Aprendi a fazer bolos com minha mãe, Cicera Espíndula. Iniciei fazendo bolos para familiares e amigos e, com o tempo, transformei essa paixão em profissão. Produzo bolos artesanais sob encomenda, utilizando ingredientes selecionados e priorizando qualidade e acabamento. Trabalho com sabores personalizados e busco sempre entregar um produto bem elaborado, feito com atenção aos detalhes. Meu objetivo é contribuir para momentos especiais e fazer parte de celebrações únicas, oferecendo bolos que unem sabor e cuidado em cada encomenda."
+      </p>
+    </div>
+  </section>
+
+  <!-- BOLOS -->
+  <section class="bolos" id="bolos">
+    <div class="container">
+      <h2>Nossos Bolos</h2>
+
+      <div class="cards">
+        <div class="card">
+          <img src="images/bolo_chocolate_placeholder.png" alt="Bolo Chocolate">
+          <h3>Bolo de Chocolate</h3>
+          <p>Recheio cremoso e cobertura especial.</p>
+          <button class="btn-secondary"
+            onclick="adicionarCarrinho('Bolo de Chocolate','Recheio cremoso e cobertura especial','images/bolo_chocolate_placeholder.png')">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+
+        <div class="card">
+          <img src="images/bolo_morango.png" alt="Bolo Morango">
+          <h3>Bolo de Morango</h3>
+          <p>Leve, fresco e perfeito para festas.</p>
+          <button class="btn-secondary"
+            onclick="adicionarCarrinho('Bolo de Morango','Leve, fresco e perfeito para festas','images/bolo_morango.png')">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+
+        <div class="card">
+          <img src="images/bolo_ninho.png" alt="Bolo Ninho">
+          <h3>Bolo Ninho</h3>
+          <p>Combinação irresistível e delicada.</p>
+          <button class="btn-secondary"
+            onclick="adicionarCarrinho('Bolo Ninho','Combinação irresistível e delicada','images/bolo_ninho.png')">
+            Adicionar ao Carrinho
+          </button>
+        </div>
+
+        <div class="card">
+          <img src="images/monte_seu_bolo.png" alt="Monte seu bolo">
+          <h3>Monte Seu Bolo</h3>
+          <p>Monte o seu bolo da forma que ama.</p>
+          <button class="btn-secondary" onclick="abrirMontador()">
+            Clique aqui
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONTADOR -->
+  <section class="montador-overlay" id="montadorOverlay">
+    <div class="montador-box">
+      <span class="fechar" onclick="fecharMontador()">×</span>
+      <h2>Monte Seu Bolo 🎂</h2>
+
+      <div class="opcao">
+        <h3>Massa</h3>
+        <button onclick="selecionar(this)">Chocolate</button>
+        <button onclick="selecionar(this)">Baunilha</button>
+        <button onclick="selecionar(this)">Red Velvet</button>
+      </div>
+
+      <div class="opcao">
+        <h3>Recheio</h3>
+        <button onclick="selecionar(this)">Ninho</button>
+        <button onclick="selecionar(this)">Morango</button>
+        <button onclick="selecionar(this)">Brigadeiro</button>
+      </div>
+
+      <div class="opcao">
+        <h3>Cobertura</h3>
+        <button onclick="selecionar(this)">Ganache</button>
+        <button onclick="selecionar(this)">Chantilly</button>
+        <button onclick="selecionar(this)">Buttercream</button>
+      </div>
+
+      <button class="btn-login" style="margin-top: 24px;">
+        Finalizar Pedido
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 Jusce Confeitaria — Todos os direitos reservados</p>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

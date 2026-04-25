@@ -1,0 +1,104 @@
+/* ===== VARIÁVEIS ===== */
+:root {
+  --secondary-color: #a05a3e;
+}
+
+/* ===== LINHA DO HEADER ===== */
+header hr.color-hr {
+  border: 2px solid var(--secondary-color);
+}
+
+/* ===== MENU MOBILE (SIDEBAR) ===== */
+@media (max-width: 768px) {
+
+  #nav-bar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 75%;
+    height: 100vh;
+    background: linear-gradient(160deg, #7a3e2c 0%, #4e2318 100%);
+    padding: 2rem 1.2rem;
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 2000;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+  }
+
+  #nav-bar.active {
+    left: 0;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-links li {
+    width: 100%;
+  }
+
+  .nav-links li a {
+    display: block;
+    width: 100%;
+    padding: 13px 16px;
+    text-align: center;
+    text-decoration: none;
+    color: rgba(255,255,255,0.9);
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+  }
+
+  .nav-links li a:hover {
+    background: rgba(255,255,255,0.16);
+    color: #fff;
+  }
+
+}
+
+/* ===== DESKTOP (NAV NORMAL) ===== */
+@media (min-width: 769px) {
+
+  #nav-bar {
+    position: static;
+    height: auto;
+    width: auto;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    display: block;
+  }
+
+  .nav-links {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .nav-links li {
+    display: inline-block;
+  }
+
+  .nav-links li a {
+    padding: 0 15px;
+    text-transform: none;
+    font-size: 1rem;
+    background: transparent;
+  }
+}
+
+/* ===== AJUSTE CONTATO ===== */
+#section-localizacao-contato {
+  display: flex;
+  flex-direction: column;
+}
