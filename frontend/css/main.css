@@ -657,3 +657,253 @@ footer {
   font-size: 25px;
   cursor: pointer;
 }
+
+/* ===== LOGIN V2 ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
+
+.admin-login-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(150deg, #fff8f6 0%, #ffe8e4 50%, #fbd5d3 100%);
+  padding: 40px 16px;
+}
+
+.login-card-v2 {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  border: 1px solid rgba(140, 81, 60, 0.12);
+  padding: 40px 36px 36px;
+  box-shadow: 0 8px 48px rgba(140, 81, 60, 0.12), 0 2px 8px rgba(0,0,0,0.04);
+  animation: fadeIn 0.5s ease;
+}
+
+.lcv2-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #facbca, #e89080);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 16px rgba(232, 144, 128, 0.35);
+}
+
+.lcv2-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #6b3525;
+  text-align: center;
+  margin: 0 0 4px;
+}
+
+.lcv2-sub {
+  font-size: 13px;
+  color: #b07060;
+  text-align: center;
+  margin: 0 0 28px;
+  letter-spacing: 0.3px;
+}
+
+.lcv2-field {
+  margin-bottom: 16px;
+}
+
+.lcv2-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #8c513c;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.lcv2-input-wrap {
+  position: relative;
+}
+
+.lcv2-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #c4897a;
+  pointer-events: none;
+  display: flex;
+}
+
+.lcv2-input {
+  width: 100%;
+  padding: 12px 44px 12px 42px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(140, 81, 60, 0.18);
+  background: rgba(255, 248, 246, 0.9);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: #3a1f14;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+
+.lcv2-input::placeholder {
+  color: #c4a09a;
+}
+
+.lcv2-input:focus {
+  border-color: #8c513c;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(140, 81, 60, 0.12);
+}
+
+.lcv2-toggle-pw {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #c4897a;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.lcv2-toggle-pw:hover {
+  color: #8c513c;
+}
+
+.lcv2-forgot {
+  text-align: right;
+  margin-bottom: 22px;
+}
+
+.lcv2-forgot a {
+  font-size: 13px;
+  color: #b07060;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.lcv2-forgot a:hover {
+  color: #8c513c;
+}
+
+.lcv2-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #8c513c, #c47060);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 18px rgba(140, 81, 60, 0.25);
+}
+
+.lcv2-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(140, 81, 60, 0.35);
+}
+
+.lcv2-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.lcv2-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+
+/* Spinner de loading */
+.lcv2-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: lcv2Spin 0.7s linear infinite;
+  display: none;
+}
+
+.lcv2-btn.loading .lcv2-spinner {
+  display: block;
+}
+
+.lcv2-btn.loading .lcv2-btn-text {
+  display: none;
+}
+
+@keyframes lcv2Spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Mensagem de erro */
+.lcv2-error {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(226, 75, 74, 0.08);
+  border: 1px solid rgba(226, 75, 74, 0.22);
+  color: #a32d2d;
+  font-size: 13px;
+  text-align: center;
+  display: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.lcv2-error.show {
+  display: block;
+}
+
+.lcv2-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(140, 81, 60, 0.15), transparent);
+  margin: 24px 0 16px;
+}
+
+.lcv2-back {
+  text-align: center;
+  font-size: 13px;
+  color: #b07060;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.lcv2-back a {
+  color: #8c513c;
+  text-decoration: none;
+  font-weight: 600;
+  transition: text-decoration 0.2s;
+}
+
+.lcv2-back a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 440px) {
+  .login-card-v2 {
+    padding: 32px 20px 28px;
+    border-radius: 20px;
+  }
+}
