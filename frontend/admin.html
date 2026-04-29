@@ -9,16 +9,16 @@
   <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
-
+  <!-- Tipografia aprimorada -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
 <header class="top-header">
   <div class="logo-area">
-    <img src="images/logo_jusce_png.png" alt="Logo Jusce">
+    <img src="images/logo_jusce_png.png" alt="Logo Jusce Confeitaria">
   </div>
-
   <div class="info-bar">
     <div class="contact">
       <a href="https://wa.me/5575988373099" target="_blank">
@@ -30,14 +30,11 @@
         @jusce.confeitaria
       </a>
     </div>
-
-    <!-- HAMBURGER (mesmo do index) -->
     <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
-
     <nav id="navMenu">
       <ul>
         <li><a href="index.html">Início</a></li>
@@ -51,31 +48,87 @@
 </header>
 
 <main class="admin-login-page">
-  <div class="login-card">
-    <div class="login-header">
-      <i class="lni lni-lock-alt"></i>
-      <h2>Área Administrativa</h2>
-      <p>Acesso restrito</p>
+  <div class="login-card-v2">
+
+    <!-- Ícone de cadeado -->
+    <div class="lcv2-icon-wrap" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"
+           stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
     </div>
 
-    <form id="loginForm">
-      <div class="input-group">
-        <i class="lni lni-user"></i>
-        <input type="text" id="usuario" placeholder="Usuário" required>
+    <h1 class="lcv2-title">Área Administrativa</h1>
+    <p class="lcv2-sub">Acesso restrito · Jusce Confeitaria</p>
+
+    <form id="loginForm" novalidate>
+
+      <!-- Campo usuário -->
+      <div class="lcv2-field">
+        <label class="lcv2-label" for="usuario">Usuário</label>
+        <div class="lcv2-input-wrap">
+          <span class="lcv2-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </span>
+          <input class="lcv2-input" type="text" id="usuario"
+                 name="usuario" autocomplete="username"
+                 placeholder="Digite seu usuário"
+                 required aria-required="true" />
+        </div>
       </div>
 
-      <div class="input-group">
-        <i class="lni lni-lock"></i>
-        <input type="password" id="senha" placeholder="Senha" required>
-        <span class="toggle-password" id="togglePassword">
-          <i class="lni lni-eye"></i>
-        </span>
+      <!-- Campo senha -->
+      <div class="lcv2-field">
+        <label class="lcv2-label" for="senha">Senha</label>
+        <div class="lcv2-input-wrap">
+          <span class="lcv2-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input class="lcv2-input" type="password" id="senha"
+                 name="senha" autocomplete="current-password"
+                 placeholder="Digite sua senha"
+                 required aria-required="true" />
+          <button type="button" class="lcv2-toggle-pw"
+                  id="togglePassword" aria-label="Mostrar senha">
+            <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <button type="submit" class="btn-login">Entrar</button>
+      <!-- Esqueci senha -->
+      <div class="lcv2-forgot">
+        <a href="#">Esqueci minha senha</a>
+      </div>
+
+      <!-- Botão entrar -->
+      <button type="submit" class="lcv2-btn" id="btnEntrar">
+        <span class="lcv2-spinner" aria-hidden="true"></span>
+        <span class="lcv2-btn-text">Entrar</span>
+      </button>
+
+      <!-- Mensagem de erro -->
+      <div class="lcv2-error" id="erro" role="alert" aria-live="polite"></div>
+
     </form>
 
-    <p id="erro" class="erro-msg"></p>
+    <div class="lcv2-divider"></div>
+    <p class="lcv2-back"><a href="index.html">&#8592; Voltar ao site</a></p>
   </div>
 </main>
 
