@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fazer Pedido — Jusce Confeitaria</title>
+
+  <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/pedidos.css" />
+  <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
+</head>
+
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="top-header">
+  <div class="logo-area">
+    <img src="images/logo_jusce_png.png" alt="Logo Jusce">
+  </div>
+  <div class="info-bar">
+    <div class="contact">
+      <a href="https://wa.me/5575988373099" target="_blank">
+        <i class="lni lni-whatsapp"></i>
+        +55 (75) 98837-3099
+      </a>
+      <a href="https://www.instagram.com/jusce.confeitaria/" target="_blank">
+        <i class="lni lni-instagram"></i>
+        @jusce.confeitaria
+      </a>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+    <nav id="navMenu">
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="bolos.html">Ver Bolos</a></li>
+      </ul>
+    </nav>
+    <div class="nav-overlay" id="navOverlay"></div>
+  </div>
+</header>
+
+<!-- ========== MAIN ========== -->
+<main class="pedido-main">
+
+  <div class="pedido-hero">
+    <h1>Faça seu pedido ao seu gosto</h1>
+    <p>Personalize cada detalhe do seu bolo dos sonhos</p>
+  </div>
+
+  <div class="pedido-wrapper">
+
+    <!-- ===== COLUNA ESQUERDA: FORMULÁRIO ===== -->
+    <div class="pedido-form-col">
+
+      <!-- KILO DO BOLO -->
+      <div class="pedido-section">
+        <h2 class="pedido-section-title">
+          <span class="step-badge">1</span>
+          Kilo do Bolo
+        </h2>
+
+        <div class="kilo-grid" id="kiloGrid">
+          <label class="kilo-card">
+            <input type="radio" name="kilo" value="1" data-preco="0">
+            <span class="kilo-dot"></span>
+            <span class="kilo-label">1 Kilo de Bolo</span>
+            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
+          </label>
+          <label class="kilo-card">
+            <input type="radio" name="kilo" value="2" data-preco="0">
+            <span class="kilo-dot"></span>
+            <span class="kilo-label">2 Kilos de Bolo</span>
+            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
+          </label>
+          <label class="kilo-card">
+            <input type="radio" name="kilo" value="3" data-preco="0">
+            <span class="kilo-dot"></span>
+            <span class="kilo-label">3 Kilos de Bolo</span>
+            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
+          </label>
+          <label class="kilo-card">
+            <input type="radio" name="kilo" value="4" data-preco="0">
+            <span class="kilo-dot"></span>
+            <span class="kilo-label">4 Kilos de Bolo</span>
+            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- TIPO DE MASSA -->
+      <div class="pedido-section">
+        <h2 class="pedido-section-title">
+          <span class="step-badge">2</span>
+          Tipo de Massa
+        </h2>
+
+        <div class="select-wrapper">
+          <label class="select-label">Escolha sua massa</label>
+          <div class="custom-select-wrap">
+            <select id="tipoMassa" class="custom-select">
+              <option value="">— Selecione —</option>
+              <option value="Branca">Branca</option>
+              <option value="Chocolate">Chocolate</option>
+            </select>
+            <i class="lni lni-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <div class="select-wrapper" style="margin-top: 14px;">
+          <label class="select-label">Sabor da Massa</label>
+          <div class="custom-select-wrap">
+            <select id="saborMassa" class="custom-select">
+              <option value="">— Selecione o sabor da massa —</option>
+              <option value="Baunilha">Baunilha</option>
+              <option value="Laranja">Laranja</option>
+              <option value="Limão">Limão</option>
+              <option value="Maracujá">Maracujá</option>
+              <option value="Morango">Morango</option>
+            </select>
+            <i class="lni lni-chevron-down select-arrow"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECHEIO -->
+      <div class="pedido-section">
+        <h2 class="pedido-section-title">
+          <span class="step-badge">3</span>
+          Recheio do Bolo
+        </h2>
+        <div class="select-wrapper">
+          <label class="select-label">Escolha seu recheio</label>
+          <div class="custom-select-wrap">
+            <select id="recheio" class="custom-select">
+              <option value="">— Selecione —</option>
+              <option value="Abacaxi">Abacaxi</option>
+              <option value="Ameixa">Ameixa</option>
+              <option value="Brigadeiro">Brigadeiro</option>
+              <option value="Brigadeiro de Oreo">Brigadeiro de Oreo</option>
+              <option value="Castanha">Castanha</option>
+              <option value="Coco">Coco</option>
+              <option value="Leite Ninho">Leite Ninho</option>
+              <option value="Maracujá">Maracujá</option>
+              <option value="Paçoca">Paçoca</option>
+            </select>
+            <i class="lni lni-chevron-down select-arrow"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADICIONAIS -->
+      <div class="pedido-section">
+        <h2 class="pedido-section-title">
+          <span class="step-badge">4</span>
+          Adicionais
+        </h2>
+        <div class="select-wrapper">
+          <label class="select-label">Escolha os adicionais</label>
+          <div class="custom-select-wrap">
+            <select id="adicional" class="custom-select">
+              <option value="">— Selecione (opcional) —</option>
+              <option value="Crocante de amendoim">Crocante de amendoim</option>
+              <option value="Geleia de morango">Geleia de morango</option>
+              <option value="Nutella">Nutella</option>
+              <option value="Pedaços de chocolate">Pedaços de chocolate</option>
+              <option value="Pedaços de morango">Pedaços de morango</option>
+              <option value="Pedaços de Oreo">Pedaços de Oreo</option>
+            </select>
+            <i class="lni lni-chevron-down select-arrow"></i>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /pedido-form-col -->
+
+    <!-- ===== COLUNA DIREITA: RESUMO ===== -->
+    <div class="pedido-summary-col">
+      <div class="summary-card">
+
+        <div class="summary-header">
+          <i class="lni lni-cake"></i>
+          <span>Resumo do Pedido</span>
+        </div>
+
+        <!-- Total em destaque -->
+        <div class="summary-total-box">
+          <span class="summary-total-label">Valor Total a Ser Pago</span>
+          <span class="summary-total-value" id="totalDisplay">R$ 00,00</span>
+        </div>
+
+        <!-- Itens do resumo -->
+        <div class="summary-items" id="summaryItems">
+          <p class="summary-empty">Nenhum item selecionado ainda.</p>
+        </div>
+
+        <!-- Observações -->
+        <div class="summary-obs">
+          <label class="select-label" for="observacoes">Observações</label>
+          <textarea id="observacoes" class="obs-textarea" placeholder="Ex: sem açúcar, mensagem no bolo..."></textarea>
+        </div>
+
+        <!-- Botão pedir -->
+        <button class="btn-pedir" id="btnPedir" onclick="enviarPedido()">
+          <i class="lni lni-whatsapp"></i>
+          Pedir via WhatsApp
+        </button>
+
+        <p class="summary-info">
+          <i class="lni lni-information"></i>
+          Pagamento: 50% no pedido + 50% na retirada. Aceitamos Pix e dinheiro.
+        </p>
+
+      </div>
+    </div><!-- /pedido-summary-col -->
+
+  </div><!-- /pedido-wrapper -->
+
+</main>
+
+<footer>
+  <p>© 2026 Jusce Confeitaria - Todos os direitos reservados</p>
+</footer>
+
+<script src="js/script.js"></script>
+<script src="js/pedidos.js"></script>
+
+</body>
+</html>

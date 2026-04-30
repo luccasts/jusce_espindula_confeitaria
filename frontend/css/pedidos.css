@@ -1,0 +1,513 @@
+/* =====================================================
+   PEDIDOS.CSS — Jusce Confeitaria
+   Estilos exclusivos para a página de pedidos
+   ===================================================== */
+
+/* ===== HERO DA PÁGINA ===== */
+
+.pedido-main {
+  background: linear-gradient(180deg, #fff8f6 0%, #fdf0ee 100%);
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+.pedido-hero {
+  background: linear-gradient(135deg, #facbca 0%, #e8a09a 100%);
+  text-align: center;
+  padding: 48px 20px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pedido-hero::before {
+  content: "";
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: #fff8f6;
+  border-radius: 50% 50% 0 0 / 60px 60px 0 0;
+  z-index: 1;
+}
+
+.pedido-hero h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #5a2e22;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.pedido-hero p {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 15px;
+  color: #7a4035;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== WRAPPER PRINCIPAL (duas colunas) ===== */
+
+.pedido-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 30px;
+  max-width: 1100px;
+  margin: 50px auto 0;
+  padding: 0 20px;
+  align-items: start;
+}
+
+/* ===== SEÇÕES DO FORMULÁRIO ===== */
+
+.pedido-section {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 28px 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(140, 81, 60, 0.08);
+  border: 1px solid rgba(250, 203, 202, 0.5);
+  transition: box-shadow 0.2s;
+}
+
+.pedido-section:hover {
+  box-shadow: 0 6px 28px rgba(140, 81, 60, 0.13);
+}
+
+.pedido-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #8c513c;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f2dbd9;
+}
+
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #facbca, #e8a09a);
+  color: #5a2e22;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== GRID DE KILOS ===== */
+
+.kilo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.kilo-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1.5px solid #f0d5d3;
+  background: #fff8f6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.kilo-card:hover {
+  border-color: #c4897a;
+  background: #fff2f0;
+}
+
+.kilo-card input[type="radio"] {
+  display: none;
+}
+
+/* bolinha do radio customizado */
+.kilo-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #c4897a;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kilo-dot::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8c513c;
+  transform: scale(0);
+  transition: transform 0.2s;
+}
+
+.kilo-card input:checked ~ .kilo-dot {
+  border-color: #8c513c;
+  background: #fff8f6;
+}
+
+.kilo-card input:checked ~ .kilo-dot::after {
+  transform: scale(1);
+}
+
+.kilo-card input:checked ~ .kilo-label {
+  font-weight: 600;
+  color: #5a2e22;
+}
+
+.kilo-label {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: #7a4035;
+  flex: 1;
+}
+
+.kilo-price {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8c513c;
+  white-space: nowrap;
+}
+
+/* Card selecionado */
+.kilo-card:has(input:checked) {
+  border-color: #8c513c;
+  background: #fff2f0;
+  box-shadow: 0 0 0 3px rgba(140, 81, 60, 0.1);
+}
+
+/* ===== SELECTS CUSTOMIZADOS ===== */
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-label {
+  display: block;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #8c513c;
+  margin-bottom: 7px;
+}
+
+.custom-select-wrap {
+  position: relative;
+}
+
+.custom-select {
+  width: 100%;
+  padding: 13px 44px 13px 18px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(140, 81, 60, 0.2);
+  background: rgba(255, 248, 246, 0.9);
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: #3a1f14;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.custom-select:focus {
+  border-color: #8c513c;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(140, 81, 60, 0.1);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #c4897a;
+  pointer-events: none;
+  font-size: 14px;
+}
+
+/* ===== CARD DE RESUMO ===== */
+
+.pedido-summary-col {
+  position: sticky;
+  top: 20px;
+}
+
+.summary-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px 24px 24px;
+  box-shadow: 0 8px 40px rgba(140, 81, 60, 0.14);
+  border: 1px solid rgba(250, 203, 202, 0.6);
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #8c513c;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f2dbd9;
+}
+
+.summary-header i {
+  font-size: 18px;
+  color: #e8a09a;
+}
+
+/* Caixa de total */
+.summary-total-box {
+  background: linear-gradient(135deg, #8c513c, #c47060);
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.summary-total-label {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+}
+
+.summary-total-value {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+}
+
+/* Itens do resumo */
+.summary-items {
+  min-height: 80px;
+  margin-bottom: 16px;
+}
+
+.summary-empty {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #c4a09a;
+  text-align: center;
+  padding: 20px 0;
+  font-style: italic;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed #f2dbd9;
+}
+
+.summary-row:last-of-type {
+  border-bottom: none;
+}
+
+.summary-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #facbca;
+  flex-shrink: 0;
+}
+
+.summary-dot.accent {
+  background: #c47060;
+}
+
+.summary-row-name {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5a2e22;
+}
+
+.summary-row-price {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: #8c513c;
+}
+
+.summary-detail-group {
+  padding: 4px 0 8px 16px;
+}
+
+.summary-detail {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  color: #7a4035;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-detail i {
+  font-size: 10px;
+  color: #c4897a;
+}
+
+/* Observações */
+.summary-obs {
+  margin-bottom: 18px;
+}
+
+.obs-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(140, 81, 60, 0.2);
+  background: #fff8f6;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #3a1f14;
+  resize: vertical;
+  min-height: 70px;
+  outline: none;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.obs-textarea::placeholder {
+  color: #c4a09a;
+}
+
+.obs-textarea:focus {
+  border-color: #8c513c;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(140, 81, 60, 0.1);
+}
+
+/* Botão pedir */
+.btn-pedir {
+  width: 100%;
+  padding: 15px;
+  border-radius: 16px;
+  border: none;
+  background: linear-gradient(135deg, #25d366, #128c5e);
+  color: #fff;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+  margin-bottom: 14px;
+}
+
+.btn-pedir i {
+  font-size: 18px;
+}
+
+.btn-pedir:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 28px rgba(37, 211, 102, 0.45);
+}
+
+.btn-pedir:active {
+  transform: translateY(0);
+}
+
+/* Info de pagamento */
+.summary-info {
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 11.5px;
+  color: #b07060;
+  text-align: center;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.summary-info i {
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-size: 13px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+
+@media (max-width: 900px) {
+  .pedido-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .pedido-summary-col {
+    position: static;
+    order: -1; /* resumo fica primeiro no mobile */
+  }
+
+  .summary-card {
+    border-radius: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .pedido-hero h1 {
+    font-size: 24px;
+    letter-spacing: 1px;
+  }
+
+  .kilo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pedido-section {
+    padding: 20px 18px;
+    border-radius: 16px;
+  }
+
+  .summary-total-value {
+    font-size: 24px;
+  }
+}
