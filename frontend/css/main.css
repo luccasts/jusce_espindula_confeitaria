@@ -75,8 +75,8 @@ nav ul li a:hover::after {
 
 nav ul li:last-child a {
   background: #facbca;
-  color: #8c513c;
-  padding: 8px 18px;
+  color: #cf7453;
+  padding: 4px 9px;
   border-radius: 8px;
   font-weight: bold;
 }
@@ -631,7 +631,7 @@ footer {
     font-size: 16px;
     font-weight: 600;
     letter-spacing: 0.2px;
-    background: rgba(255,255,255,0.08);
+    background: #facbca;
   }
 
   #navMenu ul li a:hover {
