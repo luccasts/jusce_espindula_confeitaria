@@ -51,8 +51,7 @@ const BOLOS_DATA = [
     nome: 'Bolo de Festa Sonic',
     desc: 'Chocolate, recheio de brigadeiro e glíter comestível',
     preco: 'R$ 310',
-    cat: 'infantil',
-    cat: 'aniversario',
+    cat: ['infantil', 'aniversario'],
     badge: '',
     badgeClass: '',
     img: 'images/bolos/bolo_sonic_infantil.jpg',
@@ -87,8 +86,7 @@ const BOLOS_DATA = [
     nome: 'Bolo de Festa Hora de Aventura',
     desc: 'Massa branca recheada com bastante chantininho',
     preco: 'R$ 200',
-    cat: 'infantil',
-    cat: 'aniversario',
+    cat: ['infantil', 'aniversario'],
     badge: 'Popular',
     badgeClass: 'popular',
     img: "images/bolos/bolo_adventuretime.jpg",
@@ -101,12 +99,11 @@ const BOLOS_DATA = [
     ],
   },
   {
-    id: 5,
+    id: 6,
     nome: 'Bolo de Festa Homem-Aranha',
     desc: 'Massa branca recheada com chocolate e cobertura de chantininho',
     preco: 'R$ 200',
-    cat: 'infantil',
-    cat: 'aniversario',
+    cat: ['infantil', 'aniversario'],
     badge: 'Popular',
     badgeClass: 'popular',
     img: "images/bolos/bolo_infantil_spiderman.jpg",
@@ -119,11 +116,10 @@ const BOLOS_DATA = [
     ],
   },
   {
-    id: 6,
+    id: 7,
     nome: 'Bolo de Festa Verão Praiano',
     desc: 'Massa branca, recheio de leite ninho e cobertura colorida de chantininho com decorações comestíveis',
     preco: 'R$ 350',
-    cat: 'especial',
     cat: 'aniversario',
     badge: 'Destaque',
     badgeClass: 'destaque',
@@ -134,6 +130,24 @@ const BOLOS_DATA = [
       { label: 'Prazo',     valor: '6 dias úteis'      },
       { label: 'Recheio',   valor: 'Leite ninho'    },
       { label: 'Cobertura', valor: 'Chantininho' },
+    ],
+  },
+
+  {
+    id: 8,
+    nome: 'Bolo de Dia das Mães',
+    desc: 'Massa branca recheada com chocolate',
+    preco: 'R$ 200',
+    cat: 'especial',
+    badge: '',
+    badgeClass: '',
+    img: "images/bolos/bolo_mae.jpg",
+    imgAlt: 'Bolo de Dia das Mães',
+    detalhes: [
+      { label: 'Porções',   valor: 'até 20 fatias'     },
+      { label: 'Prazo',     valor: '3 dias úteis'       },
+      { label: 'Recheio',   valor: 'Chocolate'  },
+      { label: 'Cobertura', valor: 'Chocolate' },
     ],
   },
   // ── Para adicionar um novo bolo, copie o bloco acima e edite ──
@@ -211,7 +225,7 @@ function criarCard(bolo, delay) {
 function renderGaleria(cat) {
   const lista = cat === 'todos'
     ? BOLOS_DATA
-    : BOLOS_DATA.filter(b => b.cat === cat);
+    :BOLOS_DATA.filter(b => b.cat.includes(cat));
 
   grid.innerHTML = '';
   emptyEl.classList.remove('show');

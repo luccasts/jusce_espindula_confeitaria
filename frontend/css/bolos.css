@@ -165,7 +165,6 @@ body {
   display: flex;
   flex-direction: column;
   cursor: default;
-  role: listitem;
 }
 
 .gb-card:hover {

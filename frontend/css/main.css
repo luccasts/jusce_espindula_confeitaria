@@ -44,6 +44,55 @@ main {
   align-items: center;
   padding: 15px 60px;
   flex-wrap: wrap;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+nav ul li a {
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  padding: 0 15px;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+/* linha animada */
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0%;
+  height: 2px;
+  background: #facbca;
+  transition: 0.3s;
+}
+
+nav ul li a:hover::after {
+  width: 100%;
+}
+
+nav ul li:last-child a {
+  background: #facbca;
+  color: #8c513c;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+nav ul li:last-child a:hover {
+  background: #fff;
+  transform: translateY(-2px);
+}
+
+.contact a:hover {
+  transform: translateY(-2px);
+  opacity: 0.85;
+}
+
+.info-bar {
+  padding: 12px 50px;
 }
 
 /* ================= CONTATO ================= */
@@ -905,5 +954,184 @@ footer {
   .login-card-v2 {
     padding: 32px 20px 28px;
     border-radius: 20px;
+  }
+}
+
+/* ================= CARDÁPIO ESTILIZADO ================= */
+
+.cardapio {
+  background: linear-gradient(180deg, #f8cfc9 0%, #8c513c 100%);
+  padding: 80px 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ondinha topo */
+.cardapio::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: #fff;
+  border-radius: 0 0 50% 50%;
+}
+
+/* HEADER */
+.cardapio-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.cardapio-titulo {
+  font-size: 42px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.cardapio-sub {
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* GRID PRINCIPAL */
+.cardapio-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "massas massas"
+    "recheios recheios"
+    "adicionais cobertura";
+  gap: 30px;
+
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* BLOCOS */
+.cardapio-bloco {
+  background: #f7d6d2;
+  color: #5a2e22;
+  padding: 30px;
+  border-radius: 22px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+/* POSICIONAMENTO */
+.cardapio-bloco:nth-child(1) { grid-area: massas; }
+.cardapio-bloco:nth-child(2) { grid-area: recheios; }
+.cardapio-bloco:nth-child(3) { grid-area: adicionais; }
+.cardapio-bloco:nth-child(4) { grid-area: cobertura; }
+
+/* MASSAS menor e central */
+.cardapio-bloco:nth-child(1) {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* TAG (título bonitinho) */
+.tag {
+  display: inline-block;
+  background: #f2b6b0;
+  color: #5a2e22;
+  padding: 8px 22px;
+  border-radius: 30px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* LISTAS */
+.cardapio-bloco ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  column-gap: 40px;
+}
+
+/* RECHEIOS PERFEITAMENTE ALINHADOS */
+.cardapio-bloco:nth-child(2) ul {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: center;
+  column-gap: 80px;
+  row-gap: 10px;
+}
+
+/* MASSAS E COBERTURA ALINHADOS À ESQUERDA */
+.cardapio-bloco:nth-child(1) ul,
+.cardapio-bloco:nth-child(4) ul {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin: 0; /* remove centralização */
+}
+
+.cardapio-bloco {
+  text-align: center;
+}
+
+.cardapio-bloco li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap; /* impede quebra feia */
+}
+
+/* uma coluna centralizada */
+.cardapio-bloco:nth-child(1) ul,
+.cardapio-bloco:nth-child(4) ul {
+  columns: 1;
+  text-align: center;
+}
+
+/* itens */
+.cardapio-bloco li {
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 14px;
+}
+
+/* bolinha */
+.cardapio-bloco li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #8c513c;
+}
+
+/* ================= RESPONSIVO ================= */
+
+@media (max-width: 768px) {
+
+  .cardapio-wrapper {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "massas"
+      "recheios"
+      "adicionais"
+      "cobertura";
+  }
+
+  .cardapio-bloco {
+    width: 100%;
+  }
+
+  .cardapio-bloco ul {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px;
+}
+
+  .cardapio-bloco:nth-child(1) ul,
+  .cardapio-bloco:nth-child(4) ul {
+    text-align: center;
+  }
+
+  .cardapio-titulo {
+    font-size: 32px;
   }
 }

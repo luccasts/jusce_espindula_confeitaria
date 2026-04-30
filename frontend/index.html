@@ -39,11 +39,7 @@
 
     <nav id="navMenu">        
       <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="bolos.html">Bolos</a></li>
-        <li><a href="pedidos.html">Pedidos</a></li>
-        <li><a href="admin.html">Painel Administrativo</a></li>
-        <li><a href="galeria.hmtl">Galeria</a></li>
+        <li><a href="bolos.html">Ver Bolos</a></li>
       </ul>
     </nav>
     <div class="nav-overlay" id="navOverlay"></div>
@@ -66,7 +62,7 @@
     <div class="hero-content">
       <h1>Confeitaria e afeto para adoçar seus momentos</h1>
       <p>Bolos artesanais feitos com amor e ingredientes selecionados.</p>
-      <a href="#" class="btn-primary">Ver Bolos</a>
+      <a href="bolos.html" class="btn-primary">Ver Bolos</a>
     </div>
   </section>
 
@@ -113,64 +109,69 @@
     </div>
   </section>
 
-  <section class="bolos">
-    <div class="container">
-      <h2>Nossos Bolos</h2>
+  <section class="cardapio">
+  <div class="container">
 
-      <div class="cards">
-        <div class="card">
-          <img src="images/bolo_chocolate_placeholder.png" alt="Bolo Chocolate">
-          <h3>Bolo de Chocolate</h3>
-          <p>Recheio cremoso e cobertura especial.</p>
-          <button class="btn-secondary"
-          onclick="adicionarCarrinho(
-          'Bolo de Chocolate',
-          'Recheio cremoso e cobertura especial',
-          'images/bolo_chocolate_placeholder.png'
-          )">
-          Adicionar ao Carrinho
-          </button>
-        </div>
-
-        <div class="card">
-          <img src="images/bolo_morango.png" alt="Bolo Morango">
-          <h3>Bolo de Morango</h3>
-          <p>Leve, fresco e perfeito para festas.</p>
-          <button class="btn-secondary"
-          onclick="adicionarCarrinho(
-          'Bolo de Morango',
-          'Leve, fresco e perfeito para festas',
-          'images/bolo_morango.png'
-          )">
-          Adicionar ao Carrinho
-          </button>
-        </div>
-
-        <div class="card">
-          <img src="images/bolo_ninho.png" alt="Bolo Ninho">
-          <h3>Bolo Ninho</h3>
-          <p>Combinação irresistível e delicada.</p>
-          <button class="btn-secondary"
-          onclick="adicionarCarrinho(
-          'Bolo Ninho',
-          'Combinação irresistível e delicada',
-          'images/bolo_ninho.png'
-          )">
-          Adicionar ao Carrinho
-          </button>
-        </div>
-
-        <div class="card">
-          <img src="images/monte_seu_bolo.png" alt="Monte seu bolo">
-          <h3>Monte Seu Bolo</h3>
-          <p>Monte o seu bolo da forma que ama.</p>
-          <button class="btn-secondary" onclick="abrirMontador()">
-          Clique aqui
-          </button>
-        </div>
-      </div>
+    <div class="cardapio-header">
+      <h2 class="cardapio-titulo">Cardápio</h2>
+      <p class="cardapio-sub">Opções disponíveis para personalizar seu bolo</p>
     </div>
-  </section>
+
+    <div class="cardapio-wrapper">
+
+      <!-- MASSAS -->
+      <div class="cardapio-bloco">
+        <span class="tag">Massas</span>
+        <ul>
+          <li>Branca</li>
+          <li>Chocolate</li>
+        </ul>
+      </div>
+
+      <!-- RECHEIOS -->
+      <div class="cardapio-bloco destaque">
+        <span class="tag">Recheios</span>
+        <ul>
+          <li>Abacaxi</li>
+          <li>Ameixa</li>
+          <li>Brigadeiro</li>
+          <li>Brigadeiro de Oreo</li>
+          <li>Castanha</li>
+          <li>Coco</li>
+          <li>Leite Ninho</li>
+          <li>Maracujá</li>
+          <li>Paçoca</li>
+        </ul>
+      </div>
+
+      <!-- ADICIONAIS -->
+      <div class="cardapio-bloco">
+        <span class="tag">Adicionais</span>
+        <ul>
+          <li>Crocante de amendoim</li>
+          <li>Geleia de morango</li>
+          <li>Nutella</li>
+          <li>Pedaços de chocolate</li>
+          <li>Pedaços de morango</li>
+          <li>Pedaços de Oreo</li>
+        </ul>
+      </div>
+
+      <!-- COBERTURA -->
+      <div class="cardapio-bloco">
+        <span class="tag">Cobertura</span>
+        <ul>
+          <li>Chantininho</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+  
+  
 
 <section class="montador-overlay" id="montadorOverlay">
   <div class="montador-box">
