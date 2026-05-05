@@ -303,10 +303,9 @@ body {
 }
 
 .gb-card-preco {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: var(--gb-brown);
-  line-height: 1;
+  color: var(--gb-brown-dk);
 }
 
 /* botão ver detalhes */
