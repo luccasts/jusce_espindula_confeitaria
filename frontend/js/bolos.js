@@ -1,245 +1,165 @@
 // ============================================================
-//  bolos.js — Galeria de Bolos | Jusce Confeitaria
-//  Para adicionar novos bolos: edite apenas o array BOLOS_DATA
+//  bolos.js — Galeria de Bolos (modo vitrine personalizada)
 // ============================================================
+
+// Descrição padrão (para bolos personalizados)
+const DESC_PADRAO =
+  'Este é um modelo de inspiração. Personalize sabores, recheios e acabamento conforme sua preferência.';
+
+// Descrição específica para bolos tradicionais
+const DESC_TRADICIONAL =
+  'Bolo com sabor tradicional já definido. Ideal para quem busca um clássico delicioso e pronto para encomenda.';
 
 // ──────────────────────────────────────────────────────────
 //  DADOS DOS BOLOS
-//  • img       → substitua pela URL ou caminho local da foto
-//  • cat       → categoria usada nos filtros (slug sem acento)
-//  • badge     → "Destaque" | "Novo" | "Limitado" | "Popular" | ""
-//  • badgeClass→ "destaque" | "novo" | "limitado" | "popular" | ""
-//  • detalhes  → array de { label, valor } exibidos no modal
 // ──────────────────────────────────────────────────────────
 const BOLOS_DATA = [
   {
     id: 1,
-    nome: 'Piscina de Maracujá',
-    desc: 'Sabor refrescante de maracujá com cobertura transbordante',
-    preco: 'R$ 320',
-    cat: 'naked',
-    badge: 'Novo',
-    badgeClass: 'novo',
-    img: 'images/bolos/bolo_maracuja_LE_upscale_prime.jpg',
-    imgAlt: 'Bolo maracujá decorado',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 25 fatias'  },
-      { label: 'Prazo',     valor: '4 dias úteis'    },
-      { label: 'Recheio',   valor: 'Maracujá' },
-      { label: 'Cobertura', valor: 'Maracujá' },
-    ],
-  },
-  {
-    id: 2,
-    nome: 'Morango Vibrante',
-    desc: 'Massa aveludada, cobertura de chantilly, recheio de morango e confetes comestíveis',
-    preco: 'R$ 240',
-    cat: 'naked',
+    nome: 'Morango Natalino',
+    cat: ['especial'],
     badge: 'Destaque',
     badgeClass: 'destaque',
     img: 'images/bolos/bolo_morango_LE_upscale_prime.jpg',
-    imgAlt: 'Bolo Morango Vibrante',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 20 fatias'  },
-      { label: 'Prazo',     valor: '3 dias úteis'    },
-      { label: 'Recheio',   valor: 'Morango'    },
-      { label: 'Cobertura', valor: 'Morango'    },
-    ],
+  },
+  {
+    id: 2,
+    nome: 'Bolo Sonic',
+    cat: ['comemorativos', 'tematicos'],
+    img: 'images/bolos/bolo_sonic_infantil.jpg',
   },
   {
     id: 3,
-    nome: 'Bolo de Festa Sonic',
-    desc: 'Chocolate, recheio de brigadeiro e glíter comestível',
-    preco: 'R$ 310',
-    cat: ['infantil', 'aniversario'],
+    nome: 'Bolo Natalino',
+    cat: ['especial'],
     badge: '',
     badgeClass: '',
-    img: 'images/bolos/bolo_sonic_infantil.jpg',
-    imgAlt: 'Bolo Infantil Sonic',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 30 fatias'      },
-      { label: 'Prazo',     valor: '5 dias úteis'        },
-      { label: 'Recheio',   valor: 'Chocolate'   },
-      { label: 'Cobertura', valor: 'Brigadeiro' },
-    ],
+    img: 'images/bolos/bolo_natal_festivo.jpg',
   },
   {
     id: 4,
-    nome: 'Bolo Natalino',
-    desc: 'Massa branca, leite ninho e cobertura de chantininho com decorações comestíveis',
-    preco: 'R$ 290',
-    cat: 'especial',
-    cat: 'especial',
-    badge: 'Limitado',
-    badgeClass: 'limitado',
-    img: 'images/bolos/bolo_natal_festivo.jpg',
-    imgAlt: 'Bolo de Natal',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 22 fatias'     },
-      { label: 'Prazo',     valor: '4 dias úteis'       },
-      { label: 'Recheio',   valor: 'Massa branca' },
-      { label: 'Cobertura', valor: 'Leite ninho'   },
-    ],
-  },
-  {
-    id: 5,
-    nome: 'Bolo de Festa Hora de Aventura',
-    desc: 'Massa branca recheada com bastante chantininho',
-    preco: 'R$ 200',
-    cat: ['infantil', 'aniversario'],
+    nome: 'Bolo Hora de Aventura',
+    cat: ['comemorativos', 'tematicos'],
     badge: 'Popular',
     badgeClass: 'popular',
     img: "images/bolos/bolo_adventuretime.jpg",
-    imgAlt: 'Bolo de Festa Hora De Aventura',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 20 fatias'     },
-      { label: 'Prazo',     valor: '3 dias úteis'       },
-      { label: 'Recheio',   valor: 'Ninho'  },
-      { label: 'Cobertura', valor: 'Chantininho colorido' },
-    ],
   },
   {
-    id: 6,
-    nome: 'Bolo de Festa Homem-Aranha',
-    desc: 'Massa branca recheada com chocolate e cobertura de chantininho',
-    preco: 'R$ 200',
-    cat: ['infantil', 'aniversario'],
+    id: 5,
+    nome: 'Bolo Homem-Aranha',
+    cat: ['comemorativos', 'tematicos'],
     badge: 'Popular',
     badgeClass: 'popular',
     img: "images/bolos/bolo_infantil_spiderman.jpg",
-    imgAlt: 'Bolo de Festa Homem-Aranha',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 20 fatias'     },
-      { label: 'Prazo',     valor: '3 dias úteis'       },
-      { label: 'Recheio',   valor: 'Brigadeiro'  },
-      { label: 'Cobertura', valor: 'Chantininho' },
-    ],
   },
   {
-    id: 7,
-    nome: 'Bolo de Festa Verão Praiano',
-    desc: 'Massa branca, recheio de leite ninho e cobertura colorida de chantininho com decorações comestíveis',
-    preco: 'R$ 350',
-    cat: 'aniversario',
+    id: 6,
+    nome: 'Bolo Verão Praiano',
+    cat: ['tematicos'],
     badge: 'Destaque',
     badgeClass: 'destaque',
     img: 'images/bolos/bolo_duplo_aniversario.jpg',
-    imgAlt: 'Bolo Verão Praiano',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 18 fatias'    },
-      { label: 'Prazo',     valor: '6 dias úteis'      },
-      { label: 'Recheio',   valor: 'Leite ninho'    },
-      { label: 'Cobertura', valor: 'Chantininho' },
-    ],
+  },
+  {
+    id: 7,
+    nome: 'Bolo Dia das Mães',
+    cat: ['especial'],
+    img: "images/bolos/bolo_mae.jpg",
   },
 
-  {
-    id: 8,
-    nome: 'Bolo de Dia das Mães',
-    desc: 'Massa branca recheada com chocolate',
-    preco: 'R$ 200',
-    cat: 'especial',
-    badge: '',
-    badgeClass: '',
-    img: "images/bolos/bolo_mae.jpg",
-    imgAlt: 'Bolo de Dia das Mães',
-    detalhes: [
-      { label: 'Porções',   valor: 'até 20 fatias'     },
-      { label: 'Prazo',     valor: '3 dias úteis'       },
-      { label: 'Recheio',   valor: 'Chocolate'  },
-      { label: 'Cobertura', valor: 'Chocolate' },
-    ],
-  },
-  // ── Para adicionar um novo bolo, copie o bloco acima e edite ──
+  // TRADICIONAIS
+  { id: 8,  nome: 'Brigadeiro', cat: ['tradicionais'], img: 'images/bolos/bolo_brigadeiro.jpeg' },
+  { id: 9, nome: 'Bolo de Cenoura', cat: ['tradicionais'], badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_maracuja_LE_upscale_prime.jpg' },
+  { id: 10, nome: 'Bolo de Chocolate', cat: ['tradicionais'], badge: 'Popular', badgeClass: 'popular', img: 'images/bolos/bolo_chocolate.jpeg' },
+  { id: 11, nome: 'Bolo de Maracujá', cat: ['tradicionais'], img: 'images/bolos/bolo_padrao_maracuja.jpeg' },
+  { id: 12, nome: 'Red Velvet', cat: ['tradicionais'], badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_redvelvet.jpeg' },
+  { id: 13, nome: 'Bolo de Limão', cat: ['tradicionais'], img: 'images/bolos/bolo_limao.jpeg' },
+  { id: 14, nome: 'Bolo de Laranja', cat: ['tradicionais'], img: 'images/bolos/bolo_laranja.jfif' },
+  { id: 15, nome: 'KitKat', cat: ['tradicionais'], badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_kitkat.jfif' },
+  { id: 16, nome: 'Bolo Formigueiro', cat: ['tradicionais'], img: 'images/bolos/bolo_formigueiro.jpeg' },
 ];
 
 // ──────────────────────────────────────────────────────────
 //  ESTADO
 // ──────────────────────────────────────────────────────────
 let categoriaAtiva = 'todos';
-const favoritosSet = new Set();
 
-// ──────────────────────────────────────────────────────────
-//  ELEMENTOS
-// ──────────────────────────────────────────────────────────
-const grid      = document.getElementById('gbGrid');
-const countEl   = document.getElementById('gbCount');
-const emptyEl   = document.getElementById('gbEmpty');
-const modal     = document.getElementById('gbModal');
+// ELEMENTOS
+const grid = document.getElementById('gbGrid');
+const countEl = document.getElementById('gbCount');
+const emptyEl = document.getElementById('gbEmpty');
+const modal = document.getElementById('gbModal');
 const modalClose = document.getElementById('gbModalClose');
 
 // ──────────────────────────────────────────────────────────
-//  RENDER
+//  FUNÇÃO INTELIGENTE DE DESCRIÇÃO
+// ──────────────────────────────────────────────────────────
+function getDescricao(bolo) {
+  if (bolo.cat.includes('tradicionais')) {
+    return DESC_TRADICIONAL;
+  }
+  return DESC_PADRAO;
+}
+
+// ──────────────────────────────────────────────────────────
+//  CARD
 // ──────────────────────────────────────────────────────────
 function criarCard(bolo, delay) {
   const card = document.createElement('div');
   card.className = 'gb-card';
   card.style.animationDelay = delay + 'ms';
-  card.setAttribute('role', 'listitem');
-
-  const favClass = favoritosSet.has(bolo.id) ? ' liked' : '';
 
   card.innerHTML = `
     <div class="gb-card-img-wrap">
-      <img
-        src="${bolo.img}"
-        alt="${bolo.imgAlt || bolo.nome}"
-        loading="lazy"
-        onerror="this.parentElement.innerHTML='<div class=\\'gb-img-placeholder\\'>🎂</div>'"
-      >
+      <img src="${bolo.img}" alt="${bolo.nome}" loading="lazy">
       ${bolo.badge ? `<span class="gb-card-badge ${bolo.badgeClass}">${bolo.badge}</span>` : ''}
-      <button class="gb-fav-btn${favClass}" data-id="${bolo.id}" aria-label="Favoritar ${bolo.nome}">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-      </button>
     </div>
+
     <div class="gb-card-body">
       <p class="gb-card-nome">${bolo.nome}</p>
-      <p class="gb-card-desc">${bolo.desc}</p>
+      <p class="gb-card-desc">${getDescricao(bolo)}</p>
+
       <div class="gb-card-footer">
         <div class="gb-card-preco-wrap">
-          <span class="gb-card-preco-label">a partir de</span>
-          <span class="gb-card-preco">${bolo.preco}</span>
+          <span class="gb-card-preco-label">Sob consulta</span>
         </div>
-        <button class="gb-ver-btn" data-id="${bolo.id}">Ver detalhes</button>
+
+        <button class="gb-ver-btn" data-id="${bolo.id}">
+          Ver opções
+        </button>
       </div>
     </div>
   `;
 
-  // Favoritar
-  card.querySelector('.gb-fav-btn').addEventListener('click', function (e) {
-    e.stopPropagation();
-    const id = Number(this.dataset.id);
-    favoritosSet.has(id) ? favoritosSet.delete(id) : favoritosSet.add(id);
-    this.classList.toggle('liked');
-    this.setAttribute('aria-label', favoritosSet.has(id) ? `Remover favorito ${bolo.nome}` : `Favoritar ${bolo.nome}`);
-  });
-
-  // Ver detalhes → abre modal
-  card.querySelector('.gb-ver-btn').addEventListener('click', () => abrirModal(bolo));
+  card.querySelector('.gb-ver-btn')
+    .addEventListener('click', () => abrirModal(bolo));
 
   return card;
 }
 
+// ──────────────────────────────────────────────────────────
+//  RENDER
+// ──────────────────────────────────────────────────────────
 function renderGaleria(cat) {
   const lista = cat === 'todos'
     ? BOLOS_DATA
-    :BOLOS_DATA.filter(b => b.cat.includes(cat));
+    : BOLOS_DATA.filter(b => b.cat.includes(cat));
 
   grid.innerHTML = '';
-  emptyEl.classList.remove('show');
 
-  if (lista.length === 0) {
+  if (!lista.length) {
     emptyEl.classList.add('show');
     countEl.textContent = '';
     return;
   }
 
-  lista.forEach((bolo, i) => grid.appendChild(criarCard(bolo, i * 65)));
+  emptyEl.classList.remove('show');
 
-  const total = lista.length;
-  countEl.textContent = `${total} ${total === 1 ? 'bolo encontrado' : 'bolos encontrados'}`;
+  lista.forEach((bolo, i) =>
+    grid.appendChild(criarCard(bolo, i * 60))
+  );
+
+  countEl.textContent = `${lista.length} bolos encontrados`;
 }
 
 // ──────────────────────────────────────────────────────────
@@ -247,49 +167,32 @@ function renderGaleria(cat) {
 // ──────────────────────────────────────────────────────────
 document.querySelectorAll('.gb-filter-btn').forEach(btn => {
   btn.addEventListener('click', function () {
-    document.querySelectorAll('.gb-filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.gb-filter-btn')
+      .forEach(b => b.classList.remove('active'));
+
     this.classList.add('active');
-    categoriaAtiva = this.dataset.cat || 'todos';
+    categoriaAtiva = this.dataset.cat;
     renderGaleria(categoriaAtiva);
   });
 });
-
-function resetFiltro() {
-  categoriaAtiva = 'todos';
-  document.querySelectorAll('.gb-filter-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.cat === 'todos');
-  });
-  renderGaleria('todos');
-}
 
 // ──────────────────────────────────────────────────────────
 //  MODAL
 // ──────────────────────────────────────────────────────────
 function abrirModal(bolo) {
-  document.getElementById('modalImg').src     = bolo.img;
-  document.getElementById('modalImg').alt     = bolo.imgAlt || bolo.nome;
-  document.getElementById('modalNome').textContent  = bolo.nome;
-  document.getElementById('modalDesc').textContent  = bolo.desc;
-  document.getElementById('modalPreco').textContent = bolo.preco;
+  document.getElementById('modalImg').src = bolo.img;
+  document.getElementById('modalNome').textContent = bolo.nome;
+  document.getElementById('modalDesc').textContent = getDescricao(bolo);
 
-  const badge = document.getElementById('modalBadge');
-  badge.textContent  = bolo.badge || '';
-  badge.className    = 'gb-modal-badge ' + (bolo.badgeClass || '');
+  const msg = encodeURIComponent(
+    `Olá! Gostaria de um bolo no estilo *${bolo.nome}*. Podemos conversar sobre detalhes?`
+  );
 
-  const detEl = document.getElementById('modalDetalhes');
-  detEl.innerHTML = (bolo.detalhes || []).map(d => `
-    <div class="gb-modal-detalhe-item">
-      <p class="gb-modal-detalhe-label">${d.label}</p>
-      <p class="gb-modal-detalhe-valor">${d.valor}</p>
-    </div>
-  `).join('');
-
-  const msg = encodeURIComponent(`Olá! Tenho interesse no bolo *${bolo.nome}* (${bolo.preco}). Poderia me dar mais informações?`);
-  document.getElementById('modalWhats').href = `https://wa.me/5575988373099?text=${msg}`;
+  document.getElementById('modalWhats').href =
+    `https://wa.me/5575988373099?text=${msg}`;
 
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
-  modalClose.focus();
 }
 
 function fecharModal() {
@@ -298,10 +201,9 @@ function fecharModal() {
 }
 
 modalClose.addEventListener('click', fecharModal);
-modal.addEventListener('click', e => { if (e.target === modal) fecharModal(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
+modal.addEventListener('click', e => {
+  if (e.target === modal) fecharModal();
+});
 
-// ──────────────────────────────────────────────────────────
-//  INIT
-// ──────────────────────────────────────────────────────────
+// INIT
 renderGaleria('todos');
