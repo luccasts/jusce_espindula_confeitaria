@@ -1,5 +1,5 @@
 // ============================================================
-//  bolos.js — Galeria de Bolos (VERSÃO CORRIGIDA)
+//  bolos.js — Galeria de Bolos 
 // ============================================================
 
 // ================= DESCRIÇÕES =================
@@ -20,15 +20,14 @@ const BOLOS_DATA = [
   { id: 7, nome: 'Bolo Dia das Mães', cat: ['especial'], img: "images/bolos/bolo_mae.jpg" },
 
   // TRADICIONAIS
-  { id: 8, nome: 'Brigadeiro', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_brigadeiro.jpeg' },
+  { id: 8, nome: 'Brigadeiro', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_brigadeirov2.jpeg' },
   { id: 9, nome: 'Bolo de Cenoura', cat: ['tradicionais'], preco: 'R$ 100,00', badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_maracuja_LE_upscale_prime.jpg' },
   { id: 10, nome: 'Bolo de Chocolate', cat: ['tradicionais'], preco: 'R$ 100,00', badge: 'Popular', badgeClass: 'popular', img: 'images/bolos/bolo_chocolate.jpeg' },
   { id: 11, nome: 'Bolo de Maracujá', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_padrao_maracuja.jpeg' },
-  { id: 12, nome: 'Red Velvet', cat: ['tradicionais'], preco: 'R$ 100,00', badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_redvelvet.jpeg' },
+  { id: 12, nome: 'Red Velvet', cat: ['tradicionais'], badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_redvelvet.jpeg' },
   { id: 13, nome: 'Bolo de Limão', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_limao.jpeg' },
   { id: 14, nome: 'Bolo de Laranja', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_laranja.jfif' },
-  { id: 15, nome: 'KitKat', cat: ['tradicionais'], preco: 'R$ 100,00', badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_kitkat.jfif' },
-  { id: 16, nome: 'Bolo Formigueiro', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_formigueiro.jpeg' },
+  { id: 15, nome: 'Bolo Formigueiro', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_formigueiro.jpeg' },
 ];
 
 // ================= ESTADO =================
@@ -68,10 +67,10 @@ function criarCard(bolo, delay) {
       <div class="gb-card-footer">
         <div>
           ${
-            bolo.cat.includes('tradicionais')
+            bolo.cat.includes('tradicionais') && bolo.nome !== 'Red Velvet'
               ? `<span class="gb-card-preco">${bolo.preco}</span>`
               : `<span class="gb-card-preco-label">Sob consulta</span>`
-          }
+}
         </div>
 
         <button class="gb-ver-btn">Ver opções</button>
@@ -143,15 +142,15 @@ function abrirModal(bolo) {
   const preco = document.getElementById('modalPreco');
   const obs = document.getElementById('modalObs');
 
-  if (bolo.cat.includes('tradicionais')) {
-    precoLabel.textContent = 'Preço';
-    preco.textContent = bolo.preco;
-    obs.textContent = '';
-  } else {
-    precoLabel.textContent = 'Valor sob consulta';
-    preco.textContent = '';
-    obs.textContent = 'Cada bolo é único e feito sob medida 💕';
-  }
+  if (bolo.cat.includes('tradicionais') && bolo.nome !== 'Red Velvet') {
+  precoLabel.textContent = 'Preço';
+  preco.textContent = bolo.preco;
+  obs.textContent = '';
+} else {
+  precoLabel.textContent = 'Valor sob consulta';
+  preco.textContent = '';
+  obs.textContent = 'Cada bolo é único e feito sob medida 💕';
+}
 
   const msg = encodeURIComponent(
     `Olá! Gostaria de um bolo no estilo *${bolo.nome}*. Podemos conversar sobre detalhes?`
