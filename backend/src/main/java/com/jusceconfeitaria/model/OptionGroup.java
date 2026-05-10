@@ -1,3 +1,5 @@
+package com.jusceconfeitaria.model;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -11,36 +13,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OptionGroup {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-  @Column(nullable = false, length = 100)
-  private String name;
+    @Column(nullable = false, length = 100)
+    private String name;
 
-  @Column(name = "max_selection", nullable = false)
-  private Integer maxSelection;
+    @Column(name = "max_selection", nullable = false)
+    private Integer maxSelection = 1;
 
-  @Column(name = "is_required", nullable = false)
-  private Boolean isRequired = false;
+    @Column(name = "min_selection")
+    private Integer minSelection = 0;
 
-  @Column(name = "display_order")
-  private Integer displayOrder;
+    @Column(name = "is_required", nullable = false)
+    private Boolean isRequired = false;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+    @Column(name = "display_order")
+    private Integer displayOrder;
 
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    updatedAt = LocalDateTime.now();
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
-  }
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

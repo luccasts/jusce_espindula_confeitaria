@@ -95,6 +95,8 @@ CREATE TABLE option_groups (
     max_selection INT DEFAULT 1,
 
     is_required BOOLEAN DEFAULT TRUE,
+    is_active BOOLEAN DEFAULT TRUE,      -- ADICIONADO
+    display_order INT DEFAULT 0,         -- ADICIONADO
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -104,9 +106,12 @@ CREATE TABLE cake_options (
 
     group_id INT NOT NULL,
 
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(150) NOT NULL,
+    description TEXT,                    -- ADICIONADO
     image_url VARCHAR(255),
+    price_extra DECIMAL(10,2) DEFAULT 0, -- ADICIONADO
 
+    display_order INT DEFAULT 0,         -- ADICIONADO
     is_active BOOLEAN DEFAULT TRUE,
 
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -183,6 +188,18 @@ CREATE TABLE order_selections (
     CONSTRAINT fk_selection_option
         FOREIGN KEY (option_id)
         REFERENCES cake_options(id)
+);
+
+CREATE TABLE order_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    order_details TEXT NOT NULL,
+
+    user_ip VARCHAR(45),
+    user_agent TEXT,
+    session_id VARCHAR(100),
+
+    clicked_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==========================================================
