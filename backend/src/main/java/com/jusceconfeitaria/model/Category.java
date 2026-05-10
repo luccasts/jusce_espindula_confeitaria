@@ -13,22 +13,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String slug;
+  @Column(nullable = false, unique = true, length = 50)
+  private String slug;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String name;
+  @Column(nullable = false, unique = true, length = 100)
+  private String name;
 
-    @Column(name = "display_order")
-    private Integer displayOrder;
+  @Column(name = "display_order")
+  private Integer displayOrder;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
+  @Column(name = "is_active", nullable = false)
+  private Boolean isActive = true;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+  @Column(name = "created_at", insertable = false, updatable = false)
+  private LocalDateTime createdAt;
 }

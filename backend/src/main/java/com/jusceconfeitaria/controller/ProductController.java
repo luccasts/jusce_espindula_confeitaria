@@ -14,57 +14,53 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+  @Autowired private ProductRepository productRepository;
 
-    public record ProductDTO(
-            Integer id,
-            String nome,
-            String descricao,
-            BigDecimal preco,
-            Boolean precoBajSolicitacao,
-            String imagemUrl,
-            String badge,
-            String badgeClass,
-            Integer ordemExibicao,
-            List<String> categorias
-    ) {}
+  public record ProductDTO(
+      Integer id,
+      String nome,
+      String descricao,
+      BigDecimal preco,
+      Boolean precoPorSolicitacao,
+      String imagemUrl,
+      String badge,
+      String badgeClass,
+      Integer ordemExibicao,
+      List<String> categorias) {}
 
-    @GetMapping
-    public List<ProductDTO> listarProdutos() {
-        return productRepository.findByIsActiveTrueOrderByDisplayOrderAsc().stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
+  @GetMapping
+  public List<ProductDTO> listarProdutos() {
+    return productRepository.findByIsActiveTrueOrderByDisplayOrderAsc().stream()
+        .map(this::toDTO)
+        .collect(Collectors.toList());
+  }
 
-    @GetMapping("/{id}")
-    public ProductDTO buscarProduto(@PathVariable Integer id) {
-        Product produto =
-                productRepository
-                        .findById(id)
-                        .orElseThrow(
-                                () -> new RecursoNaoEncontradoException("Produto não encontrado: id=" + id));
-        return toDTO(produto);
-    }
+  @GetMapping("/{id}")
+  public ProductDTO buscarProduto(@PathVariable Integer id) {
+    Product produto =
+        productRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new RecursoNaoEncontradoException("Produto não encontrado: id=" + id));
+    return toDTO(produto);
+  }
 
-    private ProductDTO toDTO(Product p) {
-        List<String> categorias = p.getCategories() == null
-                ? List.of()
-                : p.getCategories().stream()
-                .map(c -> c.getSlug()) // Usando slug que é melhor para o front
-                .toList();
+  private ProductDTO toDTO(Product p) {
+    List<String> categorias =
+        p.getCategories() == null
+            ? List.of()
+            : p.getCategories().stream().map(c -> c.getSlug()).toList();
 
-        return new ProductDTO(
-                p.getId(),
-                p.getName(),
-                p.getDescription(),
-                p.getPrice(),
-                p.getIsPriceOnRequest(),
-                p.getImageUrl(),
-                p.getBadge(),
-                p.getBadgeClass(),
-                p.getDisplayOrder(),
-                categorias
-        );
-    }
+    return new ProductDTO(
+        p.getId(),
+        p.getName(),
+        p.getDescription(),
+        p.getPrice(),
+        p.getIsPriceOnRequest(),
+        p.getImageUrl(),
+        p.getBadge(),
+        p.getBadgeClass(),
+        p.getDisplayOrder(),
+        categorias);
+  }
 }

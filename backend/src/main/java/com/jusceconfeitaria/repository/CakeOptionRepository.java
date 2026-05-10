@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CakeOptionRepository extends JpaRepository<CakeOption, Integer> {
 
-    List<CakeOption> findByGroupIdAndIsActiveTrueOrderByDisplayOrderAsc(Integer groupId);
+  List<CakeOption> findByGroupIdAndIsActiveTrueOrderByDisplayOrderAsc(Integer groupId);
 }

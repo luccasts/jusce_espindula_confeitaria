@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CakeSizeRepository extends JpaRepository<CakeSize, Integer> {
 
-    List<CakeSize> findByIsActiveTrueOrderByDisplayOrderAsc();
+  List<CakeSize> findByIsActiveTrueOrderByDisplayOrderAsc();
 }

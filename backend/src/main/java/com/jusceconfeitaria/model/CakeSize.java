@@ -14,23 +14,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CakeSize {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String description;
+  @Column(nullable = false, unique = true, length = 100)
+  private String description;
 
-    @Column(name = "base_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal basePrice;
+  @Column(name = "base_price", nullable = false, precision = 10, scale = 2)
+  private BigDecimal basePrice;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
+  @Column(name = "is_active", nullable = false)
+  private Boolean isActive = true;
 
-    @Column(name = "display_order")
-    private Integer displayOrder;
+  @Column(name = "display_order")
+  private Integer displayOrder;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
-
+  @Column(name = "created_at", insertable = false, updatable = false)
+  private LocalDateTime createdAt;
 }
