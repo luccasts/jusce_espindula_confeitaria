@@ -27,37 +27,47 @@ public class CakeController {
       Boolean obrigatorio,
       Integer ordem) {}
 
-  public record OpcaoDTO(Integer id, String nome, String descricao, Integer ordemExibicao) {}
+  // CORRIGIDO: adicionados precoExtra e imagemUrl ao DTO.
+  // Os campos price_extra e image_url existem no banco e já estão mapeados
+  // em CakeOption.java, mas o DTO não os expunha — o front nunca recebia esses valores.
+  public record OpcaoDTO(
+      Integer id,
+      String nome,
+      String descricao,
+      BigDecimal precoExtra,
+      String imagemUrl,
+      Integer ordemExibicao) {}
 
   @GetMapping("/api/tamanhos")
   public List<TamanhoDTO> listarTamanhos() {
     return cakeSizeRepository.findByIsActiveTrueOrderByDisplayOrderAsc().stream()
-        .map(
-            s ->
-                new TamanhoDTO(
-                    s.getId(), s.getDescription(), s.getBasePrice(), s.getDisplayOrder()))
+        .map(s -> new TamanhoDTO(s.getId(), s.getDescription(), s.getBasePrice(), s.getDisplayOrder()))
         .collect(Collectors.toList());
   }
 
   @GetMapping("/api/grupos-opcoes")
   public List<GrupoDTO> listarGrupos() {
-    return optionGroupRepository.findAllByOrderByDisplayOrderAsc().stream()
-        .map(
-            g ->
-                new GrupoDTO(
-                    g.getId(),
-                    g.getName(),
-                    g.getMinSelection(),
-                    g.getMaxSelection(),
-                    g.getIsRequired(),
-                    g.getDisplayOrder()))
+    return optionGroupRepository.findByIsActiveTrueOrderByDisplayOrderAsc().stream()
+        .map(g -> new GrupoDTO(
+            g.getId(),
+            g.getName(),
+            g.getMinSelection(),
+            g.getMaxSelection(),
+            g.getIsRequired(),
+            g.getDisplayOrder()))
         .collect(Collectors.toList());
   }
 
   @GetMapping("/api/grupos-opcoes/{id}/opcoes")
   public List<OpcaoDTO> listarOpcoesPorGrupo(@PathVariable Integer id) {
     return cakeOptionRepository.findByGroupIdAndIsActiveTrueOrderByDisplayOrderAsc(id).stream()
-        .map(o -> new OpcaoDTO(o.getId(), o.getName(), o.getDescription(), o.getDisplayOrder()))
+        .map(o -> new OpcaoDTO(
+            o.getId(),
+            o.getName(),
+            o.getDescription(),
+            o.getPriceExtra(),
+            o.getImageUrl(),
+            o.getDisplayOrder()))
         .collect(Collectors.toList());
   }
 }

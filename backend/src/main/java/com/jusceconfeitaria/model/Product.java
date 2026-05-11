@@ -27,7 +27,7 @@ public class Product {
       inverseJoinColumns = @JoinColumn(name = "category_id"))
   private List<Category> categories = new ArrayList<>();
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 150)
   private String name;
 
   @Column(columnDefinition = "TEXT")
@@ -36,7 +36,7 @@ public class Product {
   @Column(precision = 10, scale = 2)
   private BigDecimal price;
 
-  @Column(name = "image_url", length = 500)
+  @Column(name = "image_url", length = 255)
   private String imageUrl;
 
   @Column(name = "is_active", nullable = false)
@@ -44,6 +44,9 @@ public class Product {
 
   @Column(name = "created_at", insertable = false, updatable = false)
   private LocalDateTime createdAt;
+
+  @Column(name = "updated_at", insertable = false, updatable = false)
+  private LocalDateTime updatedAt;
 
   @Column(name = "is_price_on_request")
   private Boolean isPriceOnRequest = false;
