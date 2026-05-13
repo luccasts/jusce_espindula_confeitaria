@@ -30,20 +30,6 @@ public class CakeSize {
   @Column(name = "display_order")
   private Integer displayOrder;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
+  @Column(name = "created_at", insertable = false, updatable = false)
   private LocalDateTime createdAt;
-
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    updatedAt = LocalDateTime.now();
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
-  }
 }

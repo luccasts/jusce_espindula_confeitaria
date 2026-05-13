@@ -15,7 +15,6 @@ public class TesteController {
   public Map<String, String> ola() {
     return Collections.singletonMap(
         "mensagem",
-        "O BACKEND COM O FRONT TA LIGADO FILHA DA PUTAAAAAAAAAAAAAAAAAAAAAAAAAAAAA! foi mal mano to"
-            + " estressado com essa bomba ja");
+        "Olá! Esta é uma resposta do backend. O backend está funcionando corretamente.");
   }
 }

@@ -2,7 +2,6 @@ package com.jusceconfeitaria.model;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,21 +29,4 @@ public class OptionPriceBySize {
 
   @Column(name = "additional_price", nullable = false, precision = 10, scale = 2)
   private BigDecimal additionalPrice;
-
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
-
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-    updatedAt = LocalDateTime.now();
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updatedAt = LocalDateTime.now();
-  }
 }

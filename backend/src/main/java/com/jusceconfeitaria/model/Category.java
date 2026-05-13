@@ -17,17 +17,18 @@ public class Category {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @Column(nullable = false, unique = true, length = 50)
+  private String slug;
+
   @Column(nullable = false, unique = true, length = 100)
   private String name;
 
   @Column(name = "display_order")
   private Integer displayOrder;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
-  private LocalDateTime createdAt;
+  @Column(name = "is_active", nullable = false)
+  private Boolean isActive = true;
 
-  @PrePersist
-  protected void onCreate() {
-    createdAt = LocalDateTime.now();
-  }
+  @Column(name = "created_at", insertable = false, updatable = false)
+  private LocalDateTime createdAt;
 }

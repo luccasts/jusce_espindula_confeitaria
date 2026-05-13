@@ -10,28 +10,36 @@ const DESC_TRADICIONAL =
   'Bolo com sabor tradicional já definido. Ideal para quem busca um clássico delicioso e pronto para encomenda.';
 
 // ================= DADOS =================
-const BOLOS_DATA = [
-  { id: 1, nome: 'Morango Natalino', cat: ['especial'], badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_morango_LE_upscale_prime.jpg' },
-  { id: 2, nome: 'Bolo Sonic', cat: ['comemorativos', 'tematicos'], img: 'images/bolos/bolo_sonic_infantil.jpg' },
-  { id: 3, nome: 'Bolo Natalino', cat: ['especial'], img: 'images/bolos/bolo_natal_festivo.jpg' },
-  { id: 4, nome: 'Bolo Hora de Aventura', cat: ['comemorativos', 'tematicos'], badge: 'Popular', badgeClass: 'popular', img: "images/bolos/bolo_adventuretime.jpg" },
-  { id: 5, nome: 'Bolo Homem-Aranha', cat: ['comemorativos', 'tematicos'], badge: 'Popular', badgeClass: 'popular', img: "images/bolos/bolo_infantil_spiderman.jpg" },
-  { id: 6, nome: 'Bolo Verão Praiano', cat: ['tematicos'], badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_duplo_aniversario.jpg' },
-  { id: 7, nome: 'Bolo Dia das Mães', cat: ['especial'], img: "images/bolos/bolo_mae.jpg" },
-
-  // TRADICIONAIS
-  { id: 8, nome: 'Brigadeiro', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_brigadeirov2.jpeg' },
-  { id: 9, nome: 'Bolo de Cenoura', cat: ['tradicionais'], preco: 'R$ 100,00', badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_maracuja_LE_upscale_prime.jpg' },
-  { id: 10, nome: 'Bolo de Chocolate', cat: ['tradicionais'], preco: 'R$ 100,00', badge: 'Popular', badgeClass: 'popular', img: 'images/bolos/bolo_chocolate.jpeg' },
-  { id: 11, nome: 'Bolo de Maracujá', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_padrao_maracuja.jpeg' },
-  { id: 12, nome: 'Red Velvet', cat: ['tradicionais'], badge: 'Destaque', badgeClass: 'destaque', img: 'images/bolos/bolo_redvelvet.jpeg' },
-  { id: 13, nome: 'Bolo de Limão', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_limao.jpeg' },
-  { id: 14, nome: 'Bolo de Laranja', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_laranja.jfif' },
-  { id: 15, nome: 'Bolo Formigueiro', cat: ['tradicionais'], preco: 'R$ 100,00', img: 'images/bolos/bolo_formigueiro.jpeg' },
-];
+let BOLOS_DATA = [];
 
 // ================= ESTADO =================
 let categoriaAtiva = 'todos';
+
+// ================= CARREGA PRODUTOS DA API =================
+async function carregarProdutosDoBackend() {
+  try {
+    const produtos = await fazerRequisicao('/produtos');
+    
+    // Transforma resposta da API para o formato esperado pelo frontend
+    BOLOS_DATA = produtos.map(p => ({
+      id: p.id,
+      nome: p.nome,
+      cat: p.categorias || [],
+      badge: p.badge,
+      badgeClass: p.badgeClass,
+      img: p.imagemUrl || 'images/placeholder.jpg',
+      preco: p.precoPorSolicitacao ? 'Sob consulta' : `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}`,
+      descricao: p.descricao
+    }));
+    
+    console.log('✓ Produtos carregados:', BOLOS_DATA.length);
+    renderGaleria('todos');
+  } catch (erro) {
+    console.error('✗ Erro ao carregar produtos:', erro);
+    // Fallback: renderiza com dados vazios ou mostra mensagem de erro
+    grid.innerHTML = '<p style="text-align:center; padding: 2rem;">Erro ao carregar produtos. Verifique se o backend está rodando.</p>';
+  }
+}
 
 // ================= ELEMENTOS =================
 const grid = document.getElementById('gbGrid');
@@ -177,4 +185,4 @@ modal.addEventListener('click', (e) => {
 });
 
 // ================= INIT =================
-renderGaleria('todos');
+document.addEventListener('DOMContentLoaded', carregarProdutosDoBackend);
