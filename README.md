@@ -1,117 +1,477 @@
-# 🍰 API Backend - Confeitaria Jusce Espindula
+# 🎂 Jusce Confeitaria
 
-Este projeto consiste na API RESTFUL desenvolvida com **Spring Boot** para gerenciar o catálogo de produtos, vendas e usuários da Confeitaria Jusce Espindula.
+Sistema completo para gerenciamento de confeitaria, catálogo de produtos e pedidos personalizados.
 
-## 🛠️ Tecnologias Utilizadas
-* **Java 21 (LTS)**
-* **Spring Boot 3.x**
-* **MySQL** (Banco de Dados)
-* **Maven** (Gerenciamento de dependências)
+O projeto é dividido em duas partes:
 
----
-## ⚙️ Pré-requisitos e Instalação
-
-Para rodar este projeto, você precisa ter o Java (JDK) e o MySQL instalados. Se você ainda não tem, siga o passo a passo abaixo:
-
-### 1. Java Development Kit (JDK) 21
-
-O projeto foi desenvolvido utilizando **Java 21 (LTS)**.
-
-* **Como Baixar:**
-    * Acesse o site da [Oracle](https://www.oracle.com/java/technologies/downloads/#java21) ou do [Eclipse Adoptium](https://adoptium.net/).
-    * Selecione seu sistema operacional (Windows, macOS ou Linux).
-    * Baixe o instalador (ex: `.exe` ou `.msi` para Windows).
-* **Instalação:**
-    * Execute o arquivo baixado e siga as instruções ("Next, Next, Finish").
-* **Verificação:**
-    * Abra seu terminal (CMD ou PowerShell) e digite:
-        ```bash
-        java -version
-        ```
-    * Deve aparecer algo como: `java version "21.0.x"`.
-
-### 2. MySQL Server (Banco de Dados)
-
-O banco de dados utilizado é o **MySQL**.
-
-* **Como Baixar:**
-    * Acesse a página do [MySQL Installer](https://dev.mysql.com/downloads/installer/).
-    * Baixe a versão **"Community"**.
-* **Instalação:**
-    * Execute o instalador. Escolha a opção **"Server only"** ou **"Developer Default"** (que inclui o Workbench, ferramenta visual recomendada).
-    * **IMPORTANTE:** Durante a configuração, você definirá uma senha para o usuário `root`. **Anote essa senha**, pois precisará dela no passo de configuração.
+* **Frontend**: interface web da confeitaria e painel administrativo.
+* **Backend**: API REST desenvolvida com Spring Boot.
 
 ---
 
-## 🚀 Guia de Configuração e Execução
-Com as ferramentas instaladas, siga os passos abaixo para colocar a API no ar.
+# 📚 Sumário
 
-### 1. Preparar o Banco de Dados
-
-O código precisa de um banco de dados vazio esperando por ele.
-
-1.  Abra o programa **MySQL Workbench** (ou o terminal do MySQL).
-2.  Abra uma nova janela de consulta SQL (geralmente um ícone de "SQL" ou "Query").
-3.  Copie, cole e execute o comando abaixo:
-    ```sql
-    CREATE DATABASE jusce_espindula;
-    ```
-    *(Se der certo, aparecerá uma mensagem verde de confirmação na parte de baixo do programa).*
-
-
-
-### 2. Configurar Credenciais
-
-O sistema precisa saber a senha do seu banco para conseguir salvar os dados.
-
-1.  Entre na pasta do projeto e navegue até: `backend/src/main/resources/`.
-2.  Lá existe um arquivo chamado `application.properties`.
-3.  Abra esse arquivo com o **Bloco de Notas** ou seu editor de código (VS Code).
-4.  Procure as linhas `username` e `password` e mude para os seus dados:
-
-    **Como está no arquivo:**
-    ```properties
-    spring.datasource.username=root
-    spring.datasource.password=123456
-    ```
-
-    **O que você deve fazer:**
-    Troque `123456` pela senha que você criou na instalação do MySQL. Se seu usuário não for `root`, troque também.
-5.  Salve o arquivo.
-### 3. Execução
-
-Agora vamos rodar o servidor.
-
-1.  Abra o terminal.
-2.  Entre na pasta `backend` do projeto:
-    ```powershell
-    cd backend
-    ```
-3.  Rode o comando de inicialização:
-
-    * **Se você usa Windows:**
-        ```powershell
-        ./mvnw spring-boot:run
-        ```
-    * **Se você usa Mac ou Linux:**
-        ```bash
-        ./mvnw spring-boot:run
-        ```
-
-> **Dica:** Na primeira vez, vai demorar uns minutos porque ele está baixando as ferramentas da internet. Quando aparecer a mensagem: `Tomcat started on port 8081`, significa que **está funcionando!** 🎉
+* [Visão Geral](#-visão-geral)
+* [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+* [Estrutura do Projeto](#-estrutura-do-projeto)
+* [Funcionalidades](#-funcionalidades)
+* [Pré-requisitos](#-pré-requisitos)
+* [Como Rodar o Projeto](#-como-rodar-o-projeto)
+* [Banco de Dados](#-banco-de-dados)
+* [Configuração da API](#-configuração-da-api)
+* [Painel Administrativo](#-painel-administrativo)
+* [Principais Endpoints](#-principais-endpoints)
+* [Fluxo do Sistema](#-fluxo-do-sistema)
+* [Possíveis Problemas](#-possíveis-problemas)
+* [Melhorias Futuras](#-melhorias-futuras)
+* [Licença](#-licença)
 
 ---
 
-## 🔌 Rota de Teste (Integração)
+# 📖 Visão Geral
 
-Para validar se o Frontend consegue se comunicar com o Backend, utilize o endpoint de teste abaixo.
+A aplicação foi criada para atender uma confeitaria com foco em:
 
-### Detalhes do Endpoint
+* Exibição de produtos.
+* Personalização de bolos.
+* Organização por categorias.
+* Registro de pedidos.
+* Integração com WhatsApp.
+* Dashboard administrativo.
+* Gerenciamento de produtos e categorias.
 
-* **URL:** `http://localhost:8081/api/ola`
-* **Método:** `GET`
-* **CORS:** Já configurado para aceitar qualquer origem (`*`).
-
+O sistema possui um frontend simples e leve em HTML/CSS/JavaScript puro e um backend utilizando Spring Boot com MySQL.
 
 ---
 
+# 🛠 Tecnologias Utilizadas
+
+## Frontend
+
+* HTML5
+* CSS3
+* JavaScript Vanilla
+
+## Backend
+
+* Java 21+
+* Spring Boot
+* Spring Data JPA
+* Maven
+* MySQL
+
+---
+
+# 📁 Estrutura do Projeto
+
+```bash
+.
+├── backend/
+│   ├── src/main/java/
+│   ├── src/main/resources/
+│   ├── pom.xml
+│   └── mvnw
+│
+├── frontend/
+│   ├── css/
+│   ├── js/
+│   ├── images/
+│   ├── index.html
+│   ├── pedidos.html
+│   ├── dashboard.html
+│   └── bolos.html
+│
+├── README.md
+├── QUICK_START.md
+├── DASHBOARD_IMPLEMENTATION.md
+└── bd.md
+```
+
+---
+
+# ✨ Funcionalidades
+
+## 🧁 Catálogo de Produtos
+
+* Listagem de bolos.
+* Categorias organizadas.
+* Exibição de imagens.
+* Destaques com badges.
+* Produtos com preço fixo ou sob consulta.
+
+## 🎂 Sistema de Personalização
+
+O cliente pode:
+
+* Escolher tamanho.
+* Escolher massa.
+* Escolher recheio.
+* Selecionar adicionais.
+* Inserir observações.
+* Calcular valor total automaticamente.
+
+## 📦 Pedidos
+
+* Registro de pedidos no backend.
+* Envio automático para WhatsApp.
+* Resumo do pedido em tempo real.
+
+## 🛠 Dashboard Administrativo
+
+* CRUD de produtos.
+* CRUD de categorias.
+* Soft delete.
+* Interface responsiva.
+* Formulários dinâmicos.
+
+---
+
+# ⚙ Pré-requisitos
+
+Antes de começar, instale:
+
+## Necessários
+
+* Java JDK 21 ou superior
+* MySQL Server
+* Git
+
+## Recomendados
+
+* VS Code
+* IntelliJ IDEA
+* MySQL Workbench
+
+---
+
+# 🚀 Como Rodar o Projeto
+
+## 1️⃣ Clone o repositório
+
+```bash
+git clone URL_DO_REPOSITORIO
+```
+
+Entre na pasta:
+
+```bash
+cd nome-do-projeto
+```
+
+---
+
+## 2️⃣ Configure o Banco de Dados
+
+Abra o MySQL e execute:
+
+```sql
+CREATE DATABASE jusce_espindula;
+```
+
+---
+
+## 3️⃣ Configure o application.properties
+
+Arquivo:
+
+```bash
+backend/src/main/resources/application.properties
+```
+
+Exemplo:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/jusce_espindula?useSSL=false&serverTimezone=UTC
+spring.datasource.username=SEU_USUARIO
+spring.datasource.password=SUA_SENHA
+
+spring.sql.init.mode=always
+spring.jpa.hibernate.ddl-auto=none
+```
+
+---
+
+## 4️⃣ Rode o Backend
+
+### Windows
+
+```powershell
+cd backend
+.\mvnw spring-boot:run
+```
+
+### Linux/Mac
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+O backend ficará disponível em:
+
+```txt
+http://localhost:8081
+```
+
+---
+
+## 5️⃣ Rode o Frontend
+
+Você pode:
+
+### Opção 1 — Abrir diretamente
+
+Abrir os arquivos HTML no navegador.
+
+Exemplo:
+
+```txt
+frontend/index.html
+```
+
+### Opção 2 — Usar Live Server (recomendado)
+
+No VS Code:
+
+1. Instale a extensão Live Server.
+2. Clique com botão direito em `index.html`.
+3. Clique em `Open with Live Server`.
+
+---
+
+# 🗄 Banco de Dados
+
+## Scripts importantes
+
+Localizados em:
+
+```txt
+backend/src/main/resources/
+```
+
+### schema.sql
+
+Responsável por:
+
+* Criar tabelas.
+* Criar relacionamentos.
+* Criar constraints.
+
+### data.sql
+
+Responsável por:
+
+* Inserir dados iniciais.
+* Popular produtos.
+* Popular categorias.
+
+---
+
+# 🔌 Configuração da API
+
+Arquivo:
+
+```txt
+frontend/js/config.js
+```
+
+Configuração atual:
+
+```javascript
+const API_BASE_URL = 'http://localhost:8081/api';
+```
+
+Se mudar a porta do backend, atualize esse valor.
+
+---
+
+# 🖥 Painel Administrativo
+
+Arquivo principal:
+
+```txt
+frontend/dashboard.html
+```
+
+## Funcionalidades
+
+### Produtos
+
+* Criar produto.
+* Editar produto.
+* Excluir produto.
+* Listar produtos.
+
+### Categorias
+
+* Criar categoria.
+* Editar categoria.
+* Excluir categoria.
+* Listar categorias.
+
+## Observações
+
+* Exclusão é feita via soft delete.
+* Produtos não são apagados fisicamente do banco.
+
+---
+
+# 📡 Principais Endpoints
+
+## Produtos
+
+| Método | Endpoint             | Descrição        |
+| ------ | -------------------- | ---------------- |
+| GET    | `/api/produtos`      | Lista produtos   |
+| GET    | `/api/produtos/{id}` | Busca produto    |
+| POST   | `/api/produtos`      | Cria produto     |
+| PUT    | `/api/produtos/{id}` | Atualiza produto |
+| DELETE | `/api/produtos/{id}` | Remove produto   |
+
+---
+
+## Categorias
+
+| Método | Endpoint               | Descrição          |
+| ------ | ---------------------- | ------------------ |
+| GET    | `/api/categorias`      | Lista categorias   |
+| GET    | `/api/categorias/{id}` | Busca categoria    |
+| POST   | `/api/categorias`      | Cria categoria     |
+| PUT    | `/api/categorias/{id}` | Atualiza categoria |
+| DELETE | `/api/categorias/{id}` | Remove categoria   |
+
+---
+
+## Pedidos
+
+| Método | Endpoint       | Descrição   |
+| ------ | -------------- | ----------- |
+| POST   | `/api/pedidos` | Cria pedido |
+
+---
+
+# 🔄 Fluxo do Sistema
+
+```txt
+Cliente acessa o frontend
+        ↓
+Seleciona opções do bolo
+        ↓
+Frontend calcula valor
+        ↓
+Pedido é enviado para API
+        ↓
+Pedido é registrado no banco
+        ↓
+Mensagem é enviada para WhatsApp
+```
+
+---
+
+# 🧪 Testando a API
+
+Você pode utilizar:
+
+* Postman
+* Insomnia
+* Thunder Client
+
+Exemplo:
+
+```http
+GET http://localhost:8081/api/produtos
+```
+
+---
+
+# ⚠ Possíveis Problemas
+
+## Backend não inicia
+
+Verifique:
+
+* Se o MySQL está ligado.
+* Se o banco existe.
+* Usuário e senha do MySQL.
+* Porta 8081 disponível.
+
+---
+
+## Erro de CORS
+
+O projeto já possui configuração liberando origens:
+
+```java
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+```
+
+Caso ocorra:
+
+* Reinicie o backend.
+* Limpe cache do navegador.
+
+---
+
+## Frontend não carrega dados
+
+Verifique:
+
+* Backend rodando.
+* URL da API.
+* Console do navegador.
+
+Abra:
+
+```txt
+F12 → Console
+```
+
+---
+
+# 📱 Responsividade
+
+O projeto possui suporte para:
+
+* Desktop
+* Tablet
+* Mobile
+
+---
+
+# 🔒 Melhorias Futuras
+
+Sugestões para evolução do projeto:
+
+* Sistema de login.
+* JWT Authentication.
+* Upload de imagens.
+* Painel financeiro.
+* Dashboard com gráficos.
+* Histórico de pedidos.
+* Integração com pagamento.
+* Notificações automáticas.
+* Área do cliente.
+* Sistema de cupons.
+
+---
+
+# 🤝 Contribuição
+
+## Passos
+
+1. Faça um fork.
+2. Crie uma branch.
+3. Faça commit.
+4. Envie um pull request.
+
+---
+
+# 📄 Licença
+
+Projeto utilizado para fins educacionais e comerciais da confeitaria.
+
+---
+
+# 👨‍💻 Desenvolvedor
+
+Desenvolvido para o projeto Jusce Confeitaria.

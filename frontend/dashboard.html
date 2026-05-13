@@ -8,6 +8,7 @@
   <link href="https://cdn.lineicons.com/5.0/lineicons.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css" />
   <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
   <link rel="shortcut icon" href="images/logo_jusce_png.png" type="image/x-icon">
 </head>
 
@@ -55,29 +56,172 @@
 
 <h2 class="titulo">Painel Administrativo</h2>
 
-<div class="cards">
-
-<div class="card">
-<i class="lni lni-plus" style="font-size:40px; margin-top:20px;"></i>
-<h3>Adicionar Produto</h3>
-<p>Cadastrar novos bolos ou doces no site.</p>
-<button class="btn-secondary">Adicionar</button>
+<!-- TABS NAVIGATION -->
+<div class="dashboard-tabs">
+  <button class="tab-btn active" data-tab="produtos">
+    <i class="lni lni-cake"></i> Produtos
+  </button>
+  <button class="tab-btn" data-tab="categorias">
+    <i class="lni lni-tag"></i> Categorias
+  </button>
 </div>
 
-<div class="card">
-<i class="lni lni-pencil" style="font-size:40px; margin-top:20px;"></i>
-<h3>Editar Produto</h3>
-<p>Alterar informações de produtos existentes.</p>
-<button class="btn-secondary">Editar</button>
+<!-- ================= TAB: PRODUTOS ================= -->
+<div class="tab-content active" id="tab-produtos">
+
+  <div class="dashboard-section">
+    <div class="section-header">
+      <h3>Gerenciar Produtos</h3>
+      <button class="btn-primary" id="btnNovoProduto">
+        <i class="lni lni-plus"></i> Novo Produto
+      </button>
+    </div>
+
+    <!-- FORM: Novo/Editar Produto -->
+    <div class="form-container" id="formProduto" style="display: none;">
+      <h4>Adicionar/Editar Produto</h4>
+      <form id="formProdutoElement">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="produtoNome">Nome *</label>
+            <input type="text" id="produtoNome" required />
+          </div>
+          <div class="form-group">
+            <label for="produtoPreco">Preço *</label>
+            <input type="number" id="produtoPreco" step="0.01" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="produtoDescricao">Descrição</label>
+            <textarea id="produtoDescricao" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="produtoImagem">URL da Imagem</label>
+            <input type="text" id="produtoImagem" />
+          </div>
+          <div class="form-group">
+            <label for="produtoBadge">Badge (ex: Novo)</label>
+            <input type="text" id="produtoBadge" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="produtoOrdem">Ordem de Exibição</label>
+            <input type="number" id="produtoOrdem" />
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="produtoPrecoSolicitacao" />
+              Preço por Solicitação
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-success">Salvar</button>
+          <button type="button" class="btn-secondary" id="btnCancelarProduto">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- LISTA: Produtos -->
+    <div class="lista-container">
+      <table class="table-responsive" id="tabelaProdutos">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Preço</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="produtosList">
+          <tr>
+            <td colspan="4" class="loading">Carregando produtos...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<i class="lni lni-trash" style="font-size:40px; margin-top:20px;"></i>
-<h3>Remover Produto</h3>
-<p>Excluir produtos do catálogo.</p>
-<button class="btn-secondary">Remover</button>
+<!-- ================= TAB: CATEGORIAS ================= -->
+<div class="tab-content" id="tab-categorias">
+
+  <div class="dashboard-section">
+    <div class="section-header">
+      <h3>Gerenciar Categorias</h3>
+      <button class="btn-primary" id="btnNovaCategoria">
+        <i class="lni lni-plus"></i> Nova Categoria
+      </button>
+    </div>
+
+    <!-- FORM: Nova/Editar Categoria -->
+    <div class="form-container" id="formCategoria" style="display: none;">
+      <h4>Adicionar/Editar Categoria</h4>
+      <form id="formCategoriaElement">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="categoriaSlug">Slug *</label>
+            <input type="text" id="categoriaSlug" required />
+          </div>
+          <div class="form-group">
+            <label for="categoriaNome">Nome *</label>
+            <input type="text" id="categoriaNome" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="categoriaOrdem">Ordem de Exibição</label>
+            <input type="number" id="categoriaOrdem" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-success">Salvar</button>
+          <button type="button" class="btn-secondary" id="btnCancelarCategoria">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- LISTA: Categorias -->
+    <div class="lista-container">
+      <table class="table-responsive" id="tabelaCategorias">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Slug</th>
+            <th>Ordem</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="categoriasList">
+          <tr>
+            <td colspan="4" class="loading">Carregando categorias...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
+<!-- MODAL CONFIRMAÇÃO -->
+<div class="modal" id="modalConfirm" style="display: none;">
+  <div class="modal-content">
+    <h4>Confirmar Exclusão</h4>
+    <p id="modalConfirmMsg">Tem certeza que deseja deletar?</p>
+    <div class="modal-actions">
+      <button class="btn-danger" id="btnConfirmDelete">Deletar</button>
+      <button class="btn-secondary" id="btnCancelDelete">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <div style="text-align:center; margin-top:40px;">
@@ -92,6 +236,7 @@
   <p>© 2026 Jusce Confeitaria - Todos os direitos reservados</p>
 </footer>
 
+<script src="js/dashboard.js"></script>
 <script src="js/script.js"></script>
 </body>
 </html>

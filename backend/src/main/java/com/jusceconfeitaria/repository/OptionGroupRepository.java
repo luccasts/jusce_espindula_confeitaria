@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OptionGroupRepository extends JpaRepository<OptionGroup, Integer> {
 
-    List<OptionGroup> findByIsActiveTrueOrderByDisplayOrderAsc();
+  List<OptionGroup> findByIsActiveTrueOrderByDisplayOrderAsc();
 }
