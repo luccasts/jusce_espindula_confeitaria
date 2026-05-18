@@ -185,8 +185,14 @@ spring.datasource.url=jdbc:mysql://localhost:3306/jusce_espindula?useSSL=false&s
 spring.datasource.username=SEU_USUARIO
 spring.datasource.password=SUA_SENHA
 
-spring.sql.init.mode=always
-spring.jpa.hibernate.ddl-auto=none
+# O Flyway cuida do banco automaticamente — não altere as linhas abaixo
+spring.jpa.hibernate.ddl-auto=validate
+spring.sql.init.mode=never
+
+spring.flyway.enabled=true
+spring.flyway.locations=classpath:db/migrations
+spring.flyway.baseline-on-migrate=true
+spring.flyway.baseline-version=0
 ```
 
 ---
@@ -241,29 +247,33 @@ No VS Code:
 
 # 🗄 Banco de Dados
 
-## Scripts importantes
+## Migrations (Flyway)
 
-Localizados em:
+O banco de dados é gerenciado automaticamente pelo **Flyway**.
+Ao iniciar o backend, ele aplica as migrations na ordem correta — sem
+necessidade de rodar scripts manualmente.
 
-```txt
-backend/src/main/resources/
-```
+As migrations ficam em:
 
-### schema.sql
+    backend/src/main/resources/db/migrations/
 
-Responsável por:
+| Arquivo                      | O que faz                                        |
+|------------------------------|--------------------------------------------------|
+| V1__baseline__schema.sql     | Cria todas as tabelas, índices e constraints     |
+| V2__initial__data.sql        | Popula categorias, produtos e dados iniciais     |
 
-* Criar tabelas.
-* Criar relacionamentos.
-* Criar constraints.
+### Para fazer alterações no banco no futuro
 
-### data.sql
+Nunca edite as tabelas diretamente nem altere os arquivos V1 e V2.
+Crie um novo arquivo seguindo o padrão:
 
-Responsável por:
+    V3__descricao_da_mudanca.sql
+    V4__outra_mudanca.sql
 
-* Inserir dados iniciais.
-* Popular produtos.
-* Popular categorias.
+O Flyway detecta e aplica automaticamente na próxima inicialização.
+
+> Os arquivos `schema.sql` e `data.sql` na raiz de `resources/` são
+> mantidos apenas como referência histórica e **não são mais executados**.
 
 ---
 
