@@ -47,3 +47,9 @@ INSERT INTO cake_options (group_id, name, description, price_extra, is_active, d
 (2, 'Baunilha', NULL, 0.00, TRUE, 1), (2, 'Laranja', NULL, 0.00, TRUE, 2), (2, 'Limão', NULL, 0.00, TRUE, 3), (2, 'Maracujá', NULL, 0.00, TRUE, 4), (2, 'Morango', NULL, 0.00, TRUE, 5),
 (3, 'Abacaxi', NULL, 0.00, TRUE, 1), (3, 'Ameixa', NULL, 0.00, TRUE, 2), (3, 'Brigadeiro', NULL, 0.00, TRUE, 3), (3, 'Brigadeiro de Oreo', NULL, 0.00, TRUE, 4), (3, 'Castanha', NULL, 0.00, TRUE, 5), (3, 'Coco', NULL, 0.00, TRUE, 6), (3, 'Leite Ninho', NULL, 0.00, TRUE, 7), (3, 'Maracujá', NULL, 0.00, TRUE, 8), (3, 'Paçoca', NULL, 0.00, TRUE, 9),
 (4, 'Crocante de amendoim', NULL, 0.00, TRUE, 1), (4, 'Geleia de morango', NULL, 0.00, TRUE, 2), (4, 'Nutella', NULL, 0.00, TRUE, 3), (4, 'Pedaços de chocolate', NULL, 0.00, TRUE, 4), (4, 'Pedaços de morango', NULL, 0.00, TRUE, 5), (4, 'Pedaços de Oreo', NULL, 0.00, TRUE, 6), (4, 'KitKat', NULL, 0.00, TRUE, 7);
+
+INSERT INTO roles (name) VALUES ('ADMIN') ON DUPLICATE KEY UPDATE name=name; 
+INSERT INTO users (role_id, name, email, password_hash, is_active) VALUES
+((SELECT id FROM roles WHERE name='ADMIN'), 'Administrador', 'admin@jusce.com', 
+'$2a$10$HASH_BCRYPT_DA_SENHA', true); 
+Gere o hash BCrypt com: BCryptPasswordEncoder().encode("suaSenha").

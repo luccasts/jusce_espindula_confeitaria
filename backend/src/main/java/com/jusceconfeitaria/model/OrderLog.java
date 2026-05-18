@@ -12,11 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderLog {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "clicked_at", insertable = false, updatable = false)
+  @Column(name = "clicked_at", nullable = false, updatable = false)
   private LocalDateTime clickedAt;
 
   @Column(name = "order_details", nullable = false, columnDefinition = "TEXT")
@@ -30,4 +31,9 @@ public class OrderLog {
 
   @Column(name = "session_id", length = 100)
   private String sessionId;
+
+  @PrePersist
+  protected void onCreate() {
+    clickedAt = LocalDateTime.now();
+  }
 }
