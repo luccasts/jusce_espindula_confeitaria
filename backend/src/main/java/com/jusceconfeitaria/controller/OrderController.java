@@ -6,13 +6,14 @@ import com.jusceconfeitaria.repository.*;
 import jakarta.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/pedidos")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class OrderController {
 
   @Autowired private OrderRepository orderRepository;
@@ -93,5 +94,69 @@ public class OrderController {
     log.setUserAgent(httpReq.getHeader("User-Agent"));
     log.setSessionId(req.sessionId());
     orderLogRepository.save(log);
+  }
+
+  public record PedidoDTO(
+      Integer id,
+      String nomeCliente,
+      String telefoneCliente,
+      String tamanho,
+      BigDecimal totalPrice,
+      String observacoes,
+      String status,
+      String criadoEm) {}
+
+  public record AtualizarStatusRequest(String status) {}
+
+  // ── GET /api/pedidos — listar todos ───────────────────────────
+
+  @GetMapping
+  public List<PedidoDTO> listarPedidos() {
+
+    return orderRepository.findAllByOrderByCreatedAtDesc().stream()
+        .map(this::toPedidoDTO)
+        .collect(Collectors.toList());
+  }
+
+  // ── PUT /api/pedidos/{id}/status ──────────────────────────────
+
+  @PutMapping("/{id}/status")
+  public ResponseEntity<PedidoDTO> atualizarStatus(
+      @PathVariable Integer id, @RequestBody AtualizarStatusRequest req) {
+
+    Order order =
+        orderRepository
+            .findById(id)
+            .orElseThrow(
+                () -> new RecursoNaoEncontradoException("Pedido não encontrado: id=" + id));
+
+    try {
+
+      order.setStatus(OrderStatus.valueOf(req.status()));
+
+    } catch (IllegalArgumentException e) {
+
+      throw new IllegalArgumentException(
+          "Status inválido: " + req.status() + ". Use: PENDING, IN_PROGRESS, COMPLETED, CANCELLED");
+    }
+
+    Order salvo = orderRepository.save(order);
+
+    return ResponseEntity.ok(toPedidoDTO(salvo));
+  }
+
+  // ── Helper ────────────────────────────────────────────────────
+
+  private PedidoDTO toPedidoDTO(Order o) {
+
+    return new PedidoDTO(
+        o.getId(),
+        o.getCustomerName(),
+        o.getCustomerPhone(),
+        o.getCakeSize() != null ? o.getCakeSize().getDescription() : null,
+        o.getTotalPrice(),
+        o.getObservations(),
+        o.getStatus().name(),
+        o.getCreatedAt() != null ? o.getCreatedAt().toString() : null);
   }
 }

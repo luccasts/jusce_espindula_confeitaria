@@ -390,3 +390,29 @@ modalConfirm.addEventListener('click', (e) => {
     fecharModal();
   }
 });
+
+
+// ================= Exceções =================
+const res = await fetch('/api/produtos', { 
+
+    method: 'POST', 
+
+    body: formData, 
+
+    headers: { 'Authorization': 'Bearer ' + token } 
+
+}); 
+
+if (!res.ok) { 
+
+    const erro = await res.json(); 
+
+    // erro.mensagem contém a mensagem legível 
+
+    // erro.status contém o código HTTP (400, 404, etc.) 
+
+    mostrarErro(erro.mensagem); 
+
+    return; 
+
+}

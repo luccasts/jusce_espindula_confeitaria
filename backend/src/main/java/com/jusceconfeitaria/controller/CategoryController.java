@@ -3,6 +3,8 @@ package com.jusceconfeitaria.controller;
 import com.jusceconfeitaria.exceptions.RecursoNaoEncontradoException;
 import com.jusceconfeitaria.model.Category;
 import com.jusceconfeitaria.repository.CategoryRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +14,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/categorias")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class CategoryController {
 
   @Autowired private CategoryRepository categoryRepository;
 
   public record CategoryDTO(Integer id, String slug, String nome, Integer ordemExibicao) {}
 
-  public record CreateCategoryDTO(String slug, String nome, Integer ordemExibicao) {}
+  public record CreateCategoryDTO(
+      @NotBlank(message = "Slug é obrigatório") String slug,
+      @NotBlank(message = "Nome é obrigatório") String nome,
+      Integer ordemExibicao) {}
 
   @GetMapping
   public List<CategoryDTO> listarCategorias() {
@@ -39,7 +43,7 @@ public class CategoryController {
   }
 
   @PostMapping
-  public ResponseEntity<CategoryDTO> criarCategoria(@RequestBody CreateCategoryDTO dto) {
+  public ResponseEntity<CategoryDTO> criarCategoria(@Valid @RequestBody CreateCategoryDTO dto) {
     Category categoria = new Category();
     categoria.setSlug(dto.slug());
     categoria.setName(dto.nome());
@@ -52,7 +56,7 @@ public class CategoryController {
 
   @PutMapping("/{id}")
   public ResponseEntity<CategoryDTO> atualizarCategoria(
-      @PathVariable Integer id, @RequestBody CreateCategoryDTO dto) {
+      @Valid @PathVariable Integer id, @RequestBody CreateCategoryDTO dto) {
     Category categoria =
         categoryRepository
             .findById(id)

@@ -22,8 +22,20 @@ public class CakeOption {
   @JoinColumn(name = "group_id", nullable = false)
   private OptionGroup group;
 
-  @Column(nullable = false, length = 150)
+  @Column(nullable = false, length = 100)
   private String name;
+
+  @Column(name = "is_active", nullable = false)
+  private Boolean isActive = true;
+
+  @Column(name = "display_order")
+  private Integer displayOrder;
+
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private LocalDateTime createdAt;
+
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
 
   @Column(columnDefinition = "TEXT")
   private String description;
@@ -34,12 +46,17 @@ public class CakeOption {
   @Column(name = "price_extra", precision = 10, scale = 2)
   private BigDecimal priceExtra;
 
-  @Column(name = "is_active", nullable = false)
-  private Boolean isActive = true;
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+    updatedAt = LocalDateTime.now();
+    if (isActive == null) {
+      isActive = true;
+    }
+  }
 
-  @Column(name = "display_order")
-  private Integer displayOrder;
-
-  @Column(name = "created_at", insertable = false, updatable = false)
-  private LocalDateTime createdAt;
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
 }

@@ -1,6 +1,6 @@
--- ==========================================================
--- POPULAÇÃO DE DADOS (INSERTS)
--- ==========================================================
+-- V2__initial_data.sql
+-- Dados iniciais para o banco de dados Jusce Confeitaria
+-- Copiado de data.sql (estado inicial do projeto)
 
 -- # 1. Categorias Baseado nos botões de filtro do bolos.html
 INSERT INTO categories (slug, name, display_order) VALUES 
