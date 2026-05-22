@@ -52,4 +52,3 @@ INSERT INTO roles (name) VALUES ('ADMIN') ON DUPLICATE KEY UPDATE name=name;
 INSERT INTO users (role_id, name, email, password_hash, is_active) VALUES
 ((SELECT id FROM roles WHERE name='ADMIN'), 'Administrador', 'admin@jusce.com', 
 '$2a$10$HASH_BCRYPT_DA_SENHA', true); 
-Gere o hash BCrypt com: BCryptPasswordEncoder().encode("suaSenha").
