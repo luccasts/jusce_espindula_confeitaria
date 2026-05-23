@@ -1,6 +1,6 @@
 // ================= CONFIGURAÇÕES ================= 
 
-const API_BASE = 'http://localhost:8081/api';
+
 
 // ================= ELEMENTOS DOM ================= 
 
@@ -102,7 +102,7 @@ function mudarTab(tabName) {
 
 async function carregarProdutos() {
   try {
-    const response = await fetch(`${API_BASE}/produtos`);
+    const response = await fetch(`${API_BASE_URL_URL_URL}/produtos`);
     if (!response.ok) throw new Error('Erro ao carregar produtos');
 
     const produtos = await response.json();
@@ -165,7 +165,7 @@ function limparFormularioProduto() {
 
 async function editarProduto(id) {
   try {
-    const response = await fetch(`${API_BASE}/produtos/${id}`);
+    const response = await fetch(`${API_BASE_URL}/produtos/${id}`);
     if (!response.ok) throw new Error('Erro ao buscar produto');
 
     const produto = await response.json();
@@ -203,13 +203,13 @@ async function salvarProduto() {
   try {
     let response;
     if (estadoEdicao.tipoProduto === 'novo') {
-      response = await fetch(`${API_BASE}/produtos`, {
+      response = await fetch(`${API_BASE_URL}/produtos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     } else {
-      response = await fetch(`${API_BASE}/produtos/${estadoEdicao.idProduto}`, {
+      response = await fetch(`${API_BASE_URL}/produtos/${estadoEdicao.idProduto}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
@@ -230,7 +230,7 @@ async function salvarProduto() {
 function deletarProduto(id) {
   deleteCallback = async () => {
     try {
-      const response = await fetch(`${API_BASE}/produtos/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${API_BASE_URL}/produtos/${id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Erro ao deletar produto');
 
       alert('Produto deletado com sucesso!');
@@ -248,7 +248,7 @@ function deletarProduto(id) {
 
 async function carregarCategorias() {
   try {
-    const response = await fetch(`${API_BASE}/categorias`);
+    const response = await fetch(`${API_BASE_URL}/categorias`);
     if (!response.ok) throw new Error('Erro ao carregar categorias');
 
     const categorias = await response.json();
@@ -303,7 +303,7 @@ function limparFormularioCategoria() {
 
 async function editarCategoria(id) {
   try {
-    const response = await fetch(`${API_BASE}/categorias/${id}`);
+    const response = await fetch(`${API_BASE_URL}/categorias/${id}`);
     if (!response.ok) throw new Error('Erro ao buscar categoria');
 
     const categoria = await response.json();
@@ -331,13 +331,13 @@ async function salvarCategoria() {
   try {
     let response;
     if (!estadoEdicao.idCategoria) {
-      response = await fetch(`${API_BASE}/categorias`, {
+      response = await fetch(`${API_BASE_URL}/categorias`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     } else {
-      response = await fetch(`${API_BASE}/categorias/${estadoEdicao.idCategoria}`, {
+      response = await fetch(`${API_BASE_URL}/categorias/${estadoEdicao.idCategoria}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
@@ -358,7 +358,7 @@ async function salvarCategoria() {
 function deletarCategoria(id) {
   deleteCallback = async () => {
     try {
-      const response = await fetch(`${API_BASE}/categorias/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${API_BASE_URL}/categorias/${id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Erro ao deletar categoria');
 
       alert('Categoria deletada com sucesso!');

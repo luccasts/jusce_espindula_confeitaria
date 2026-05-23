@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -710,7 +712,6 @@ footer {
 
 /* ===== LOGIN V2 ===== */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500;600&display=swap');
 
 .admin-login-page {
   min-height: 80vh;
