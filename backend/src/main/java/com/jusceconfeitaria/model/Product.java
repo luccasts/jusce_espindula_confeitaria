@@ -8,6 +8,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "products")
@@ -42,10 +44,20 @@ public class Product {
   @Column(name = "is_active", nullable = false)
   private Boolean isActive = true;
 
-  @Column(name = "created_at", insertable = false, updatable = false)
+  @Column(
+      name = "created_at",
+      insertable = false,
+      updatable = false,
+      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @CreatedDate
   private LocalDateTime createdAt;
 
-  @Column(name = "updated_at", insertable = false, updatable = false)
+  @Column(
+      name = "updated_at",
+      insertable = false,
+      updatable = false,
+      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+  @LastModifiedDate
   private LocalDateTime updatedAt;
 
   @Column(name = "is_price_on_request")

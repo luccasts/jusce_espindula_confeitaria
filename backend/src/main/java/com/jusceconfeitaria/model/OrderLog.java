@@ -17,7 +17,11 @@ public class OrderLog {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "clicked_at", nullable = false, updatable = false)
+  @Column(
+      name = "clicked_at",
+      nullable = false,
+      updatable = false,
+      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
   private LocalDateTime clickedAt;
 
   @Column(name = "order_details", nullable = false, columnDefinition = "TEXT")

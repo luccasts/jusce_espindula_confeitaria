@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Table(name = "cake_options")
@@ -31,10 +33,18 @@ public class CakeOption {
   @Column(name = "display_order")
   private Integer displayOrder;
 
-  @Column(name = "created_at", nullable = false, updatable = false)
+  @Column(
+      name = "created_at",
+      nullable = false,
+      updatable = false,
+      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @CreatedDate
   private LocalDateTime createdAt;
 
-  @Column(name = "updated_at")
+  @Column(
+      name = "updated_at",
+      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+  @LastModifiedDate
   private LocalDateTime updatedAt;
 
   @Column(columnDefinition = "TEXT")

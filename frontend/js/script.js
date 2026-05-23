@@ -87,41 +87,7 @@ function selecionar(botao) {
   botao.classList.add("selected");
 }
 
-// ===== LOGIN ADMIN =====
 
-const loginForm = document.getElementById("loginForm");
-
-if (loginForm) {
-
-  loginForm.addEventListener("submit", function(e){
-
-    e.preventDefault();
-
-    const usuario = document.getElementById("usuario").value;
-    const senha = document.getElementById("senha").value;
-    const erro = document.getElementById("erro");
-
-    // usuário e senha do administrador
-    const adminUser = "admin";
-    const adminPass = "1234";
-
-    if(usuario === adminUser && senha === adminPass){
-
-      // cria sessão
-      sessionStorage.setItem("adminLogado", "true");
-
-      // redireciona para o painel
-      window.location.href = "dashboard.html";
-
-    } else {
-
-      erro.textContent = "Usuário ou senha incorretos.";
-
-    }
-
-  });
-
-}
 
 // ===== PROTEÇÃO DO DASHBOARD =====
 
@@ -161,68 +127,68 @@ function adicionarCarrinho(nome, descricao, imagem) {
   alert("Produto adicionado ao carrinho!");
 }
 
-// ===== LOGIN V2 =====
 (function () {
   const form = document.getElementById('loginForm');
   if (!form) return;
 
-  const btn     = document.getElementById('btnEntrar');
+  const btn = document.getElementById('btnEntrar');
   const errorEl = document.getElementById('erro');
-  const togglePw = document.getElementById('togglePassword');
   const senhaInput = document.getElementById('senha');
-  const eyeIcon    = document.getElementById('eyeIcon');
 
-  const SVG_EYE_OPEN = `
-    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-    <circle cx="12" cy="12" r="3"/>`;
-
-  const SVG_EYE_OFF = `
-    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8
-             a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4
-             c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19
-             m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-    <line x1="1" y1="1" x2="23" y2="23"/>`;
-
-  // Toggle mostrar/ocultar senha
-  togglePw.addEventListener('click', function () {
-    const isHidden = senhaInput.type === 'password';
-    senhaInput.type = isHidden ? 'text' : 'password';
-    eyeIcon.innerHTML = isHidden ? SVG_EYE_OFF : SVG_EYE_OPEN;
-    togglePw.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
-  });
-
-  // Submit com estado de loading
-  form.addEventListener('submit', function (e) {
+  form.addEventListener('submit', async function (e) {
     e.preventDefault();
-    errorEl.classList.remove('show');
+    errorEl.classList.remove('show'); // Esconde erros anteriores
 
-    const usuario = document.getElementById('usuario').value.trim();
-    const senha   = senhaInput.value;
+    // Captura os valores dos inputs
+    const email = document.getElementById('usuario').value.trim();
+    const senha = senhaInput.value;
 
-    if (!usuario || !senha) {
-      errorEl.textContent = 'Preencha todos os campos.';
+    // Validação básica no frontend
+    if (!email || !senha) {
+      errorEl.textContent = 'Por favor, preencha todos os campos.';
       errorEl.classList.add('show');
       return;
     }
 
+    // Ativa o estado visual de carregamento no botão
     btn.classList.add('loading');
     btn.disabled = true;
 
-    // --- Substitua este bloco pela sua lógica real de autenticação ---
-    setTimeout(function () {
+    try {
+      // Chamando a SUA função genérica do config.js
+      // Ela já configura os Headers e faz o .json() automaticamente se der certo
+      const data = await fazerRequisicao('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email: email, senha: senha })
+      });
+
+      // Se a requisição foi bem-sucedida, a função retorna o JSON com o Token
+      if (data && data.token) {
+        sessionStorage.setItem("token", data.token);
+        sessionStorage.setItem("adminLogado", "true");
+
+        // Redireciona para o painel de controle administrativo
+        window.location.href = 'dashboard.html';
+      } else {
+        errorEl.textContent = 'Resposta inválida do servidor.';
+        errorEl.classList.add('show');
+      }
+
+    } catch (erro) {
+      // Como a sua função fazerRequisicao dá um 'throw erro' caso o status não seja OK (ex: 401),
+      // o código cai direto aqui no catch.
+      console.error("Falha na autenticação:", erro);
+      
+      errorEl.textContent = 'E-mail ou senha incorretos. Tente novamente.';
+      errorEl.classList.add('show');
+      
+      // Limpa o campo de senha para uma nova tentativa
+      senhaInput.value = '';
+      senhaInput.focus();
+    } finally {
+      // Restaura o botão para o estado normal, independentemente de ter dado certo ou errado
       btn.classList.remove('loading');
       btn.disabled = false;
-
-      // Exemplo: credenciais corretas
-      if (usuario === 'admin' && senha === 'jusce2026') {
-        window.location.href = 'admin.html';
-      } else {
-        errorEl.textContent = 'Usuário ou senha incorretos. Tente novamente.';
-        errorEl.classList.add('show');
-        senhaInput.value = '';
-        senhaInput.focus();
-      }
-    }, 1500);
-    // ----------------------------------------------------------------
+    }
   });
 })();

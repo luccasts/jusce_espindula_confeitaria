@@ -7,12 +7,24 @@ const API_BASE_URL = 'http://localhost:8081/api';
 // Função genérica para fazer requisições
 async function fazerRequisicao(endpoint, opcoes = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
+  
+  // 1. Recupera o token que foi salvo no momento do login
+  const token = sessionStorage.getItem("token");
+
+  // 2. Prepara os cabeçalhos padrão
+  const headers = {
+    'Content-Type': 'application/json',
+    ...opcoes.headers,
+  };
+
+  // 3. Se o token existir, adiciona o cabeçalho Authorization exigido pelo Spring Boot
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const configs = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...opcoes.headers,
-    },
     ...opcoes,
+    headers: headers, // Aplica os cabeçalhos atualizados
   };
 
   try {
@@ -25,7 +37,7 @@ async function fazerRequisicao(endpoint, opcoes = {}) {
     console.error(`Erro ao chamar ${endpoint}:`, erro);
     throw erro;
   }
-}
+} 
 
 // Função para testar conexão com o backend
 async function testarConexao() {

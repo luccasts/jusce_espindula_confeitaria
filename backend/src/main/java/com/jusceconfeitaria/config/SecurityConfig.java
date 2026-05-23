@@ -19,10 +19,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
   private final JwtAuthFilter jwtAuthFilter;
+  private final org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
 
-  public SecurityConfig(JwtAuthFilter filter) {
-
-    this.jwtAuthFilter = filter;
+  // Construtor atualizado apenas com o que o seu projeto realmente usa
+  public SecurityConfig(
+      org.springframework.security.core.userdetails.UserDetailsService userDetailsService,
+      JwtAuthFilter jwtAuthFilter) {
+    this.userDetailsService = userDetailsService;
+    this.jwtAuthFilter = jwtAuthFilter;
   }
 
   @Bean
@@ -74,9 +78,20 @@ public class SecurityConfig {
                     .authenticated()
                     .anyRequest()
                     .authenticated())
+        .authenticationProvider(authenticationProvider())
         .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
+  }
+
+  @Bean
+  public org.springframework.security.authentication.AuthenticationProvider
+      authenticationProvider() {
+    org.springframework.security.authentication.dao.DaoAuthenticationProvider authProvider =
+        new org.springframework.security.authentication.dao.DaoAuthenticationProvider(
+            userDetailsService);
+    authProvider.setPasswordEncoder(passwordEncoder());
+    return authProvider;
   }
 
   @Bean
