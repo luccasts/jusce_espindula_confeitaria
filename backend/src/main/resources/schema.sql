@@ -15,7 +15,7 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_user_role
         FOREIGN KEY (role_id)
@@ -29,7 +29,7 @@ CREATE TABLE categories (
     name VARCHAR(100) NOT NULL,
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE products (
@@ -49,8 +49,8 @@ CREATE TABLE products (
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP
 );
 
@@ -83,7 +83,7 @@ CREATE TABLE cake_sizes (
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE option_groups (
@@ -98,7 +98,7 @@ CREATE TABLE option_groups (
     is_active BOOLEAN DEFAULT TRUE,      -- ADICIONADO
     display_order INT DEFAULT 0,         -- ADICIONADO
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE cake_options (
@@ -114,7 +114,7 @@ CREATE TABLE cake_options (
     display_order INT DEFAULT 0,         -- ADICIONADO
     is_active BOOLEAN DEFAULT TRUE,
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_option_group
         FOREIGN KEY (group_id)
@@ -163,7 +163,7 @@ CREATE TABLE orders (
         'CANCELLED'
     ) DEFAULT 'PENDING',
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_order_user
         FOREIGN KEY (user_id)
@@ -199,7 +199,7 @@ CREATE TABLE order_logs (
     user_agent TEXT,
     session_id VARCHAR(100),
 
-    clicked_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    clicked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==========================================================

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 @Table(name = "orders")
@@ -38,6 +39,11 @@ public class Order {
   @Column(length = 20)
   private OrderStatus status = OrderStatus.PENDING;
 
-  @Column(name = "created_at", insertable = false, updatable = false)
+  @Column(
+      name = "created_at",
+      insertable = false,
+      updatable = false,
+      columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+  @CreatedDate
   private LocalDateTime createdAt;
 }

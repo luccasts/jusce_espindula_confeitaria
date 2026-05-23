@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_user_role
         FOREIGN KEY (role_id)
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS categories (
     name VARCHAR(100) NOT NULL,
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS products (
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS products (
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP
 );
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS cake_sizes (
     display_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS option_groups (
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS option_groups (
     is_active BOOLEAN DEFAULT TRUE,      -- ADICIONADO
     display_order INT DEFAULT 0,         -- ADICIONADO
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS cake_options (
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS cake_options (
     display_order INT DEFAULT 0,         -- ADICIONADO
     is_active BOOLEAN DEFAULT TRUE,
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_option_group
         FOREIGN KEY (group_id)
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS orders (
         'CANCELLED'
     ) DEFAULT 'PENDING',
 
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_order_user
         FOREIGN KEY (user_id)
@@ -203,7 +203,7 @@ CREATE TABLE IF NOT EXISTS order_logs (
     user_agent TEXT,
     session_id VARCHAR(100),
 
-    clicked_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    clicked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==========================================================
