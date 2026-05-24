@@ -512,4 +512,10 @@ window.enviarPedido = enviarPedido;
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 
-document.addEventListener('DOMContentLoaded', carregarDadosDoPedido);
+// FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
+// disparado quando o script executa. Checar readyState garante que o init sempre roda.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', carregarDadosDoPedido);
+} else {
+  carregarDadosDoPedido();
+}

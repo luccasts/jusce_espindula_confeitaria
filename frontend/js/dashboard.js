@@ -64,13 +64,21 @@ let estadoEdicao = {
 
 let deleteCallback = null;
 
-// ================= INICIALIZAÇÃO ================= 
+// ================= INICIALIZAÇÃO =================
 
-document.addEventListener('DOMContentLoaded', () => {
+// FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
+// disparado quando o script executa. Checar readyState garante que o init sempre roda.
+function init() {
   carregarProdutos();
   carregarCategorias();
   setupEventListeners();
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 
 // ================= EVENT LISTENERS ================= 
 
@@ -138,7 +146,13 @@ function renderizarProdutos(produtos) {
     return;
   }
 
-  produtosList.innerHTML = produtos.map(p => `
+  produtosList.innerHTML = produtos.map(p => {
+    // FIX: só adiciona '...' se a descrição for de fato maior que 50 caracteres
+    const descricaoExibida = p.descricao
+      ? (p.descricao.length > 50 ? p.descricao.substring(0, 50) + '...' : p.descricao)
+      : '-';
+
+    return `
     <tr>
       <td>
         ${p.imagemUrl
@@ -147,7 +161,7 @@ function renderizarProdutos(produtos) {
       </td>
       <td><strong>${p.nome}</strong></td>
       <td>${p.precoPorSolicitacao ? 'Sob consulta' : p.preco != null ? `R$ ${parseFloat(p.preco).toFixed(2)}` : '-'}</td>
-      <td>${p.descricao ? p.descricao.substring(0, 50) + '...' : '-'}</td>
+      <td>${descricaoExibida}</td>
       <td>
         <div class="table-actions">
           <button class="btn-edit" onclick="editarProduto(${p.id})">
@@ -159,7 +173,7 @@ function renderizarProdutos(produtos) {
         </div>
       </td>
     </tr>
-  `).join('');
+  `}).join('');
 }
 
 function abrirFormularioProduto() {

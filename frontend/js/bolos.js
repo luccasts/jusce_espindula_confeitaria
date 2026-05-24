@@ -29,7 +29,9 @@ async function carregarProdutosDoBackend() {
       cat: p.categorias || [],
       badge: p.badge,
       badgeClass: p.badgeClass,
-      img: p.imagemUrl || 'images/placeholder.jpg',
+      // FIX: imagemUrl do banco é caminho relativo (ex: "images/bolos/bolo_cenoura.jpeg")
+      // Usado direto como src — funciona porque o frontend serve esses arquivos
+      img: p.imagemUrl || null,
       // FIX: se preco for null mas precoPorSolicitacao=false, evita NaN
       preco: p.precoPorSolicitacao || p.preco == null
         ? 'Sob consulta'
@@ -41,7 +43,10 @@ async function carregarProdutosDoBackend() {
     renderGaleria('todos');
   } catch (erro) {
     console.error('✗ Erro ao carregar produtos:', erro);
-    grid.innerHTML = '<p style="text-align:center; padding: 2rem;">Erro ao carregar produtos. Verifique se o backend está rodando.</p>';
+    const grid = document.getElementById('gbGrid');
+    if (grid) {
+      grid.innerHTML = '<p style="text-align:center; padding: 2rem;">Erro ao carregar produtos. Verifique se o backend está rodando.</p>';
+    }
   }
 }
 
@@ -68,9 +73,16 @@ function criarCard(bolo, delay) {
   card.className = 'gb-card';
   card.style.animationDelay = delay + 'ms';
 
+  // FIX: se não há imagem no banco, renderiza um placeholder visual sem <img> quebrado
+  // FIX: usa classe gb-img-placeholder que já existe no bolos.css (não tenta carregar placeholder.jpg)
+  const imgHtml = bolo.img
+    ? `<img src="${bolo.img}" alt="${bolo.nome}" loading="lazy"
+          onerror="this.parentElement.innerHTML='<div class=\\'gb-img-placeholder\\'><span>🎂</span></div>'">`
+    : `<div class="gb-img-placeholder"><span>🎂</span></div>`;
+
   card.innerHTML = `
     <div class="gb-card-img-wrap">
-      <img src="${bolo.img}" alt="${bolo.nome}" onerror="this.src='images/placeholder.jpg'">
+      ${imgHtml}
       ${bolo.badge ? `<span class="gb-card-badge ${bolo.badgeClass || ''}">${bolo.badge}</span>` : ''}
     </div>
 
@@ -146,7 +158,15 @@ window.resetFiltro = function() {
 
 // ================= MODAL =================
 function abrirModal(bolo) {
-  document.getElementById('modalImg').src = bolo.img;
+  const modalImg = document.getElementById('modalImg');
+
+  if (bolo.img) {
+    modalImg.src = bolo.img;
+    modalImg.style.display = '';
+  } else {
+    modalImg.style.display = 'none';
+  }
+
   document.getElementById('modalNome').textContent = bolo.nome;
   document.getElementById('modalDesc').textContent = getDescricao(bolo);
 
@@ -186,4 +206,10 @@ modal.addEventListener('click', (e) => {
 });
 
 // ================= INIT =================
-document.addEventListener('DOMContentLoaded', carregarProdutosDoBackend);
+// FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
+// disparado quando o script executa. Checar readyState garante que o init sempre roda.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', carregarProdutosDoBackend);
+} else {
+  carregarProdutosDoBackend();
+}
