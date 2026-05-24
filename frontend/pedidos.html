@@ -64,31 +64,14 @@
           Kilo do Bolo
         </h2>
 
+        <!--
+          FIX: kiloGrid começa vazio — o JS preenche com os tamanhos e preços
+          reais vindos do banco. Remover as opções hardcoded evita que o usuário
+          veja "XX,XX" ou selecione um tamanho sem preço quando o JS ainda não
+          terminou de carregar.
+        -->
         <div class="kilo-grid" id="kiloGrid">
-          <label class="kilo-card">
-            <input type="radio" name="kilo" value="1" data-preco="0">
-            <span class="kilo-dot"></span>
-            <span class="kilo-label">1 Kilo de Bolo</span>
-            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
-          </label>
-          <label class="kilo-card">
-            <input type="radio" name="kilo" value="2" data-preco="0">
-            <span class="kilo-dot"></span>
-            <span class="kilo-label">2 Kilos de Bolo</span>
-            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
-          </label>
-          <label class="kilo-card">
-            <input type="radio" name="kilo" value="3" data-preco="0">
-            <span class="kilo-dot"></span>
-            <span class="kilo-label">3 Kilos de Bolo</span>
-            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
-          </label>
-          <label class="kilo-card">
-            <input type="radio" name="kilo" value="4" data-preco="0">
-            <span class="kilo-dot"></span>
-            <span class="kilo-label">4 Kilos de Bolo</span>
-            <span class="kilo-price">R$ <span class="kilo-price-val">XX,XX</span></span>
-          </label>
+          <!-- preenchido por pedidos.js → preencherTamanhos() -->
         </div>
       </div>
 
@@ -102,10 +85,13 @@
         <div class="select-wrapper">
           <label class="select-label">Escolha sua massa</label>
           <div class="custom-select-wrap">
-            <select id="tipoMassa" class="custom-select">
-              <option value="">— Selecione —</option>
-              <option value="Branca">Branca</option>
-              <option value="Chocolate">Chocolate</option>
+            <!--
+              FIX: data-group-id="1" vincula este select ao grupo de id=1 no banco.
+              O JS usa grupo.id para encontrar o select correto, não o nome do grupo.
+              Se o nome "Tipo de Massa" mudar no banco, este select continua funcionando.
+            -->
+            <select id="tipoMassa" class="custom-select" data-group-id="1">
+              <option value="">— Carregando... —</option>
             </select>
             <i class="lni lni-chevron-down select-arrow"></i>
           </div>
@@ -114,13 +100,8 @@
         <div class="select-wrapper" style="margin-top: 14px;">
           <label class="select-label">Sabor da Massa</label>
           <div class="custom-select-wrap">
-            <select id="saborMassa" class="custom-select">
-              <option value="">— Selecione o sabor da massa —</option>
-              <option value="Baunilha">Baunilha</option>
-              <option value="Laranja">Laranja</option>
-              <option value="Limão">Limão</option>
-              <option value="Maracujá">Maracujá</option>
-              <option value="Morango">Morango</option>
+            <select id="saborMassa" class="custom-select" data-group-id="2">
+              <option value="">— Carregando... —</option>
             </select>
             <i class="lni lni-chevron-down select-arrow"></i>
           </div>
@@ -136,17 +117,8 @@
         <div class="select-wrapper">
           <label class="select-label">Escolha seu recheio</label>
           <div class="custom-select-wrap">
-            <select id="recheio" class="custom-select">
-              <option value="">— Selecione —</option>
-              <option value="Abacaxi">Abacaxi</option>
-              <option value="Ameixa">Ameixa</option>
-              <option value="Brigadeiro">Brigadeiro</option>
-              <option value="Brigadeiro de Oreo">Brigadeiro de Oreo</option>
-              <option value="Castanha">Castanha</option>
-              <option value="Coco">Coco</option>
-              <option value="Leite Ninho">Leite Ninho</option>
-              <option value="Maracujá">Maracujá</option>
-              <option value="Paçoca">Paçoca</option>
+            <select id="recheio" class="custom-select" data-group-id="3">
+              <option value="">— Carregando... —</option>
             </select>
             <i class="lni lni-chevron-down select-arrow"></i>
           </div>
@@ -162,15 +134,8 @@
         <div class="select-wrapper">
           <label class="select-label">Escolha os adicionais</label>
           <div class="custom-select-wrap">
-            <select id="adicional" class="custom-select">
-              <option value="">— Selecione (opcional) —</option>
-              <option value="Crocante de amendoim">Crocante de amendoim</option>
-              <option value="Geleia de morango">Geleia de morango</option>
-              <option value="Nutella">Nutella</option>
-              <option value="Pedaços de chocolate">Pedaços de chocolate</option>
-              <option value="Pedaços de morango">Pedaços de morango</option>
-              <option value="Pedaços de Oreo">Pedaços de Oreo</option>
-              <option value="Pedaços de Oreo">KitKat</option>
+            <select id="adicional" class="custom-select" data-group-id="4">
+              <option value="">— Carregando... —</option>
             </select>
             <i class="lni lni-chevron-down select-arrow"></i>
           </div>
@@ -191,7 +156,7 @@
         <!-- Total em destaque -->
         <div class="summary-total-box">
           <span class="summary-total-label">Valor Total a Ser Pago</span>
-          <span class="summary-total-value" id="totalDisplay">R$ 00,00</span>
+          <span class="summary-total-value" id="totalDisplay">R$ 0,00</span>
         </div>
 
         <!-- Itens do resumo -->
@@ -205,10 +170,20 @@
           <textarea id="observacoes" class="obs-textarea" placeholder="Ex: sem açúcar, mensagem no bolo..."></textarea>
         </div>
 
-        <!-- Botão pedir -->
-        <button class="btn-pedir" id="btnPedir" onclick="enviarPedido()">
-          <i class="lni lni-whatsapp"></i>
-          Pedir via WhatsApp
+        <!--
+          FIX: botão começa desabilitado (disabled) e com texto de carregamento.
+          O JS habilita após carregar os dados com sucesso via setBtnPedirCarregando(false).
+          Isso impede que o usuário envie um pedido com preço zero ou selects vazios
+          caso o backend (Koyeb) esteja hibernando e demore para responder.
+        -->
+        <button
+          class="btn-pedir"
+          id="btnPedir"
+          onclick="enviarPedido()"
+          disabled
+        >
+          <i class="lni lni-spinner-arrow" style="animation:spin 0.7s linear infinite;display:inline-block;"></i>
+          Carregando opções...
         </button>
 
         <p class="summary-info">
@@ -232,4 +207,4 @@
 <script type="module" src="js/pedidos.js"></script>
 
 </body>
-</html> 
+</html>

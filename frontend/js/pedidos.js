@@ -16,8 +16,6 @@ let isSubmitting = false;
 const formatarMoeda = (valor) =>
   `R$ ${parseFloat(valor || 0).toFixed(2).replace('.', ',')}`;
 
-// FIX: importa fazerRequisicao diretamente como módulo ES — não depende de escopo global
-// FIX: todas as rotas já incluem /api/ (ex: /api/tamanhos) para bater com o backend
 async function api(rota, opcoes = {}) {
   return fazerRequisicao(rota, opcoes);
 }
@@ -157,18 +155,42 @@ function setErroCampo(campo, mensagem) {
   }
 }
 
+// ─── BOTÃO PEDIR ──────────────────────────────────────────────────────────────
+
+/**
+ * FIX: desabilita o botão "Pedir via WhatsApp" enquanto os dados ainda não
+ * foram carregados do backend. Assim o usuário não consegue enviar um pedido
+ * com selects vazios ou sem preço caso o Koyeb esteja hibernando.
+ */
+function setBtnPedirCarregando(ativo) {
+  const btn = document.getElementById('btnPedir');
+  if (!btn) return;
+
+  if (ativo) {
+    btn.disabled = true;
+    btn.setAttribute('data-loading', '');
+    btn.innerHTML = '<i class="lni lni-spinner-arrow" style="animation:spin 0.7s linear infinite;display:inline-block;"></i> Carregando opções...';
+  } else {
+    btn.disabled = false;
+    btn.removeAttribute('data-loading');
+    btn.innerHTML = '<i class="lni lni-whatsapp"></i> Pedir via WhatsApp';
+  }
+}
+
 // ─── CARREGAMENTO DE DADOS ────────────────────────────────────────────────────
 
 async function carregarDadosDoPedido() {
   setLoading(true, 'Carregando opções do pedido...');
+
+  // FIX: desabilita o botão imediatamente enquanto carrega
+  setBtnPedirCarregando(true);
+
   try {
-    // FIX: rotas com /api/ para bater com o backend Spring
     [tamanhos, gruposOpcoes] = await Promise.all([
       api('/api/tamanhos'),
       api('/api/grupos-opcoes'),
     ]);
 
-    // FIX: rotas com /api/ para bater com o backend Spring
     await Promise.all(
       gruposOpcoes.map(async (grupo) => {
         grupo.opcoes = await api(`/api/grupos-opcoes/${grupo.id}/opcoes`);
@@ -176,9 +198,19 @@ async function carregarDadosDoPedido() {
     );
 
     preencherFormulario();
+
+    // FIX: só habilita o botão após carregamento bem-sucedido
+    setBtnPedirCarregando(false);
   } catch (erro) {
     console.error('Erro ao carregar dados do pedido:', erro);
     exibirToast('error', 'Não foi possível carregar o formulário. Verifique sua conexão e recarregue a página.');
+
+    // Mantém o botão desabilitado e mostra erro
+    const btn = document.getElementById('btnPedir');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="lni lni-warning"></i> Erro ao carregar — recarregue a página';
+    }
   } finally {
     setLoading(false);
   }
@@ -194,9 +226,7 @@ function preencherFormulario() {
 }
 
 function preencherTamanhos() {
-  // FIX: pedidos.html usa id="kiloGrid", não "tamanhosContainer"
   const container = document.getElementById('kiloGrid');
-
   if (!container || !tamanhos.length) return;
 
   container.innerHTML = '';
@@ -220,22 +250,29 @@ function preencherTamanhos() {
 }
 
 function preencherGruposOpcoes() {
-  // FIX: mapeamento explícito entre id do grupo no banco e id do select no HTML
-  // Banco: id=1 "Tipo de Massa", id=2 "Sabor da Massa", id=3 "Recheio", id=4 "Adicionais"
-  // HTML:  id="tipoMassa",       id="saborMassa",        id="recheio",  id="adicional"
+  /**
+   * FIX: mapeamento por ID do grupo (vindo do banco) em vez do nome.
+   * Isso torna o código imune a renomeações de grupos no banco de dados.
+   *
+   * Como descobrir os IDs:
+   *   GET /api/grupos-opcoes  →  retorna array com { id, nome, ... }
+   *   Os IDs do V2__initial_data.sql são: 1, 2, 3, 4 (na ordem de inserção)
+   *
+   * Se mudar no banco, basta atualizar os números abaixo — sem tocar no resto.
+   */
   const mapaGrupoParaSelect = {
-    'Tipo de Massa':  'tipoMassa',
-    'Sabor da Massa': 'saborMassa',
-    'Recheio':        'recheio',
-    'Adicionais':     'adicional',
+    1: 'tipoMassa',   // "Tipo de Massa"
+    2: 'saborMassa',  // "Sabor da Massa"
+    3: 'recheio',     // "Recheio"
+    4: 'adicional',   // "Adicionais"
   };
 
   gruposOpcoes.forEach((grupo) => {
-    const selectId = mapaGrupoParaSelect[grupo.nome];
+    const selectId = mapaGrupoParaSelect[grupo.id];
     const select = selectId ? document.getElementById(selectId) : null;
 
     if (!select) {
-      console.warn(`Select não encontrado para o grupo "${grupo.nome}" (id: ${grupo.id})`);
+      console.warn(`Select não encontrado para o grupo id=${grupo.id} ("${grupo.nome}")`);
       return;
     }
 
@@ -272,7 +309,6 @@ function registrarEventos() {
     });
   });
 
-  // FIX: limpa erro do grupo de tamanho ao selecionar — usa #kiloGrid
   document.querySelectorAll('input[name="kilo"]').forEach((radio) => {
     radio.addEventListener('change', () => {
       const container = document.getElementById('kiloGrid');
@@ -368,7 +404,6 @@ function validarPedido() {
   const kiloSel = document.querySelector('input[name="kilo"]:checked');
   if (!kiloSel) {
     valido = false;
-    // FIX: usa #kiloGrid
     const container = document.getElementById('kiloGrid');
     if (container) {
       container.parentElement?.querySelector('[data-erro]')?.remove();
@@ -439,7 +474,6 @@ async function enviarPedido() {
   const adicional  = document.getElementById('adicional')?.value  ?? '';
   const obs        = document.getElementById('observacoes')?.value ?? '';
 
-  // FIX: pega label do texto dentro do .kilo-label (estrutura do pedidos.html)
   const tamanhoLabel = kiloSel.closest('label')?.querySelector('.kilo-label')?.textContent?.trim() ?? kiloSel.value;
   const tamanhoId    = parseInt(kiloSel.dataset.tamanhoId, 10);
   const totalPrice   = calcularTotal();
@@ -467,7 +501,6 @@ async function enviarPedido() {
       observacoes: obs,
     };
 
-    // Registra no banco em background — não bloqueia o WhatsApp
     api('/api/pedidos', { method: 'POST', body: JSON.stringify(pedido) })
       .then((result) => console.log('Pedido registrado no banco:', result))
       .catch((erro)  => console.warn('Pedido não registrado no banco:', erro));
@@ -507,13 +540,9 @@ function limparFormulario() {
 }
 
 // ─── EXPOR enviarPedido para o onclick do HTML ────────────────────────────────
-// FIX: como é módulo ES, precisa expor no window para o onclick="enviarPedido()" funcionar
 window.enviarPedido = enviarPedido;
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-
-// FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
-// disparado quando o script executa. Checar readyState garante que o init sempre roda.
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', carregarDadosDoPedido);
 } else {
