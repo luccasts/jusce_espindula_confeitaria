@@ -101,8 +101,10 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="produtoImagem">URL da Imagem</label>
-            <input type="text" id="produtoImagem" />
+            <label for="produtoImagem">Imagem do Produto (Max 20MB)</label>
+            <input type="file" id="produtoImagem" accept="image/*" />
+            <small id="produtoImagemPreview" style="display:block; margin-top:8px; color:var(--cor-principal); font-weight:500;"></small>
+            <input type="hidden" id="produtoImagemAntiga" />
           </div>
           <div class="form-group">
             <label for="produtoBadge">Badge (ex: Novo)</label>
@@ -221,6 +223,17 @@
     <div class="modal-actions">
       <button class="btn-danger" id="btnConfirmDelete">Deletar</button>
       <button class="btn-secondary" id="btnCancelDelete">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ALERTA GENÉRICO -->
+<div class="modal" id="modalAlert" style="display: none;">
+  <div class="modal-content">
+    <h4 id="modalAlertTitle">Aviso</h4>
+    <p id="modalAlertMsg"></p>
+    <div class="modal-actions" style="justify-content: center; margin-top: 20px;">
+      <button class="btn-primary" id="btnOkAlert">Entendi</button>
     </div>
   </div>
 </div>

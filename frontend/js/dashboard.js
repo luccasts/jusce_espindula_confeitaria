@@ -2,6 +2,7 @@
 import { fazerRequisicao } from './config.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+const IMGUR_CLIENT_ID = import.meta.env.VITE_IMGUR_CLIENT_ID;
 
 // Helper: envia FormData com JWT (para POST/PUT de produtos)
 async function fazerRequisicaoForm(endpoint, method, formData) {
@@ -52,6 +53,9 @@ const modalConfirm = document.getElementById('modalConfirm');
 const btnConfirmDelete = document.getElementById('btnConfirmDelete');
 const btnCancelDelete = document.getElementById('btnCancelDelete');
 
+const modalAlert = document.getElementById('modalAlert');
+const btnOkAlert = document.getElementById('btnOkAlert');
+
 const logout = document.getElementById('logout');
 
 // ================= ESTADO ================= 
@@ -68,10 +72,12 @@ let deleteCallback = null;
 
 // FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
 // disparado quando o script executa. Checar readyState garante que o init sempre roda.
-function init() {
-  carregarProdutos();
-  carregarCategorias();
+async function init() {
   setupEventListeners();
+  await Promise.all([
+    carregarProdutos(),
+    carregarCategorias()
+  ]);
 }
 
 if (document.readyState === 'loading') {
@@ -110,6 +116,10 @@ function setupEventListeners() {
   });
 
   btnCancelDelete.addEventListener('click', fecharModal);
+  
+  if(btnOkAlert) {
+    btnOkAlert.addEventListener('click', fecharAlerta);
+  }
 
   logout.addEventListener('click', () => {
     sessionStorage.removeItem('token');
@@ -196,6 +206,8 @@ function limparFormularioProduto() {
   document.getElementById('produtoPreco').value = '';
   document.getElementById('produtoDescricao').value = '';
   document.getElementById('produtoImagem').value = '';
+  document.getElementById('produtoImagemAntiga').value = '';
+  document.getElementById('produtoImagemPreview').innerHTML = '';
   document.getElementById('produtoBadge').value = '';
   document.getElementById('produtoOrdem').value = '';
   document.getElementById('produtoPrecoSolicitacao').checked = false;
@@ -209,7 +221,16 @@ window.editarProduto = async function(id) {
     document.getElementById('produtoNome').value = produto.nome || '';
     document.getElementById('produtoPreco').value = produto.preco || '';
     document.getElementById('produtoDescricao').value = produto.descricao || '';
-    document.getElementById('produtoImagem').value = produto.imagemUrl || '';
+    
+    document.getElementById('produtoImagem').value = ''; // Limpa o input file
+    document.getElementById('produtoImagemAntiga').value = produto.imagemUrl || '';
+    const preview = document.getElementById('produtoImagemPreview');
+    if (produto.imagemUrl) {
+      preview.innerHTML = `Imagem atual: <a href="${produto.imagemUrl}" target="_blank" style="color:var(--cor-principal);">Ver imagem no Imgur</a>`;
+    } else {
+      preview.innerHTML = 'Sem imagem cadastrada.';
+    }
+
     document.getElementById('produtoBadge').value = produto.badge || '';
     document.getElementById('produtoOrdem').value = produto.ordemExibicao || '';
     document.getElementById('produtoPrecoSolicitacao').checked = produto.precoPorSolicitacao || false;
@@ -224,37 +245,84 @@ window.editarProduto = async function(id) {
   }
 }
 
-// FIX: usa FormData para enviar multipart/form-data — compatível com o backend Spring
+// ================= UPLOAD IMGUR =================
+async function uploadImgur(file) {
+  const clientId = IMGUR_CLIENT_ID;
+  if (!clientId) {
+    throw new Error('Imgur Client-ID não configurado. Adicione VITE_IMGUR_CLIENT_ID no arquivo .env');
+  }
+
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch('https://api.imgur.com/3/image', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Client-ID ${clientId}`
+    },
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error('Falha ao fazer upload da imagem no Imgur');
+  }
+
+  const data = await response.json();
+  return data.data.link;
+}
+
+// FIX: Envia payload JSON, compatível com o novo endpoint Spring
 async function salvarProduto() {
   const precoPorSolicitacao = document.getElementById('produtoPrecoSolicitacao').checked;
   const precoValor = document.getElementById('produtoPreco').value;
-
-  const formData = new FormData();
-  formData.append('nome', document.getElementById('produtoNome').value);
-  formData.append('descricao', document.getElementById('produtoDescricao').value);
-  formData.append('precoPorSolicitacao', precoPorSolicitacao);
-  formData.append('imagemUrl', document.getElementById('produtoImagem').value);
-  formData.append('badge', document.getElementById('produtoBadge').value);
-  formData.append('badgeClass', '');
-  formData.append('ordemExibicao', document.getElementById('produtoOrdem').value || '0');
-
-  if (!precoPorSolicitacao && precoValor) {
-    formData.append('preco', precoValor);
-  }
-
+  const imagemInput = document.getElementById('produtoImagem');
+  
   try {
-    if (estadoEdicao.tipoProduto === 'novo') {
-      await fazerRequisicaoForm('/api/produtos', 'POST', formData);
-    } else {
-      await fazerRequisicaoForm(`/api/produtos/${estadoEdicao.idProduto}`, 'PUT', formData);
+    let imagemUrl = document.getElementById('produtoImagemAntiga').value;
+
+    if (imagemInput.files && imagemInput.files.length > 0) {
+      const file = imagemInput.files[0];
+      const tamanhoMaximoMB = 20; // Limite padrão do Imgur para imagens
+      
+      if (file.size > tamanhoMaximoMB * 1024 * 1024) {
+        mostrarAlerta('Arquivo Muito Grande', `O arquivo selecionado é muito pesado. O limite suportado é de ${tamanhoMaximoMB}MB. Por favor, comprima a imagem e tente novamente.`);
+        return; // Impede o envio
+      }
+      
+      imagemUrl = await uploadImgur(file);
     }
 
-    alert(estadoEdicao.tipoProduto === 'novo' ? 'Produto criado com sucesso!' : 'Produto atualizado com sucesso!');
+    const payload = {
+      nome: document.getElementById('produtoNome').value,
+      descricao: document.getElementById('produtoDescricao').value,
+      preco: (!precoPorSolicitacao && precoValor) ? parseFloat(precoValor) : null,
+      precoPorSolicitacao: precoPorSolicitacao,
+      imagemUrl: imagemUrl,
+      badge: document.getElementById('produtoBadge').value,
+      badgeClass: '',
+      ordemExibicao: parseInt(document.getElementById('produtoOrdem').value) || 0
+    };
+
+    if (estadoEdicao.tipoProduto === 'novo') {
+      await fazerRequisicao('/api/produtos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } else {
+      await fazerRequisicao(`/api/produtos/${estadoEdicao.idProduto}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    mostrarAlerta('Sucesso!', estadoEdicao.tipoProduto === 'novo' ? 'Produto criado com sucesso!' : 'Produto atualizado com sucesso!');
     fecharFormularioProduto();
-    carregarProdutos();
+    await carregarProdutos();
   } catch (error) {
     console.error('Erro:', error);
-    alert('Erro ao salvar produto: ' + error.message);
+    mostrarAlerta('Erro', 'Erro ao salvar produto: ' + error.message);
   }
 }
 
@@ -408,3 +476,23 @@ modalConfirm.addEventListener('click', (e) => {
     fecharModal();
   }
 });
+
+// ================= MODAL DE ALERTA ================= 
+
+function mostrarAlerta(titulo, mensagem) {
+  document.getElementById('modalAlertTitle').textContent = titulo;
+  document.getElementById('modalAlertMsg').textContent = mensagem;
+  modalAlert.style.display = 'flex';
+}
+
+function fecharAlerta() {
+  modalAlert.style.display = 'none';
+}
+
+if(modalAlert) {
+  modalAlert.addEventListener('click', (e) => {
+    if (e.target === modalAlert) {
+      fecharAlerta();
+    }
+  });
+}
