@@ -8,26 +8,22 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 
-// Produtos
 const btnNovoProduto = document.getElementById('btnNovoProduto');
 const formProduto = document.getElementById('formProduto');
 const formProdutoElement = document.getElementById('formProdutoElement');
 const btnCancelarProduto = document.getElementById('btnCancelarProduto');
 const produtosList = document.getElementById('produtosList');
 
-// Categorias
 const btnNovaCategoria = document.getElementById('btnNovaCategoria');
 const formCategoria = document.getElementById('formCategoria');
 const formCategoriaElement = document.getElementById('formCategoriaElement');
 const btnCancelarCategoria = document.getElementById('btnCancelarCategoria');
 const categoriasList = document.getElementById('categoriasList');
 
-// Modal
 const modalConfirm = document.getElementById('modalConfirm');
 const btnConfirmDelete = document.getElementById('btnConfirmDelete');
 const btnCancelDelete = document.getElementById('btnCancelDelete');
 
-// Logout
 const logout = document.getElementById('logout');
 
 // ================= ESTADO ================= 
@@ -98,27 +94,29 @@ function mudarTab(tabName) {
 
 async function carregarProdutos() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/produtos`);
-    if (!response.ok) throw new Error('Erro ao carregar produtos');
-
-    const produtos = await response.json();
+    const produtos = await fazerRequisicao('/api/produtos');
     renderizarProdutos(produtos);
   } catch (error) {
     console.error('Erro:', error);
-    produtosList.innerHTML = `<tr><td colspan="4" class="loading">Erro ao carregar produtos</td></tr>`;
+    produtosList.innerHTML = `<tr><td colspan="5" class="loading">Erro ao carregar produtos</td></tr>`;
   }
 }
 
 function renderizarProdutos(produtos) {
   if (produtos.length === 0) {
-    produtosList.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 30px;">Nenhum produto cadastrado</td></tr>';
+    produtosList.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px;">Nenhum produto cadastrado</td></tr>';
     return;
   }
 
   produtosList.innerHTML = produtos.map(p => `
     <tr>
+      <td>
+        ${p.imagemUrl
+          ? `<img src="${p.imagemUrl}" alt="${p.nome}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">`
+          : `<div style="width:48px;height:48px;border-radius:6px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:20px;">🎂</div>`}
+      </td>
       <td><strong>${p.nome}</strong></td>
-      <td>R$ ${parseFloat(p.preco).toFixed(2)}</td>
+      <td>${p.precoPorSolicitacao ? 'Sob consulta' : p.preco != null ? `R$ ${parseFloat(p.preco).toFixed(2)}` : '-'}</td>
       <td>${p.descricao ? p.descricao.substring(0, 50) + '...' : '-'}</td>
       <td>
         <div class="table-actions">
@@ -161,10 +159,7 @@ function limparFormularioProduto() {
 
 async function editarProduto(id) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/produtos/${id}`);
-    if (!response.ok) throw new Error('Erro ao buscar produto');
-
-    const produto = await response.json();
+    const produto = await fazerRequisicao(`/api/produtos/${id}`);
 
     document.getElementById('produtoNome').value = produto.nome || '';
     document.getElementById('produtoPreco').value = produto.preco || '';
@@ -188,7 +183,7 @@ async function salvarProduto() {
   const dados = {
     nome: document.getElementById('produtoNome').value,
     descricao: document.getElementById('produtoDescricao').value,
-    preco: parseFloat(document.getElementById('produtoPreco').value),
+    preco: parseFloat(document.getElementById('produtoPreco').value) || null,
     precoPorSolicitacao: document.getElementById('produtoPrecoSolicitacao').checked,
     imagemUrl: document.getElementById('produtoImagem').value,
     badge: document.getElementById('produtoBadge').value,
@@ -197,22 +192,17 @@ async function salvarProduto() {
   };
 
   try {
-    let response;
     if (estadoEdicao.tipoProduto === 'novo') {
-      response = await fetch(`${API_BASE_URL}/api/produtos`, {
+      await fazerRequisicao('/api/produtos', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     } else {
-      response = await fetch(`${API_BASE_URL}/api/produtos/${estadoEdicao.idProduto}`, {
+      await fazerRequisicao(`/api/produtos/${estadoEdicao.idProduto}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     }
-
-    if (!response.ok) throw new Error('Erro ao salvar produto');
 
     alert(estadoEdicao.tipoProduto === 'novo' ? 'Produto criado com sucesso!' : 'Produto atualizado com sucesso!');
     fecharFormularioProduto();
@@ -226,9 +216,7 @@ async function salvarProduto() {
 function deletarProduto(id) {
   deleteCallback = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/produtos/${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Erro ao deletar produto');
-
+      await fazerRequisicao(`/api/produtos/${id}`, { method: 'DELETE' });
       alert('Produto deletado com sucesso!');
       carregarProdutos();
     } catch (error) {
@@ -244,10 +232,7 @@ function deletarProduto(id) {
 
 async function carregarCategorias() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/categorias`);
-    if (!response.ok) throw new Error('Erro ao carregar categorias');
-
-    const categorias = await response.json();
+    const categorias = await fazerRequisicao('/api/categorias');
     renderizarCategorias(categorias);
   } catch (error) {
     console.error('Erro:', error);
@@ -299,10 +284,7 @@ function limparFormularioCategoria() {
 
 async function editarCategoria(id) {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/categorias/${id}`);
-    if (!response.ok) throw new Error('Erro ao buscar categoria');
-
-    const categoria = await response.json();
+    const categoria = await fazerRequisicao(`/api/categorias/${id}`);
 
     document.getElementById('categoriaSlug').value = categoria.slug || '';
     document.getElementById('categoriaNome').value = categoria.nome || '';
@@ -325,22 +307,17 @@ async function salvarCategoria() {
   };
 
   try {
-    let response;
     if (!estadoEdicao.idCategoria) {
-      response = await fetch(`${API_BASE_URL}/api/categorias`, {
+      await fazerRequisicao('/api/categorias', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     } else {
-      response = await fetch(`${API_BASE_URL}/api/categorias/${estadoEdicao.idCategoria}`, {
+      await fazerRequisicao(`/api/categorias/${estadoEdicao.idCategoria}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     }
-
-    if (!response.ok) throw new Error('Erro ao salvar categoria');
 
     alert(!estadoEdicao.idCategoria ? 'Categoria criada com sucesso!' : 'Categoria atualizada com sucesso!');
     fecharFormularioCategoria();
@@ -354,9 +331,7 @@ async function salvarCategoria() {
 function deletarCategoria(id) {
   deleteCallback = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/categorias/${id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Erro ao deletar categoria');
-
+      await fazerRequisicao(`/api/categorias/${id}`, { method: 'DELETE' });
       alert('Categoria deletada com sucesso!');
       carregarCategorias();
     } catch (error) {
