@@ -1,3 +1,6 @@
+// ─── CONFIGURAÇÕES ────────────────────────────────────────────────────────────
+import { fazerRequisicao } from './config.js';
+
 // ─── ESTADO GLOBAL ────────────────────────────────────────────────────────────
 
 /** @type {{ id: number, descricao: string, precoBase: number }[]} */
@@ -10,45 +13,18 @@ let isSubmitting = false;
 
 // ─── UTILITÁRIOS ──────────────────────────────────────────────────────────────
 
-/**
- * Formata número como moeda BRL.
- * @param {number} valor
- * @returns {string}  ex: "R$ 12,50"
- */
 const formatarMoeda = (valor) =>
   `R$ ${parseFloat(valor || 0).toFixed(2).replace('.', ',')}`;
 
-/**
- * Requisição centralizada com timeout e tratamento de erros consistente.
- * Espera que `fazerRequisicao` esteja definida globalmente (no arquivo base).
- * Caso contrário, usa fetch diretamente.
- *
- * @param {string} rota
- * @param {RequestInit} [opcoes]
- * @returns {Promise<any>}
- */
+// FIX: importa fazerRequisicao diretamente como módulo ES — não depende de escopo global
+// FIX: todas as rotas já incluem /api/ (ex: /api/tamanhos) para bater com o backend
 async function api(rota, opcoes = {}) {
-  // Usa a função global se disponível (compatibilidade com arquivo base)
-  if (typeof fazerRequisicao === 'function') {
-    return fazerRequisicao(rota, opcoes);
-  }
-  const res = await fetch(`/api${rota}`, {
-    headers: { 'Content-Type': 'application/json' },
-    ...opcoes,
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status} em ${rota}`);
-  return res.json();
+  return fazerRequisicao(rota, opcoes);
 }
 
 // ─── FEEDBACK VISUAL ─────────────────────────────────────────────────────────
 
-/**
- * Exibe uma notificação toast na tela (substitui alert()).
- * @param {'success'|'error'|'info'} tipo
- * @param {string} mensagem
- */
 function exibirToast(tipo, mensagem) {
-  // Garante um container único
   let container = document.getElementById('toast-container');
   if (!container) {
     container = document.createElement('div');
@@ -95,13 +71,11 @@ function exibirToast(tipo, mensagem) {
 
   container.appendChild(toast);
 
-  // Animação de entrada
   requestAnimationFrame(() => {
     toast.style.opacity = '1';
     toast.style.transform = 'translateY(0)';
   });
 
-  // Auto-remove após 4s
   setTimeout(() => {
     toast.style.opacity = '0';
     toast.style.transform = 'translateY(8px)';
@@ -109,16 +83,11 @@ function exibirToast(tipo, mensagem) {
   }, 4000);
 }
 
-/**
- * Exibe ou remove o estado de loading no formulário.
- * @param {boolean} ativo
- * @param {string} [mensagem]
- */
 function setLoading(ativo, mensagem = 'Carregando...') {
   let overlay = document.getElementById('loading-overlay');
 
   if (ativo) {
-    if (overlay) return; // já existe
+    if (overlay) return;
 
     overlay = document.createElement('div');
     overlay.id = 'loading-overlay';
@@ -140,14 +109,13 @@ function setLoading(ativo, mensagem = 'Carregando...') {
       <span>${mensagem}</span>
     `;
     document.body.appendChild(overlay);
-    injjetarEstiloSpinner();
+    injetarEstiloSpinner();
   } else {
     overlay?.remove();
   }
 }
 
-/** Injeta o CSS do spinner apenas uma vez. */
-function injjetarEstiloSpinner() {
+function injetarEstiloSpinner() {
   if (document.getElementById('spinner-style')) return;
   const style = document.createElement('style');
   style.id = 'spinner-style';
@@ -166,13 +134,7 @@ function injjetarEstiloSpinner() {
 
 // ─── VALIDAÇÃO INLINE ─────────────────────────────────────────────────────────
 
-/**
- * Define o estado de erro/sucesso de um campo.
- * @param {HTMLElement} campo
- * @param {string|null} mensagem  null = campo válido
- */
 function setErroCampo(campo, mensagem) {
-  // Remove estado anterior
   campo.style.borderColor = '';
   const erroAnterior = campo.parentElement?.querySelector('[data-erro]');
   erroAnterior?.remove();
@@ -200,16 +162,16 @@ function setErroCampo(campo, mensagem) {
 async function carregarDadosDoPedido() {
   setLoading(true, 'Carregando opções do pedido...');
   try {
-    // Carrega tamanhos e grupos em paralelo — mais rápido
+    // FIX: rotas com /api/ para bater com o backend Spring
     [tamanhos, gruposOpcoes] = await Promise.all([
-      api('/tamanhos'),
-      api('/grupos-opcoes'),
+      api('/api/tamanhos'),
+      api('/api/grupos-opcoes'),
     ]);
 
-    // Carrega opções de cada grupo em paralelo
+    // FIX: rotas com /api/ para bater com o backend Spring
     await Promise.all(
       gruposOpcoes.map(async (grupo) => {
-        grupo.opcoes = await api(`/grupos-opcoes/${grupo.id}/opcoes`);
+        grupo.opcoes = await api(`/api/grupos-opcoes/${grupo.id}/opcoes`);
       })
     );
 
@@ -232,15 +194,15 @@ function preencherFormulario() {
 }
 
 function preencherTamanhos() {
-  const container = document.querySelector('[data-tamanhos-container]')
-    ?? document.getElementById('tamanhosContainer');
+  // FIX: pedidos.html usa id="kiloGrid", não "tamanhosContainer"
+  const container = document.getElementById('kiloGrid');
 
   if (!container || !tamanhos.length) return;
 
   container.innerHTML = '';
   tamanhos.forEach((t) => {
     const label = document.createElement('label');
-    label.className = 'option-label';
+    label.className = 'kilo-card';
     label.innerHTML = `
       <input
         type="radio"
@@ -249,25 +211,35 @@ function preencherTamanhos() {
         data-tamanho-id="${t.id}"
         aria-label="${t.descricao} — ${formatarMoeda(t.precoBase)}"
       >
-      <span>${t.descricao} — ${formatarMoeda(t.precoBase)}</span>
+      <span class="kilo-dot"></span>
+      <span class="kilo-label">${t.descricao}</span>
+      <span class="kilo-price">${formatarMoeda(t.precoBase)}</span>
     `;
     container.appendChild(label);
   });
 }
 
 function preencherGruposOpcoes() {
+  // FIX: mapeamento explícito entre id do grupo no banco e id do select no HTML
+  // Banco: id=1 "Tipo de Massa", id=2 "Sabor da Massa", id=3 "Recheio", id=4 "Adicionais"
+  // HTML:  id="tipoMassa",       id="saborMassa",        id="recheio",  id="adicional"
+  const mapaGrupoParaSelect = {
+    'Tipo de Massa':  'tipoMassa',
+    'Sabor da Massa': 'saborMassa',
+    'Recheio':        'recheio',
+    'Adicionais':     'adicional',
+  };
+
   gruposOpcoes.forEach((grupo) => {
-    // Usa data-grupo-id para encontrar o select — robusto, sem depender do nome
-    const select =
-      document.querySelector(`[data-grupo-id="${grupo.id}"]`) ??
-      document.getElementById(grupo.nome.toLowerCase().replace(/\s+/g, ''));
+    const selectId = mapaGrupoParaSelect[grupo.nome];
+    const select = selectId ? document.getElementById(selectId) : null;
 
     if (!select) {
       console.warn(`Select não encontrado para o grupo "${grupo.nome}" (id: ${grupo.id})`);
       return;
     }
 
-    select.innerHTML = '<option value="">Selecione...</option>';
+    select.innerHTML = '<option value="">— Selecione —</option>';
 
     (grupo.opcoes ?? []).forEach((opcao) => {
       const option = document.createElement('option');
@@ -284,12 +256,10 @@ function preencherGruposOpcoes() {
 }
 
 function registrarEventos() {
-  // Atualiza resumo ao mudar qualquer campo
   document.querySelectorAll('select, input[type="radio"]').forEach((el) => {
     el.addEventListener('change', atualizarResumo);
   });
 
-  // Validação inline em selects obrigatórios ao sair do campo
   ['tipoMassa', 'recheio'].forEach((id) => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -302,11 +272,10 @@ function registrarEventos() {
     });
   });
 
-  // Limpa erro do grupo de tamanho ao selecionar
+  // FIX: limpa erro do grupo de tamanho ao selecionar — usa #kiloGrid
   document.querySelectorAll('input[name="kilo"]').forEach((radio) => {
     radio.addEventListener('change', () => {
-      const container = document.querySelector('[data-tamanhos-container]')
-        ?? document.getElementById('tamanhosContainer');
+      const container = document.getElementById('kiloGrid');
       const erroAnterior = container?.parentElement?.querySelector('[data-erro]');
       erroAnterior?.remove();
     });
@@ -348,7 +317,7 @@ function atualizarResumo() {
 
   if (kiloSel) {
     temItem = true;
-    const labelTamanho = kiloSel.closest('label')?.textContent?.trim() ?? kiloSel.value;
+    const labelTamanho = kiloSel.closest('label')?.querySelector('.kilo-label')?.textContent?.trim() ?? kiloSel.value;
     html += `
       <div class="summary-row">
         <div class="summary-row-left">
@@ -393,20 +362,15 @@ function atualizarResumo() {
 
 // ─── VALIDAÇÃO DO PEDIDO ──────────────────────────────────────────────────────
 
-/**
- * Valida os campos obrigatórios e exibe erros inline.
- * @returns {boolean}  true se o formulário for válido
- */
 function validarPedido() {
   let valido = true;
 
   const kiloSel = document.querySelector('input[name="kilo"]:checked');
   if (!kiloSel) {
     valido = false;
-    const container = document.querySelector('[data-tamanhos-container]')
-      ?? document.getElementById('tamanhosContainer');
+    // FIX: usa #kiloGrid
+    const container = document.getElementById('kiloGrid');
     if (container) {
-      // Remove erro anterior se existir
       container.parentElement?.querySelector('[data-erro]')?.remove();
       const span = document.createElement('span');
       span.setAttribute('data-erro', '');
@@ -438,11 +402,6 @@ function validarPedido() {
 
 // ─── MONTAGEM DA MENSAGEM WHATSAPP ────────────────────────────────────────────
 
-/**
- * Monta a mensagem de WhatsApp de forma estruturada.
- * @param {object} dados
- * @returns {string}
- */
 function montarMensagemWhatsApp({ tamanhoLabel, tipoMassa, saborMassa, recheio, adicional, totalPrice, obs }) {
   const linhas = [
     `🎂 *Novo Pedido — Jusce Confeitaria*`,
@@ -469,7 +428,6 @@ async function enviarPedido() {
   if (isSubmitting) return;
 
   if (!validarPedido()) {
-    // Rola até o primeiro erro
     document.querySelector('[data-erro]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
@@ -481,11 +439,11 @@ async function enviarPedido() {
   const adicional  = document.getElementById('adicional')?.value  ?? '';
   const obs        = document.getElementById('observacoes')?.value ?? '';
 
-  const tamanhoLabel = kiloSel.closest('label')?.textContent?.trim() ?? kiloSel.value;
+  // FIX: pega label do texto dentro do .kilo-label (estrutura do pedidos.html)
+  const tamanhoLabel = kiloSel.closest('label')?.querySelector('.kilo-label')?.textContent?.trim() ?? kiloSel.value;
   const tamanhoId    = parseInt(kiloSel.dataset.tamanhoId, 10);
   const totalPrice   = calcularTotal();
 
-  // Coleta IDs das opções selecionadas
   const opcaoIds = [];
   document.querySelectorAll('select').forEach((select) => {
     if (select.value) {
@@ -494,35 +452,32 @@ async function enviarPedido() {
     }
   });
 
-  // Desabilita o botão de envio e exibe loading
   isSubmitting = true;
-  const btnEnviar = document.getElementById('btnEnviar') ?? document.querySelector('[data-btn-enviar]');
+  const btnEnviar = document.getElementById('btnPedir');
   if (btnEnviar) {
-    btnEnviar.disabled   = true;
+    btnEnviar.disabled    = true;
     btnEnviar.textContent = 'Enviando...';
   }
 
   try {
-    // 1. Registra no banco em background (não bloqueia o fluxo principal)
     const pedido = {
-      tamanhoId:       isNaN(tamanhoId) ? null : tamanhoId,
+      tamanhoId:   isNaN(tamanhoId) ? null : tamanhoId,
       opcaoIds,
       totalPrice,
       observacoes: obs,
     };
 
-    api('/pedidos', { method: 'POST', body: JSON.stringify(pedido) })
+    // Registra no banco em background — não bloqueia o WhatsApp
+    api('/api/pedidos', { method: 'POST', body: JSON.stringify(pedido) })
       .then((result) => console.log('Pedido registrado no banco:', result))
-      .catch((erro)  => console.warn('Pedido não registrado no banco (possível modo offline):', erro));
+      .catch((erro)  => console.warn('Pedido não registrado no banco:', erro));
 
-    // 2. Abre WhatsApp
     const mensagem = montarMensagemWhatsApp({
       tamanhoLabel, tipoMassa, saborMassa,
       recheio, adicional, totalPrice, obs,
     });
     window.open(`https://wa.me/5575988373099?text=${encodeURIComponent(mensagem)}`, '_blank');
 
-    // 3. Feedback positivo e limpeza
     exibirToast('success', 'Pedido enviado! Verifique seu WhatsApp para confirmar.');
     limparFormulario();
 
@@ -530,7 +485,7 @@ async function enviarPedido() {
     isSubmitting = false;
     if (btnEnviar) {
       btnEnviar.disabled    = false;
-      btnEnviar.textContent = 'Enviar Pedido';
+      btnEnviar.innerHTML   = '<i class="lni lni-whatsapp"></i> Pedir via WhatsApp';
     }
   }
 }
@@ -547,11 +502,13 @@ function limparFormulario() {
     el.style.borderColor = '';
   });
 
-  // Remove todos os erros inline
   document.querySelectorAll('[data-erro]').forEach((el) => el.remove());
-
   atualizarResumo();
 }
+
+// ─── EXPOR enviarPedido para o onclick do HTML ────────────────────────────────
+// FIX: como é módulo ES, precisa expor no window para o onclick="enviarPedido()" funcionar
+window.enviarPedido = enviarPedido;
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 

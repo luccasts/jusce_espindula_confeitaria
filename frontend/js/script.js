@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu();
     });
-  } 
+  }
 
   // ===== MOSTRAR / OCULTAR SENHA =====
   const togglePassword = document.getElementById("togglePassword");
@@ -70,26 +70,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-function abrirMontador() {
+// FIX: exposta no window — chamada por onclick no index.html (módulo ES não expõe automaticamente)
+window.abrirMontador = function() {
   document.getElementById("montadorOverlay").classList.add("active");
-}
+};
 
-function fecharMontador() {
+window.fecharMontador = function() {
   document.getElementById("montadorOverlay").classList.remove("active");
-}
+};
 
-function selecionar(botao) {
+window.selecionar = function(botao) {
   const grupo = botao.parentElement;
   const botoes = grupo.querySelectorAll("button");
-
   botoes.forEach(btn => btn.classList.remove("selected"));
   botao.classList.add("selected");
-}
+};
 
 // ===== PROTEÇÃO DO DASHBOARD =====
-// FIX: verifica o token JWT (única fonte de verdade), não adminLogado duplicado
-// FIX: listener de logout REMOVIDO daqui — está no dashboard.js para evitar duplicação
-
 if (window.location.pathname.includes("dashboard.html")) {
   const token = sessionStorage.getItem("token");
   if (!token) {
@@ -98,18 +95,15 @@ if (window.location.pathname.includes("dashboard.html")) {
 }
 
 // ================= CARRINHO =================
-
+// (mantido para compatibilidade, não usado ativamente)
 function adicionarCarrinho(nome, descricao, imagem) {
-
   let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-
   carrinho.push({ nome, descricao, imagem });
-
   localStorage.setItem("carrinho", JSON.stringify(carrinho));
-
   alert("Produto adicionado ao carrinho!");
 }
 
+// ================= LOGIN =================
 (function () {
   const form = document.getElementById('loginForm');
   if (!form) return;
