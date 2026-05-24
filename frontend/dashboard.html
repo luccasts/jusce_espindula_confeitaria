@@ -14,6 +14,12 @@
 
 <body>
 
+<!-- LOADING GLOBAL -->
+<div class="global-loading" id="globalLoading">
+  <div class="spinner"></div>
+  <p id="globalLoadingMsg">Carregando...</p>
+</div>
+
 <header class="top-header">
   <div class="logo-area">
     <img src="images/logo_jusce_png.png" alt="Logo Jusce">
@@ -221,6 +227,17 @@
     <div class="modal-actions">
       <button class="btn-danger" id="btnConfirmDelete">Deletar</button>
       <button class="btn-secondary" id="btnCancelDelete">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ALERTA GENÉRICO -->
+<div class="modal" id="modalAlert" style="display: none;">
+  <div class="modal-content">
+    <h4 id="modalAlertTitle">Aviso</h4>
+    <p id="modalAlertMsg"></p>
+    <div class="modal-actions" style="justify-content: center; margin-top: 20px;">
+      <button class="btn-primary" id="btnOkAlert">Entendi</button>
     </div>
   </div>
 </div>
