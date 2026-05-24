@@ -63,51 +63,42 @@ public class ProductController {
   public ResponseEntity<ProductDTO> criarProduto(
       @RequestParam String nome,
       @RequestParam(required = false) String descricao,
-      @RequestParam(required = false) java.math.BigDecimal preco,
+      @RequestParam(required = false) BigDecimal preco,
       @RequestParam(defaultValue = "false") Boolean precoPorSolicitacao,
       @RequestParam(required = false) MultipartFile imagem,
+      @RequestParam(required = false) String imagemUrl, // FIX: aceita URL de imagem externa
       @RequestParam(required = false) String badge,
       @RequestParam(required = false) String badgeClass,
       @RequestParam(defaultValue = "0") Integer ordemExibicao) {
 
     if (nome == null || nome.isBlank()) {
-
       throw new IllegalArgumentException("Nome do produto é obrigatório.");
     }
 
     if (!Boolean.TRUE.equals(precoPorSolicitacao) && preco == null) {
-
       throw new IllegalArgumentException(
           "Preço é obrigatório quando não é 'preço por solicitação'.");
     }
 
     Product produto = new Product();
-
     produto.setName(nome);
-
     produto.setDescription(descricao);
-
     produto.setPrice(preco);
-
     produto.setIsPriceOnRequest(precoPorSolicitacao);
-
     produto.setBadge(badge);
-
     produto.setBadgeClass(badgeClass);
-
     produto.setDisplayOrder(ordemExibicao);
-
     produto.setIsActive(true);
 
+    // FIX: prioriza arquivo enviado; se não houver, usa URL de texto
     if (imagem != null && !imagem.isEmpty()) {
-
       String caminho = fileStorageService.salvar(imagem);
-
       produto.setImageUrl(caminho);
+    } else if (imagemUrl != null && !imagemUrl.isBlank()) {
+      produto.setImageUrl(imagemUrl);
     }
 
     Product salvo = productRepository.save(produto);
-
     return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(salvo));
   }
 
@@ -116,20 +107,19 @@ public class ProductController {
       @PathVariable Integer id,
       @RequestParam String nome,
       @RequestParam(required = false) String descricao,
-      @RequestParam(required = false) java.math.BigDecimal preco,
+      @RequestParam(required = false) BigDecimal preco,
       @RequestParam(defaultValue = "false") Boolean precoPorSolicitacao,
       @RequestParam(required = false) MultipartFile imagem,
+      @RequestParam(required = false) String imagemUrl, // FIX: aceita URL de imagem externa
       @RequestParam(required = false) String badge,
       @RequestParam(required = false) String badgeClass,
       @RequestParam(defaultValue = "0") Integer ordemExibicao) {
 
     if (nome == null || nome.isBlank()) {
-
       throw new IllegalArgumentException("Nome do produto é obrigatório.");
     }
 
     if (!Boolean.TRUE.equals(precoPorSolicitacao) && preco == null) {
-
       throw new IllegalArgumentException(
           "Preço é obrigatório quando não é 'preço por solicitação'.");
     }
@@ -141,28 +131,23 @@ public class ProductController {
                 () -> new RecursoNaoEncontradoException("Produto não encontrado: id=" + id));
 
     produto.setName(nome);
-
     produto.setDescription(descricao);
-
     produto.setPrice(preco);
-
     produto.setIsPriceOnRequest(precoPorSolicitacao);
-
     produto.setBadge(badge);
-
     produto.setBadgeClass(badgeClass);
-
     produto.setDisplayOrder(ordemExibicao);
 
+    // FIX: prioriza arquivo enviado; se não houver, usa URL de texto
     if (imagem != null && !imagem.isEmpty()) {
-
       String caminho = fileStorageService.salvar(imagem);
-
       produto.setImageUrl(caminho);
+    } else if (imagemUrl != null && !imagemUrl.isBlank()) {
+      produto.setImageUrl(imagemUrl);
     }
+    // Se ambos vazios, mantém a imageUrl que já estava salva no banco
 
     Product atualizado = productRepository.save(produto);
-
     return ResponseEntity.ok(toDTO(atualizado));
   }
 

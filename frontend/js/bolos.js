@@ -1,6 +1,9 @@
 // ============================================================
-//  bolos.js — Galeria de Bolos 
+//  bolos.js — Galeria de Bolos
 // ============================================================
+
+// FIX: importa fazerRequisicao diretamente — como módulo ES, não fica no escopo global
+import { fazerRequisicao } from './config.js';
 
 // ================= DESCRIÇÕES =================
 const DESC_PADRAO =
@@ -18,26 +21,32 @@ let categoriaAtiva = 'todos';
 // ================= CARREGA PRODUTOS DA API =================
 async function carregarProdutosDoBackend() {
   try {
-    const produtos = await fazerRequisicao('/produtos');
-    
-    // Transforma resposta da API para o formato esperado pelo frontend
+    const produtos = await fazerRequisicao('/api/produtos');
+
     BOLOS_DATA = produtos.map(p => ({
       id: p.id,
       nome: p.nome,
       cat: p.categorias || [],
       badge: p.badge,
       badgeClass: p.badgeClass,
-      img: p.imagemUrl || 'images/placeholder.jpg',
-      preco: p.precoPorSolicitacao ? 'Sob consulta' : `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}`,
+      // FIX: imagemUrl do banco é caminho relativo (ex: "images/bolos/bolo_cenoura.jpeg")
+      // Usado direto como src — funciona porque o frontend serve esses arquivos
+      img: p.imagemUrl || null,
+      // FIX: se preco for null mas precoPorSolicitacao=false, evita NaN
+      preco: p.precoPorSolicitacao || p.preco == null
+        ? 'Sob consulta'
+        : `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}`,
       descricao: p.descricao
     }));
-    
+
     console.log('✓ Produtos carregados:', BOLOS_DATA.length);
     renderGaleria('todos');
   } catch (erro) {
     console.error('✗ Erro ao carregar produtos:', erro);
-    // Fallback: renderiza com dados vazios ou mostra mensagem de erro
-    grid.innerHTML = '<p style="text-align:center; padding: 2rem;">Erro ao carregar produtos. Verifique se o backend está rodando.</p>';
+    const grid = document.getElementById('gbGrid');
+    if (grid) {
+      grid.innerHTML = '<p style="text-align:center; padding: 2rem;">Erro ao carregar produtos. Verifique se o backend está rodando.</p>';
+    }
   }
 }
 
@@ -51,6 +60,8 @@ const modalClose = document.getElementById('gbModalClose');
 
 // ================= DESCRIÇÃO =================
 function getDescricao(bolo) {
+  // Usa a descrição cadastrada no banco se existir; caso contrário usa o texto padrão
+  if (bolo.descricao) return bolo.descricao;
   return bolo.cat.includes('tradicionais')
     ? DESC_TRADICIONAL
     : DESC_PADRAO;
@@ -62,10 +73,17 @@ function criarCard(bolo, delay) {
   card.className = 'gb-card';
   card.style.animationDelay = delay + 'ms';
 
+  // FIX: se não há imagem no banco, renderiza um placeholder visual sem <img> quebrado
+  // FIX: usa classe gb-img-placeholder que já existe no bolos.css (não tenta carregar placeholder.jpg)
+  const imgHtml = bolo.img
+    ? `<img src="${bolo.img}" alt="${bolo.nome}" loading="lazy"
+          onerror="this.parentElement.innerHTML='<div class=\\'gb-img-placeholder\\'><span>🎂</span></div>'">`
+    : `<div class="gb-img-placeholder"><span>🎂</span></div>`;
+
   card.innerHTML = `
     <div class="gb-card-img-wrap">
-      <img src="${bolo.img}" alt="${bolo.nome}">
-      ${bolo.badge ? `<span class="gb-card-badge ${bolo.badgeClass}">${bolo.badge}</span>` : ''}
+      ${imgHtml}
+      ${bolo.badge ? `<span class="gb-card-badge ${bolo.badgeClass || ''}">${bolo.badge}</span>` : ''}
     </div>
 
     <div class="gb-card-body">
@@ -75,12 +93,11 @@ function criarCard(bolo, delay) {
       <div class="gb-card-footer">
         <div>
           ${
-            bolo.cat.includes('tradicionais') && bolo.nome !== 'Red Velvet'
+            bolo.preco !== 'Sob consulta'
               ? `<span class="gb-card-preco">${bolo.preco}</span>`
               : `<span class="gb-card-preco-label">Sob consulta</span>`
-}
+          }
         </div>
-
         <button class="gb-ver-btn">Ver opções</button>
       </div>
     </div>
@@ -120,7 +137,6 @@ function renderGaleria(categoria) {
 // ================= FILTROS =================
 document.querySelectorAll('.gb-filter-btn').forEach(btn => {
   btn.addEventListener('click', function () {
-
     document.querySelectorAll('.gb-filter-btn')
       .forEach(b => b.classList.remove('active'));
 
@@ -131,18 +147,26 @@ document.querySelectorAll('.gb-filter-btn').forEach(btn => {
   });
 });
 
-// botão "ver todos" do estado vazio
-function resetFiltro() {
+// FIX: exposta no window para funcionar no onclick="resetFiltro()" do bolos.html
+window.resetFiltro = function() {
   document.querySelectorAll('.gb-filter-btn')
     .forEach(b => b.classList.remove('active'));
 
   document.querySelector('[data-cat="todos"]').classList.add('active');
   renderGaleria('todos');
-}
+};
 
 // ================= MODAL =================
 function abrirModal(bolo) {
-  document.getElementById('modalImg').src = bolo.img;
+  const modalImg = document.getElementById('modalImg');
+
+  if (bolo.img) {
+    modalImg.src = bolo.img;
+    modalImg.style.display = '';
+  } else {
+    modalImg.style.display = 'none';
+  }
+
   document.getElementById('modalNome').textContent = bolo.nome;
   document.getElementById('modalDesc').textContent = getDescricao(bolo);
 
@@ -150,15 +174,15 @@ function abrirModal(bolo) {
   const preco = document.getElementById('modalPreco');
   const obs = document.getElementById('modalObs');
 
-  if (bolo.cat.includes('tradicionais') && bolo.nome !== 'Red Velvet') {
-  precoLabel.textContent = 'Preço';
-  preco.textContent = bolo.preco;
-  obs.textContent = '';
-} else {
-  precoLabel.textContent = 'Valor sob consulta';
-  preco.textContent = '';
-  obs.textContent = 'Cada bolo é único e feito sob medida 💕';
-}
+  if (bolo.preco !== 'Sob consulta') {
+    precoLabel.textContent = 'Preço';
+    preco.textContent = bolo.preco;
+    obs.textContent = '';
+  } else {
+    precoLabel.textContent = 'Valor sob consulta';
+    preco.textContent = '';
+    obs.textContent = 'Cada bolo é único e feito sob medida 💕';
+  }
 
   const msg = encodeURIComponent(
     `Olá! Gostaria de um bolo no estilo *${bolo.nome}*. Podemos conversar sobre detalhes?`
@@ -176,13 +200,16 @@ function fecharModal() {
   document.body.style.overflow = '';
 }
 
-// fechar no X
 modalClose.addEventListener('click', fecharModal);
-
-// fechar clicando fora
 modal.addEventListener('click', (e) => {
   if (e.target === modal) fecharModal();
 });
 
 // ================= INIT =================
-document.addEventListener('DOMContentLoaded', carregarProdutosDoBackend);
+// FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
+// disparado quando o script executa. Checar readyState garante que o init sempre roda.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', carregarProdutosDoBackend);
+} else {
+  carregarProdutosDoBackend();
+}
