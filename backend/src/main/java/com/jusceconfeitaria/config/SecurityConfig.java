@@ -39,8 +39,11 @@ public class SecurityConfig {
             auth ->
                 auth
 
-                    // Rotas públicas
+                    // Health check — UptimeRobot (público, sem autenticação)
+                    .requestMatchers(HttpMethod.GET, "/api/health")
+                    .permitAll()
 
+                    // Rotas públicas
                     .requestMatchers(HttpMethod.GET, "/api/produtos")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/produtos/**")
@@ -63,7 +66,6 @@ public class SecurityConfig {
                     .permitAll()
 
                     // Rotas protegidas — requerem JWT
-
                     .requestMatchers(HttpMethod.POST, "/api/produtos")
                     .authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/produtos/**")
