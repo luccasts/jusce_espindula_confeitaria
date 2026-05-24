@@ -3,6 +3,34 @@ import { fazerRequisicao } from './config.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
+// Helper: envia FormData com JWT (para POST/PUT de produtos)
+async function fazerRequisicaoForm(endpoint, method, formData) {
+  const token = sessionStorage.getItem('token');
+  const headers = {};
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method,
+    headers,
+    body: formData
+  });
+
+  if (!response.ok) throw new Error(`Erro ${response.status}`);
+  if (response.status === 204) return null;
+  return await response.json();
+}
+
+// Helper: DELETE com JWT — retorna 204 sem body, não tenta .json()
+async function fazerDelete(endpoint) {
+  const token = sessionStorage.getItem('token');
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, { method: 'DELETE', headers });
+  if (!response.ok) throw new Error(`Erro ${response.status}`);
+  // 204 No Content — não chama .json()
+}
+
 // ================= ELEMENTOS DOM ================= 
 
 const tabButtons = document.querySelectorAll('.tab-btn');
@@ -76,7 +104,9 @@ function setupEventListeners() {
   btnCancelDelete.addEventListener('click', fecharModal);
 
   logout.addEventListener('click', () => {
-    window.location.href = 'index.html';
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('adminLogado');
+    window.location.href = 'admin.html';
   });
 }
 
@@ -112,7 +142,7 @@ function renderizarProdutos(produtos) {
     <tr>
       <td>
         ${p.imagemUrl
-          ? `<img src="${p.imagemUrl}" alt="${p.nome}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">`
+          ? `<img src="${p.imagemUrl}" alt="${p.nome}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;" onerror="this.style.display='none'">`
           : `<div style="width:48px;height:48px;border-radius:6px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:20px;">🎂</div>`}
       </td>
       <td><strong>${p.nome}</strong></td>
@@ -157,7 +187,8 @@ function limparFormularioProduto() {
   document.getElementById('produtoPrecoSolicitacao').checked = false;
 }
 
-async function editarProduto(id) {
+// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
+window.editarProduto = async function(id) {
   try {
     const produto = await fazerRequisicao(`/api/produtos/${id}`);
 
@@ -179,29 +210,29 @@ async function editarProduto(id) {
   }
 }
 
+// FIX: usa FormData para enviar multipart/form-data — compatível com o backend Spring
 async function salvarProduto() {
-  const dados = {
-    nome: document.getElementById('produtoNome').value,
-    descricao: document.getElementById('produtoDescricao').value,
-    preco: parseFloat(document.getElementById('produtoPreco').value) || null,
-    precoPorSolicitacao: document.getElementById('produtoPrecoSolicitacao').checked,
-    imagemUrl: document.getElementById('produtoImagem').value,
-    badge: document.getElementById('produtoBadge').value,
-    badgeClass: '',
-    ordemExibicao: parseInt(document.getElementById('produtoOrdem').value) || 0
-  };
+  const precoPorSolicitacao = document.getElementById('produtoPrecoSolicitacao').checked;
+  const precoValor = document.getElementById('produtoPreco').value;
+
+  const formData = new FormData();
+  formData.append('nome', document.getElementById('produtoNome').value);
+  formData.append('descricao', document.getElementById('produtoDescricao').value);
+  formData.append('precoPorSolicitacao', precoPorSolicitacao);
+  formData.append('imagemUrl', document.getElementById('produtoImagem').value);
+  formData.append('badge', document.getElementById('produtoBadge').value);
+  formData.append('badgeClass', '');
+  formData.append('ordemExibicao', document.getElementById('produtoOrdem').value || '0');
+
+  if (!precoPorSolicitacao && precoValor) {
+    formData.append('preco', precoValor);
+  }
 
   try {
     if (estadoEdicao.tipoProduto === 'novo') {
-      await fazerRequisicao('/api/produtos', {
-        method: 'POST',
-        body: JSON.stringify(dados)
-      });
+      await fazerRequisicaoForm('/api/produtos', 'POST', formData);
     } else {
-      await fazerRequisicao(`/api/produtos/${estadoEdicao.idProduto}`, {
-        method: 'PUT',
-        body: JSON.stringify(dados)
-      });
+      await fazerRequisicaoForm(`/api/produtos/${estadoEdicao.idProduto}`, 'PUT', formData);
     }
 
     alert(estadoEdicao.tipoProduto === 'novo' ? 'Produto criado com sucesso!' : 'Produto atualizado com sucesso!');
@@ -213,10 +244,11 @@ async function salvarProduto() {
   }
 }
 
-function deletarProduto(id) {
+// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
+window.deletarProduto = function(id) {
   deleteCallback = async () => {
     try {
-      await fazerRequisicao(`/api/produtos/${id}`, { method: 'DELETE' });
+      await fazerDelete(`/api/produtos/${id}`);
       alert('Produto deletado com sucesso!');
       carregarProdutos();
     } catch (error) {
@@ -267,7 +299,7 @@ function renderizarCategorias(categorias) {
 
 function abrirFormularioCategoria() {
   limparFormularioCategoria();
-  estadoEdicao.tipoProduto = 'novo';
+  estadoEdicao.idCategoria = null;
   formCategoria.style.display = 'block';
   formCategoria.scrollIntoView({ behavior: 'smooth' });
 }
@@ -282,7 +314,8 @@ function limparFormularioCategoria() {
   formCategoriaElement.reset();
 }
 
-async function editarCategoria(id) {
+// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
+window.editarCategoria = async function(id) {
   try {
     const categoria = await fazerRequisicao(`/api/categorias/${id}`);
 
@@ -328,10 +361,11 @@ async function salvarCategoria() {
   }
 }
 
-function deletarCategoria(id) {
+// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
+window.deletarCategoria = function(id) {
   deleteCallback = async () => {
     try {
-      await fazerRequisicao(`/api/categorias/${id}`, { method: 'DELETE' });
+      await fazerDelete(`/api/categorias/${id}`);
       alert('Categoria deletada com sucesso!');
       carregarCategorias();
     } catch (error) {

@@ -87,24 +87,14 @@ function selecionar(botao) {
 }
 
 // ===== PROTEÇÃO DO DASHBOARD =====
+// FIX: verifica o token JWT (única fonte de verdade), não adminLogado duplicado
+// FIX: listener de logout REMOVIDO daqui — está no dashboard.js para evitar duplicação
 
 if (window.location.pathname.includes("dashboard.html")) {
-
-  const logado = sessionStorage.getItem("adminLogado");
-
-  if (logado !== "true") {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
     window.location.href = "admin.html";
   }
-
-  const logout = document.getElementById("logout");
-
-  if (logout) {
-    logout.addEventListener("click", function () {
-      sessionStorage.removeItem("adminLogado");
-      window.location.href = "admin.html";
-    });
-  }
-
 }
 
 // ================= CARRINHO =================
