@@ -2,7 +2,7 @@
 //   CONFIG.JS — Configuração da API
 // =====================================================
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
 // Função genérica para fazer requisições
 async function fazerRequisicao(endpoint, opcoes = {}) {
@@ -24,7 +24,7 @@ async function fazerRequisicao(endpoint, opcoes = {}) {
 
   const configs = {
     ...opcoes,
-    headers: headers, // Aplica os cabeçalhos atualizados
+    headers: headers,
   };
 
   try {
@@ -46,10 +46,12 @@ async function testarConexao() {
     console.log('✓ Backend conectado:', data.mensagem);
     return true;
   } catch (erro) {
-    console.error('✗ Erro ao conectar no backend. Verifique se ele está rodando na porta 8081!');
+    console.error('✗ Erro ao conectar no backend. Verifique se ele está rodando na porta 8080!');
     return false;
   }
 }
 
 // Chamar teste de conexão quando a página carrega
 document.addEventListener('DOMContentLoaded', testarConexao);
+
+export { fazerRequisicao, testarConexao };

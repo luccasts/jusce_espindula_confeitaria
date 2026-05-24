@@ -18,7 +18,7 @@ let categoriaAtiva = 'todos';
 // ================= CARREGA PRODUTOS DA API =================
 async function carregarProdutosDoBackend() {
   try {
-    const produtos = await fazerRequisicao('/produtos');
+    const produtos = await fazerRequisicao('/api/produtos');
     
     // Transforma resposta da API para o formato esperado pelo frontend
     BOLOS_DATA = produtos.map(p => ({

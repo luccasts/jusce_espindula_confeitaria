@@ -1,6 +1,7 @@
 // ================= CONFIGURAÇÕES ================= 
+import { fazerRequisicao } from './config.js';
 
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
 
 // ================= ELEMENTOS DOM ================= 
 
@@ -50,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ================= EVENT LISTENERS ================= 
 
 function setupEventListeners() {
-  // Tabs
   tabButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const tabName = btn.getAttribute('data-tab');
@@ -58,7 +58,6 @@ function setupEventListeners() {
     });
   });
 
-  // Produtos
   btnNovoProduto.addEventListener('click', abrirFormularioProduto);
   btnCancelarProduto.addEventListener('click', fecharFormularioProduto);
   formProdutoElement.addEventListener('submit', (e) => {
@@ -66,7 +65,6 @@ function setupEventListeners() {
     salvarProduto();
   });
 
-  // Categorias
   btnNovaCategoria.addEventListener('click', abrirFormularioCategoria);
   btnCancelarCategoria.addEventListener('click', fecharFormularioCategoria);
   formCategoriaElement.addEventListener('submit', (e) => {
@@ -74,7 +72,6 @@ function setupEventListeners() {
     salvarCategoria();
   });
 
-  // Modal
   btnConfirmDelete.addEventListener('click', () => {
     if (deleteCallback) deleteCallback();
     fecharModal();
@@ -82,7 +79,6 @@ function setupEventListeners() {
 
   btnCancelDelete.addEventListener('click', fecharModal);
 
-  // Logout
   logout.addEventListener('click', () => {
     window.location.href = 'index.html';
   });
@@ -102,7 +98,7 @@ function mudarTab(tabName) {
 
 async function carregarProdutos() {
   try {
-    const response = await fetch(`${API_BASE_URL_URL_URL}/produtos`);
+    const response = await fetch(`${API_BASE_URL}/api/produtos`);
     if (!response.ok) throw new Error('Erro ao carregar produtos');
 
     const produtos = await response.json();
@@ -165,11 +161,11 @@ function limparFormularioProduto() {
 
 async function editarProduto(id) {
   try {
-    const response = await fetch(`${API_BASE_URL}/produtos/${id}`);
+    const response = await fetch(`${API_BASE_URL}/api/produtos/${id}`);
     if (!response.ok) throw new Error('Erro ao buscar produto');
 
     const produto = await response.json();
-    
+
     document.getElementById('produtoNome').value = produto.nome || '';
     document.getElementById('produtoPreco').value = produto.preco || '';
     document.getElementById('produtoDescricao').value = produto.descricao || '';
@@ -196,20 +192,20 @@ async function salvarProduto() {
     precoPorSolicitacao: document.getElementById('produtoPrecoSolicitacao').checked,
     imagemUrl: document.getElementById('produtoImagem').value,
     badge: document.getElementById('produtoBadge').value,
-    badgeClass: '', // pode ser expandido depois
+    badgeClass: '',
     ordemExibicao: parseInt(document.getElementById('produtoOrdem').value) || 0
   };
 
   try {
     let response;
     if (estadoEdicao.tipoProduto === 'novo') {
-      response = await fetch(`${API_BASE_URL}/produtos`, {
+      response = await fetch(`${API_BASE_URL}/api/produtos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     } else {
-      response = await fetch(`${API_BASE_URL}/produtos/${estadoEdicao.idProduto}`, {
+      response = await fetch(`${API_BASE_URL}/api/produtos/${estadoEdicao.idProduto}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
@@ -230,7 +226,7 @@ async function salvarProduto() {
 function deletarProduto(id) {
   deleteCallback = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/produtos/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${API_BASE_URL}/api/produtos/${id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Erro ao deletar produto');
 
       alert('Produto deletado com sucesso!');
@@ -248,7 +244,7 @@ function deletarProduto(id) {
 
 async function carregarCategorias() {
   try {
-    const response = await fetch(`${API_BASE_URL}/categorias`);
+    const response = await fetch(`${API_BASE_URL}/api/categorias`);
     if (!response.ok) throw new Error('Erro ao carregar categorias');
 
     const categorias = await response.json();
@@ -303,11 +299,11 @@ function limparFormularioCategoria() {
 
 async function editarCategoria(id) {
   try {
-    const response = await fetch(`${API_BASE_URL}/categorias/${id}`);
+    const response = await fetch(`${API_BASE_URL}/api/categorias/${id}`);
     if (!response.ok) throw new Error('Erro ao buscar categoria');
 
     const categoria = await response.json();
-    
+
     document.getElementById('categoriaSlug').value = categoria.slug || '';
     document.getElementById('categoriaNome').value = categoria.nome || '';
     document.getElementById('categoriaOrdem').value = categoria.ordemExibicao || '';
@@ -331,13 +327,13 @@ async function salvarCategoria() {
   try {
     let response;
     if (!estadoEdicao.idCategoria) {
-      response = await fetch(`${API_BASE_URL}/categorias`, {
+      response = await fetch(`${API_BASE_URL}/api/categorias`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     } else {
-      response = await fetch(`${API_BASE_URL}/categorias/${estadoEdicao.idCategoria}`, {
+      response = await fetch(`${API_BASE_URL}/api/categorias/${estadoEdicao.idCategoria}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
@@ -358,7 +354,7 @@ async function salvarCategoria() {
 function deletarCategoria(id) {
   deleteCallback = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/categorias/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${API_BASE_URL}/api/categorias/${id}`, { method: 'DELETE' });
       if (!response.ok) throw new Error('Erro ao deletar categoria');
 
       alert('Categoria deletada com sucesso!');
@@ -384,11 +380,8 @@ function fecharModal() {
   deleteCallback = null;
 }
 
-// Fechar modal ao clicar fora
 modalConfirm.addEventListener('click', (e) => {
   if (e.target === modalConfirm) {
     fecharModal();
   }
 });
-
-
