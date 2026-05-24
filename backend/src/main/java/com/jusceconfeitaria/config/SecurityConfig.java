@@ -39,8 +39,10 @@ public class SecurityConfig {
             auth ->
                 auth
 
-                    // Health check — UptimeRobot (público, sem autenticação)
+                    // Health check — UptimeRobot (público, GET e HEAD)
                     .requestMatchers(HttpMethod.GET, "/api/health")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.HEAD, "/api/health")
                     .permitAll()
 
                     // Rotas públicas
