@@ -39,19 +39,4 @@ async function fazerRequisicao(endpoint, opcoes = {}) {
   }
 } 
 
-// Função para testar conexão com o backend
-async function testarConexao() {
-  try {
-    const data = await fazerRequisicao('/ola');
-    console.log('✓ Backend conectado:', data.mensagem);
-    return true;
-  } catch (erro) {
-    console.error('✗ Erro ao conectar no backend. Verifique se ele está rodando na porta 8080!');
-    return false;
-  }
-}
-
-// Chamar teste de conexão quando a página carrega
-document.addEventListener('DOMContentLoaded', testarConexao);
-
-export { fazerRequisicao, testarConexao };
+export { fazerRequisicao };
