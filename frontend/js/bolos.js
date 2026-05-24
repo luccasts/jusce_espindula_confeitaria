@@ -20,6 +20,16 @@ let categoriaAtiva = 'todos';
 
 // ================= CARREGA PRODUTOS DA API =================
 async function carregarProdutosDoBackend() {
+  const grid = document.getElementById('gbGrid');
+  if (grid) {
+    grid.innerHTML = `
+      <div class="gb-loader-container">
+        <div class="gb-spinner"></div>
+        <p>Buscando deliciosos bolos...</p>
+      </div>
+    `;
+  }
+
   try {
     const produtos = await fazerRequisicao('/api/produtos');
 

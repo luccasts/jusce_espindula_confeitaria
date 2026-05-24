@@ -56,9 +56,6 @@ const btnCancelDelete = document.getElementById('btnCancelDelete');
 const modalAlert = document.getElementById('modalAlert');
 const btnOkAlert = document.getElementById('btnOkAlert');
 
-const globalLoading = document.getElementById('globalLoading');
-const globalLoadingMsg = document.getElementById('globalLoadingMsg');
-
 const logout = document.getElementById('logout');
 
 // ================= ESTADO ================= 
@@ -73,25 +70,14 @@ let deleteCallback = null;
 
 // ================= INICIALIZAÇÃO =================
 
-function mostrarLoading(mensagem = 'Carregando...') {
-  if(globalLoadingMsg) globalLoadingMsg.textContent = mensagem;
-  if(globalLoading) globalLoading.classList.add('active');
-}
-
-function esconderLoading() {
-  if(globalLoading) globalLoading.classList.remove('active');
-}
-
 // FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
 // disparado quando o script executa. Checar readyState garante que o init sempre roda.
 async function init() {
-  mostrarLoading('Iniciando painel...');
   setupEventListeners();
   await Promise.all([
     carregarProdutos(),
     carregarCategorias()
   ]);
-  esconderLoading();
 }
 
 if (document.readyState === 'loading') {
@@ -220,6 +206,8 @@ function limparFormularioProduto() {
   document.getElementById('produtoPreco').value = '';
   document.getElementById('produtoDescricao').value = '';
   document.getElementById('produtoImagem').value = '';
+  document.getElementById('produtoImagemAntiga').value = '';
+  document.getElementById('produtoImagemPreview').innerHTML = '';
   document.getElementById('produtoBadge').value = '';
   document.getElementById('produtoOrdem').value = '';
   document.getElementById('produtoPrecoSolicitacao').checked = false;
@@ -233,7 +221,16 @@ window.editarProduto = async function(id) {
     document.getElementById('produtoNome').value = produto.nome || '';
     document.getElementById('produtoPreco').value = produto.preco || '';
     document.getElementById('produtoDescricao').value = produto.descricao || '';
-    document.getElementById('produtoImagem').value = produto.imagemUrl || '';
+    
+    document.getElementById('produtoImagem').value = ''; // Limpa o input file
+    document.getElementById('produtoImagemAntiga').value = produto.imagemUrl || '';
+    const preview = document.getElementById('produtoImagemPreview');
+    if (produto.imagemUrl) {
+      preview.innerHTML = `Imagem atual: <a href="${produto.imagemUrl}" target="_blank" style="color:var(--cor-principal);">Ver imagem no Imgur</a>`;
+    } else {
+      preview.innerHTML = 'Sem imagem cadastrada.';
+    }
+
     document.getElementById('produtoBadge').value = produto.badge || '';
     document.getElementById('produtoOrdem').value = produto.ordemExibicao || '';
     document.getElementById('produtoPrecoSolicitacao').checked = produto.precoPorSolicitacao || false;
@@ -281,12 +278,7 @@ async function salvarProduto() {
   const imagemInput = document.getElementById('produtoImagem');
   
   try {
-    let imagemUrl = ''; 
-    // Em caso de input=file que não recebe .value na edição, você pode precisar ajustar
-    // para recuperar a URL antiga, dependendo da sua marcação HTML.
-    if (typeof imagemInput.value === 'string' && !imagemInput.value.includes('C:\\fakepath')) {
-       imagemUrl = imagemInput.value;
-    }
+    let imagemUrl = document.getElementById('produtoImagemAntiga').value;
 
     if (imagemInput.files && imagemInput.files.length > 0) {
       const file = imagemInput.files[0];
@@ -297,11 +289,8 @@ async function salvarProduto() {
         return; // Impede o envio
       }
       
-      mostrarLoading('Enviando imagem para o Imgur...');
       imagemUrl = await uploadImgur(file);
     }
-
-    mostrarLoading('Salvando produto...');
 
     const payload = {
       nome: document.getElementById('produtoNome').value,
@@ -334,8 +323,6 @@ async function salvarProduto() {
   } catch (error) {
     console.error('Erro:', error);
     mostrarAlerta('Erro', 'Erro ao salvar produto: ' + error.message);
-  } finally {
-    esconderLoading();
   }
 }
 

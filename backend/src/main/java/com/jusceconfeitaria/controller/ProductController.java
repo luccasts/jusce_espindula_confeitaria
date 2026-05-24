@@ -72,7 +72,8 @@ public class ProductController {
     produto.setName(dto.nome());
     produto.setDescription(dto.descricao());
     produto.setPrice(dto.preco());
-    produto.setIsPriceOnRequest(dto.precoPorSolicitacao() != null ? dto.precoPorSolicitacao() : false);
+    produto.setIsPriceOnRequest(
+        dto.precoPorSolicitacao() != null ? dto.precoPorSolicitacao() : false);
     produto.setImageUrl(dto.imagemUrl());
     produto.setBadge(dto.badge());
     produto.setBadgeClass(dto.badgeClass());
@@ -85,8 +86,7 @@ public class ProductController {
 
   @PutMapping(value = "/{id}", consumes = "application/json")
   public ResponseEntity<ProductDTO> atualizarProduto(
-      @PathVariable Integer id,
-      @RequestBody CreateProductDTO dto) {
+      @PathVariable Integer id, @RequestBody CreateProductDTO dto) {
 
     if (dto.nome() == null || dto.nome().isBlank()) {
       throw new IllegalArgumentException("Nome do produto é obrigatório.");
@@ -106,12 +106,13 @@ public class ProductController {
     produto.setName(dto.nome());
     produto.setDescription(dto.descricao());
     produto.setPrice(dto.preco());
-    produto.setIsPriceOnRequest(dto.precoPorSolicitacao() != null ? dto.precoPorSolicitacao() : false);
-    
+    produto.setIsPriceOnRequest(
+        dto.precoPorSolicitacao() != null ? dto.precoPorSolicitacao() : false);
+
     if (dto.imagemUrl() != null && !dto.imagemUrl().isBlank()) {
       produto.setImageUrl(dto.imagemUrl());
     }
-    
+
     produto.setBadge(dto.badge());
     produto.setBadgeClass(dto.badgeClass());
     produto.setDisplayOrder(dto.ordemExibicao() != null ? dto.ordemExibicao() : 0);
