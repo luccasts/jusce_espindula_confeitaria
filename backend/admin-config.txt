@@ -1,3 +1,3 @@
-email=admin@jusceconfeitaria.com.br
-senha=EU2026
+email=admin@jusce.com
+senha=admin123
 nome=Administrador Jusce

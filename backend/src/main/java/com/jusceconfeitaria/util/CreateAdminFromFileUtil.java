@@ -14,7 +14,7 @@ public class CreateAdminFromFileUtil {
 
   // Configurações do seu banco extraídas do seu application.properties
   private static final String URL =
-      "jdbc:mysql://localhost:3306/jusce_espindula?useSSL=false&serverTimezone=UTC";
+      "jdbc:mysql://localhost:3306/jusce_espindula?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
   private static final String USER = "root";
   private static final String PASSWORD = "admin";
   private static final String CONFIG_FILE = "admin-config.txt";

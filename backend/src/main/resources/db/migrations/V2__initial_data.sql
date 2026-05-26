@@ -51,5 +51,5 @@ INSERT INTO cake_options (group_id, name, description, price_extra, is_active, d
 INSERT INTO roles (name) VALUES ('ADMIN') ON DUPLICATE KEY UPDATE name=name; 
 INSERT INTO users (role_id, name, email, password_hash, is_active) VALUES
 ((SELECT id FROM roles WHERE name='ADMIN'), 'Administrador', 'admin@jusce.com', 
-'$2a$10$w8.3fD6/Fp7vY7H6jR.gfejF9n0s76HwPZgLOm/7M/fA5Kxtq5kAG', true); 
+'$2a$12$s3FSxDfmHJpKfJrSoTm7kuxgI2iu2.9pYAyracI/8ypQaIq1.3GTa', true); 
 --Gere o hash BCrypt com: BCryptPasswordEncoder().encode("suaSenha").
