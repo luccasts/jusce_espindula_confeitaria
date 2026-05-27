@@ -2,7 +2,6 @@
 //  bolos.js — Galeria de Bolos
 // ============================================================
 
-// FIX: importa fazerRequisicao diretamente — como módulo ES, não fica no escopo global
 import { fazerRequisicao } from './config.js';
 
 // ================= DESCRIÇÕES =================
@@ -30,34 +29,48 @@ async function carregarProdutosDoBackend() {
     `;
   }
 
-  try {
-    const produtos = await fazerRequisicao('/api/produtos');
+  const produtos = await fazerRequisicao('/api/produtos');
 
-    BOLOS_DATA = produtos.map(p => ({
-      id: p.id,
-      nome: p.nome,
-      cat: p.categorias || [],
-      badge: p.badge,
-      badgeClass: p.badgeClass,
-      // FIX: imagemUrl do banco é caminho relativo (ex: "images/bolos/bolo_cenoura.jpeg")
-      // Usado direto como src — funciona porque o frontend serve esses arquivos
-      img: p.imagemUrl || null,
-      // FIX: se preco for null mas precoPorSolicitacao=false, evita NaN
-      preco: p.precoPorSolicitacao || p.preco == null
-        ? 'Sob consulta'
-        : `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}`,
-      descricao: p.descricao
-    }));
+  BOLOS_DATA = produtos.map(p => ({
+    id: p.id,
+    nome: p.nome,
+    cat: (p.categorias || []).map(c => c.slug),
+    badge: p.badge,
+    badgeClass: p.badgeClass,
+    img: p.imagemUrl || null,
+    preco: p.precoPorSolicitacao || p.preco == null
+      ? 'Sob consulta'
+      : `R$ ${parseFloat(p.preco).toFixed(2).replace('.', ',')}`,
+    descricao: p.descricao
+  }));
 
-    console.log('✓ Produtos carregados:', BOLOS_DATA.length);
-    renderGaleria('todos');
-  } catch (erro) {
-    console.error('✗ Erro ao carregar produtos:', erro);
-    const grid = document.getElementById('gbGrid');
-    if (grid) {
-      grid.innerHTML = '<p style="text-align:center; padding: 2rem;">Erro ao carregar produtos. Verifique se o backend está rodando.</p>';
-    }
-  }
+  console.log('✓ Produtos carregados:', BOLOS_DATA.length);
+  renderGaleria('todos');
+}
+
+// ================= CARREGA FILTROS DINÂMICOS DA API =================
+async function carregarFiltros() {
+  const container = document.getElementById('gbFilters');
+  if (!container) return;
+
+  const categorias = await fazerRequisicao('/api/categorias');
+
+  const botoesCategoria = categorias.map(c => `
+    <button class="gb-filter-btn" data-cat="${c.slug}">${c.nome}</button>
+  `).join('');
+
+  container.innerHTML = `
+    <button class="gb-filter-btn active" data-cat="todos">Todos</button>
+    ${botoesCategoria}
+  `;
+
+  container.querySelectorAll('.gb-filter-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      container.querySelectorAll('.gb-filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      renderGaleria(this.dataset.cat || 'todos');
+    });
+  });
 }
 
 // ================= ELEMENTOS =================
@@ -70,7 +83,6 @@ const modalClose = document.getElementById('gbModalClose');
 
 // ================= DESCRIÇÃO =================
 function getDescricao(bolo) {
-  // Usa a descrição cadastrada no banco se existir; caso contrário usa o texto padrão
   if (bolo.descricao) return bolo.descricao;
   return bolo.cat.includes('tradicionais')
     ? DESC_TRADICIONAL
@@ -83,8 +95,6 @@ function criarCard(bolo, delay) {
   card.className = 'gb-card';
   card.style.animationDelay = delay + 'ms';
 
-  // FIX: se não há imagem no banco, renderiza um placeholder visual sem <img> quebrado
-  // FIX: usa classe gb-img-placeholder que já existe no bolos.css (não tenta carregar placeholder.jpg)
   const imgHtml = bolo.img
     ? `<img src="${bolo.img}" alt="${bolo.nome}" loading="lazy"
           onerror="this.parentElement.innerHTML='<div class=\\'gb-img-placeholder\\'><span>🎂</span></div>'">`
@@ -144,25 +154,14 @@ function renderGaleria(categoria) {
   countEl.textContent = `${lista.length} bolos encontrados`;
 }
 
-// ================= FILTROS =================
-document.querySelectorAll('.gb-filter-btn').forEach(btn => {
-  btn.addEventListener('click', function () {
-    document.querySelectorAll('.gb-filter-btn')
-      .forEach(b => b.classList.remove('active'));
-
-    this.classList.add('active');
-
-    const categoria = this.dataset.cat || 'todos';
-    renderGaleria(categoria);
-  });
-});
-
-// FIX: exposta no window para funcionar no onclick="resetFiltro()" do bolos.html
+// ================= RESET FILTRO =================
 window.resetFiltro = function() {
-  document.querySelectorAll('.gb-filter-btn')
-    .forEach(b => b.classList.remove('active'));
-
-  document.querySelector('[data-cat="todos"]').classList.add('active');
+  const container = document.getElementById('gbFilters');
+  if (container) {
+    container.querySelectorAll('.gb-filter-btn').forEach(b => b.classList.remove('active'));
+    const btnTodos = container.querySelector('[data-cat="todos"]');
+    if (btnTodos) btnTodos.classList.add('active');
+  }
   renderGaleria('todos');
 };
 
@@ -216,10 +215,36 @@ modal.addEventListener('click', (e) => {
 });
 
 // ================= INIT =================
-// FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
-// disparado quando o script executa. Checar readyState garante que o init sempre roda.
+async function init() {
+  const [resultFiltros, resultProdutos] = await Promise.allSettled([
+    carregarFiltros(),
+    carregarProdutosDoBackend()
+  ]);
+
+  if (resultFiltros.status === 'rejected') {
+    console.error('✗ Erro ao carregar filtros:', resultFiltros.reason);
+    // Mantém o botão "Todos" como fallback
+    const container = document.getElementById('gbFilters');
+    if (container) {
+      container.innerHTML = '<button class="gb-filter-btn active" data-cat="todos">Todos</button>';
+      container.querySelector('[data-cat="todos"]').addEventListener('click', function () {
+        this.classList.add('active');
+        renderGaleria('todos');
+      });
+    }
+  }
+
+  if (resultProdutos.status === 'rejected') {
+    console.error('✗ Erro ao carregar produtos:', resultProdutos.reason);
+    const gridEl = document.getElementById('gbGrid');
+    if (gridEl) {
+      gridEl.innerHTML = '<p style="text-align:center; padding: 2rem;">Erro ao carregar produtos. Verifique se o backend está rodando.</p>';
+    }
+  }
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', carregarProdutosDoBackend);
+  document.addEventListener('DOMContentLoaded', init);
 } else {
-  carregarProdutosDoBackend();
+  init();
 }

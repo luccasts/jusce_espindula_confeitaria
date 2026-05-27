@@ -2,7 +2,7 @@
 //   CONFIG.JS — Configuração da API
 // =====================================================
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081';
 
 // Função genérica para fazer requisições
 async function fazerRequisicao(endpoint, opcoes = {}) {
@@ -29,9 +29,22 @@ async function fazerRequisicao(endpoint, opcoes = {}) {
 
   try {
     const response = await fetch(url, configs);
+
     if (!response.ok) {
-      throw new Error(`Erro ${response.status}: ${response.statusText}`);
+      // Tenta ler o corpo JSON para capturar a mensagem de erro do backend
+      // (ex: GlobalExceptionHandler devolve { mensagem: "Já existe uma categoria..." })
+      let mensagemErro = `Erro ${response.status}: ${response.statusText}`;
+      try {
+        const corpo = await response.json();
+        if (corpo && corpo.mensagem) {
+          mensagemErro = corpo.mensagem;
+        }
+      } catch (_) {
+        // Corpo não é JSON — mantém a mensagem genérica
+      }
+      throw new Error(mensagemErro);
     }
+
     return await response.json();
   } catch (erro) {
     console.error(`Erro ao chamar ${endpoint}:`, erro);

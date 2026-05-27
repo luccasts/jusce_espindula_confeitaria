@@ -6,6 +6,7 @@ import com.jusceconfeitaria.repository.CategoryRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,7 @@ public class CategoryController {
     Category categoria =
         categoryRepository
             .findById(id)
+            .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
             .orElseThrow(
                 () -> new RecursoNaoEncontradoException("Categoria não encontrada: id=" + id));
     return toDTO(categoria);
@@ -44,9 +46,28 @@ public class CategoryController {
 
   @PostMapping
   public ResponseEntity<CategoryDTO> criarCategoria(@Valid @RequestBody CreateCategoryDTO dto) {
+    final String slug = dto.slug().toLowerCase(Locale.ROOT).trim();
+    final String nome = dto.nome().trim();
+
+    categoryRepository
+        .findBySlug(slug)
+        .ifPresent(
+            existing -> {
+              throw new IllegalArgumentException(
+                  "Já existe uma categoria com o slug '" + slug + "'.");
+            });
+
+    categoryRepository
+        .findByName(nome)
+        .ifPresent(
+            existing -> {
+              throw new IllegalArgumentException(
+                  "Já existe uma categoria com o nome '" + nome + "'.");
+            });
+
     Category categoria = new Category();
-    categoria.setSlug(dto.slug());
-    categoria.setName(dto.nome());
+    categoria.setSlug(slug);
+    categoria.setName(nome);
     categoria.setDisplayOrder(dto.ordemExibicao() != null ? dto.ordemExibicao() : 0);
     categoria.setIsActive(true);
 
@@ -56,15 +77,37 @@ public class CategoryController {
 
   @PutMapping("/{id}")
   public ResponseEntity<CategoryDTO> atualizarCategoria(
-      @Valid @PathVariable Integer id, @RequestBody CreateCategoryDTO dto) {
+      @PathVariable Integer id, @Valid @RequestBody CreateCategoryDTO dto) {
     Category categoria =
         categoryRepository
             .findById(id)
+            .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
             .orElseThrow(
                 () -> new RecursoNaoEncontradoException("Categoria não encontrada: id=" + id));
 
-    categoria.setSlug(dto.slug());
-    categoria.setName(dto.nome());
+    final String slug = dto.slug().toLowerCase(Locale.ROOT).trim();
+    final String nome = dto.nome().trim();
+
+    categoryRepository
+        .findBySlug(slug)
+        .filter(c -> !c.getId().equals(id))
+        .ifPresent(
+            c -> {
+              throw new IllegalArgumentException(
+                  "Já existe uma categoria com o slug '" + slug + "'.");
+            });
+
+    categoryRepository
+        .findByName(nome)
+        .filter(c -> !c.getId().equals(id))
+        .ifPresent(
+            c -> {
+              throw new IllegalArgumentException(
+                  "Já existe uma categoria com o nome '" + nome + "'.");
+            });
+
+    categoria.setSlug(slug);
+    categoria.setName(nome);
     categoria.setDisplayOrder(dto.ordemExibicao() != null ? dto.ordemExibicao() : 0);
 
     Category categoriaAtualizada = categoryRepository.save(categoria);
@@ -76,6 +119,7 @@ public class CategoryController {
     Category categoria =
         categoryRepository
             .findById(id)
+            .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
             .orElseThrow(
                 () -> new RecursoNaoEncontradoException("Categoria não encontrada: id=" + id));
 

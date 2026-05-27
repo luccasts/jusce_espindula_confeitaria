@@ -16,32 +16,25 @@ function escHtml(str) {
     .replace(/"/g, '&quot;');
 }
 
-// Helper: envia FormData com JWT (para POST/PUT de produtos)
-async function fazerRequisicaoForm(endpoint, method, formData) {
-  const token = sessionStorage.getItem('token');
-  const headers = {};
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    method,
-    headers,
-    body: formData
-  });
-
-  if (!response.ok) throw new Error(`Erro ${response.status}`);
-  if (response.status === 204) return null;
-  return await response.json();
-}
-
-// Helper: DELETE com JWT — retorna 204 sem body, não tenta .json()
 async function fazerDelete(endpoint) {
   const token = sessionStorage.getItem('token');
   const headers = { 'Content-Type': 'application/json' };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, { method: 'DELETE', headers });
-  if (!response.ok) throw new Error(`Erro ${response.status}`);
-  // 204 No Content — não chama .json()
+
+  if (!response.ok) {
+    let mensagemErro = `Erro ${response.status}: ${response.statusText}`;
+    try {
+      const corpo = await response.json();
+      if (corpo && corpo.mensagem) {
+        mensagemErro = corpo.mensagem;
+      }
+    } catch (_) {
+      // Corpo não é JSON — mantém a mensagem genérica
+    }
+    throw new Error(mensagemErro);
+  }
 }
 
 // ================= ELEMENTOS DOM ================= 
@@ -126,8 +119,8 @@ function setupEventListeners() {
   });
 
   btnCancelDelete.addEventListener('click', fecharModal);
-  
-  if(btnOkAlert) {
+
+  if (btnOkAlert) {
     btnOkAlert.addEventListener('click', fecharAlerta);
   }
 
@@ -160,6 +153,24 @@ function mudarTab(tabName) {
   document.getElementById(`tab-${tabName}`).classList.add('active');
 }
 
+// ================= CATEGORIAS DO FORMULÁRIO DE PRODUTO =================
+
+async function carregarCheckboxesCategorias(idsSelecionados = []) {
+  const container = document.getElementById('produtoCategorias');
+  try {
+    const categorias = await fazerRequisicao('/api/categorias');
+    container.innerHTML = categorias.map(c => `
+      <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px;">
+        <input type="checkbox" name="categoriaProduto" value="${c.id}"
+          ${idsSelecionados.includes(c.id) ? 'checked' : ''}>
+        ${escHtml(c.nome)}
+      </label>
+    `).join('');
+  } catch (e) {
+    container.innerHTML = '<span style="color:red; font-size:14px;">Erro ao carregar categorias</span>';
+  }
+}
+
 // ================= PRODUTOS ================= 
 
 async function carregarProdutos() {
@@ -168,13 +179,13 @@ async function carregarProdutos() {
     renderizarProdutos(produtos);
   } catch (error) {
     console.error('Erro:', error);
-    produtosList.innerHTML = `<tr><td colspan="5" class="loading">Erro ao carregar produtos</td></tr>`;
+    produtosList.innerHTML = `<tr><td colspan="6" class="loading">Erro ao carregar produtos</td></tr>`;
   }
 }
 
 function renderizarProdutos(produtos) {
   if (produtos.length === 0) {
-    produtosList.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px;">Nenhum produto cadastrado</td></tr>';
+    produtosList.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">Nenhum produto cadastrado</td></tr>';
     return;
   }
 
@@ -182,6 +193,10 @@ function renderizarProdutos(produtos) {
     const descricaoExibida = p.descricao
       ? (p.descricao.length > 50 ? escHtml(p.descricao.substring(0, 50)) + '...' : escHtml(p.descricao))
       : '-';
+
+    const categoriasExibidas = (p.categorias && p.categorias.length > 0)
+      ? p.categorias.map(c => `<span style="background:#f0e6f6;color:#7b3fa0;border-radius:4px;padding:2px 7px;font-size:12px;margin-right:4px;">${escHtml(c.nome)}</span>`).join('')
+      : '<span style="color:#999;font-size:13px;">—</span>';
 
     return `
     <tr>
@@ -193,6 +208,7 @@ function renderizarProdutos(produtos) {
       <td><strong>${escHtml(p.nome)}</strong></td>
       <td>${p.precoPorSolicitacao ? 'Sob consulta' : p.preco != null ? `R$ ${parseFloat(p.preco).toFixed(2)}` : '-'}</td>
       <td>${descricaoExibida}</td>
+      <td>${categoriasExibidas}</td>
       <td>
         <div class="table-actions">
           <button class="btn-edit" onclick="editarProduto(${p.id})">
@@ -211,6 +227,7 @@ function abrirFormularioProduto() {
   limparFormularioProduto();
   estadoEdicao.tipoProduto = 'novo';
   formProduto.style.display = 'block';
+  carregarCheckboxesCategorias([]);
   formProduto.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -234,9 +251,9 @@ function limparFormularioProduto() {
   document.getElementById('produtoBadge').value = '';
   document.getElementById('produtoOrdem').value = '';
   document.getElementById('produtoPrecoSolicitacao').checked = false;
+  document.getElementById('produtoCategorias').innerHTML = '<span style="color:#999; font-size:14px;">Carregando categorias...</span>';
 }
 
-// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
 window.editarProduto = async function(id) {
   try {
     const produto = await fazerRequisicao(`/api/produtos/${id}`);
@@ -244,7 +261,7 @@ window.editarProduto = async function(id) {
     document.getElementById('produtoNome').value = produto.nome || '';
     document.getElementById('produtoPreco').value = produto.preco || '';
     document.getElementById('produtoDescricao').value = produto.descricao || '';
-    
+
     document.getElementById('produtoImagem').value = '';
     document.getElementById('produtoImagemAntiga').value = produto.imagemUrl || '';
     const preview = document.getElementById('produtoImagemPreview');
@@ -260,20 +277,24 @@ window.editarProduto = async function(id) {
     document.getElementById('produtoPreco').required = !(produto.precoPorSolicitacao || false);
     document.getElementById('produtoPreco').disabled = produto.precoPorSolicitacao || false;
 
+    const idsSelecionados = (produto.categorias || []).map(c => c.id);
+    await carregarCheckboxesCategorias(idsSelecionados);
+
     estadoEdicao.tipoProduto = 'editar';
     estadoEdicao.idProduto = id;
     formProduto.style.display = 'block';
     formProduto.scrollIntoView({ behavior: 'smooth' });
   } catch (error) {
     console.error('Erro:', error);
-    alert('Erro ao carregar produto para edição');
+    mostrarAlerta('Erro', 'Erro ao carregar produto para edição');
   }
 }
 
 // ================= UPLOAD CLOUDINARY =================
+
 async function uploadCloudinary(file) {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-    throw new Error('Cloudinary não configurado. Verifique VITE_CLOUDINARY_CLOUD_NAME e VITE_CLOUDINARY_UPLOAD_PRESET no .env');
+    throw new Error('Cloudinary não configurado.');
   }
 
   const formData = new FormData();
@@ -282,40 +303,39 @@ async function uploadCloudinary(file) {
 
   const response = await fetch(
     `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-    {
-      method: 'POST',
-      body: formData
-    }
+    { method: 'POST', body: formData }
   );
 
-  if (!response.ok) {
-    throw new Error('Falha ao fazer upload da imagem no Cloudinary');
-  }
+  if (!response.ok) throw new Error('Falha ao fazer upload da imagem no Cloudinary');
 
   const data = await response.json();
   return data.secure_url;
 }
 
-// FIX: Envia payload JSON, compatível com o novo endpoint Spring
+// ================= SALVAR PRODUTO =================
+
 async function salvarProduto() {
   const precoPorSolicitacao = document.getElementById('produtoPrecoSolicitacao').checked;
   const precoValor = document.getElementById('produtoPreco').value;
   const imagemInput = document.getElementById('produtoImagem');
-  
+
   try {
     let imagemUrl = document.getElementById('produtoImagemAntiga').value;
 
     if (imagemInput.files && imagemInput.files.length > 0) {
       const file = imagemInput.files[0];
       const tamanhoMaximoMB = 10;
-      
+
       if (file.size > tamanhoMaximoMB * 1024 * 1024) {
-        mostrarAlerta('Arquivo Muito Grande', `O arquivo selecionado é muito pesado. O limite suportado é de ${tamanhoMaximoMB}MB. Por favor, comprima a imagem e tente novamente.`);
+        mostrarAlerta('Arquivo Muito Grande', `O limite suportado é de ${tamanhoMaximoMB}MB.`);
         return;
       }
-      
+
       imagemUrl = await uploadCloudinary(file);
     }
+
+    const categoriasSelecionadas = [...document.querySelectorAll('input[name="categoriaProduto"]:checked')]
+      .map(cb => parseInt(cb.value));
 
     const payload = {
       nome: document.getElementById('produtoNome').value,
@@ -325,7 +345,8 @@ async function salvarProduto() {
       imagemUrl: imagemUrl,
       badge: document.getElementById('produtoBadge').value,
       badgeClass: '',
-      ordemExibicao: parseInt(document.getElementById('produtoOrdem').value) || 0
+      ordemExibicao: parseInt(document.getElementById('produtoOrdem').value) || 0,
+      categoriaIds: categoriasSelecionadas
     };
 
     if (estadoEdicao.tipoProduto === 'novo') {
@@ -351,16 +372,15 @@ async function salvarProduto() {
   }
 }
 
-// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
 window.deletarProduto = function(id) {
   deleteCallback = async () => {
     try {
       await fazerDelete(`/api/produtos/${id}`);
-      alert('Produto deletado com sucesso!');
+      mostrarAlerta('Sucesso!', 'Produto deletado com sucesso!');
       carregarProdutos();
     } catch (error) {
       console.error('Erro:', error);
-      alert('Erro ao deletar produto: ' + error.message);
+      mostrarAlerta('Erro', 'Erro ao deletar produto: ' + error.message);
     }
   };
 
@@ -421,7 +441,6 @@ function limparFormularioCategoria() {
   formCategoriaElement.reset();
 }
 
-// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
 window.editarCategoria = async function(id) {
   try {
     const categoria = await fazerRequisicao(`/api/categorias/${id}`);
@@ -435,13 +454,13 @@ window.editarCategoria = async function(id) {
     formCategoria.scrollIntoView({ behavior: 'smooth' });
   } catch (error) {
     console.error('Erro:', error);
-    alert('Erro ao carregar categoria para edição');
+    mostrarAlerta('Erro', 'Erro ao carregar categoria para edição');
   }
 }
 
 async function salvarCategoria() {
   const dados = {
-    slug: document.getElementById('categoriaSlug').value,
+    slug: document.getElementById('categoriaSlug').value.toLowerCase().trim(),
     nome: document.getElementById('categoriaNome').value,
     ordemExibicao: parseInt(document.getElementById('categoriaOrdem').value) || 0
   };
@@ -450,34 +469,39 @@ async function salvarCategoria() {
     if (!estadoEdicao.idCategoria) {
       await fazerRequisicao('/api/categorias', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     } else {
       await fazerRequisicao(`/api/categorias/${estadoEdicao.idCategoria}`, {
         method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dados)
       });
     }
 
-    alert(!estadoEdicao.idCategoria ? 'Categoria criada com sucesso!' : 'Categoria atualizada com sucesso!');
+    mostrarAlerta('Sucesso!', !estadoEdicao.idCategoria ? 'Categoria criada com sucesso!' : 'Categoria atualizada com sucesso!');
     fecharFormularioCategoria();
-    carregarCategorias();
+    await carregarCategorias();
   } catch (error) {
     console.error('Erro:', error);
-    alert('Erro ao salvar categoria: ' + error.message);
+    mostrarAlerta('Erro', 'Erro ao salvar categoria: ' + error.message);
   }
 }
 
-// FIX: exposta no window para funcionar nos botões gerados dinamicamente via onclick
 window.deletarCategoria = function(id) {
   deleteCallback = async () => {
     try {
       await fazerDelete(`/api/categorias/${id}`);
-      alert('Categoria deletada com sucesso!');
+      mostrarAlerta('Sucesso!', 'Categoria deletada com sucesso!');
       carregarCategorias();
+      const formProdutoVisivel = document.getElementById('formProduto').style.display !== 'none';
+      if (formProdutoVisivel) {
+        carregarCheckboxesCategorias([]);
+      }
     } catch (error) {
       console.error('Erro:', error);
-      alert('Erro ao deletar categoria: ' + error.message);
+      mostrarAlerta('Erro', 'Erro ao deletar categoria: ' + error.message);
     }
   };
 
@@ -497,9 +521,7 @@ function fecharModal() {
 }
 
 modalConfirm.addEventListener('click', (e) => {
-  if (e.target === modalConfirm) {
-    fecharModal();
-  }
+  if (e.target === modalConfirm) fecharModal();
 });
 
 // ================= MODAL DE ALERTA ================= 
@@ -514,10 +536,8 @@ function fecharAlerta() {
   modalAlert.style.display = 'none';
 }
 
-if(modalAlert) {
+if (modalAlert) {
   modalAlert.addEventListener('click', (e) => {
-    if (e.target === modalAlert) {
-      fecharAlerta();
-    }
+    if (e.target === modalAlert) fecharAlerta();
   });
 }

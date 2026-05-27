@@ -1,7 +1,9 @@
 package com.jusceconfeitaria.controller;
 
 import com.jusceconfeitaria.exceptions.RecursoNaoEncontradoException;
+import com.jusceconfeitaria.model.Category;
 import com.jusceconfeitaria.model.Product;
+import com.jusceconfeitaria.repository.CategoryRepository;
 import com.jusceconfeitaria.repository.ProductRepository;
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
   @Autowired private ProductRepository productRepository;
+  @Autowired private CategoryRepository categoryRepository;
 
   public record ProductDTO(
       Integer id,
@@ -27,7 +30,9 @@ public class ProductController {
       String badge,
       String badgeClass,
       Integer ordemExibicao,
-      List<String> categorias) {}
+      List<CategoriaDTO> categorias) {}
+
+  public record CategoriaDTO(Integer id, String slug, String nome) {}
 
   public record CreateProductDTO(
       String nome,
@@ -37,7 +42,8 @@ public class ProductController {
       String imagemUrl,
       String badge,
       String badgeClass,
-      Integer ordemExibicao) {}
+      Integer ordemExibicao,
+      List<Integer> categoriaIds) {}
 
   @GetMapping
   public List<ProductDTO> listarProdutos() {
@@ -80,6 +86,14 @@ public class ProductController {
     produto.setDisplayOrder(dto.ordemExibicao() != null ? dto.ordemExibicao() : 0);
     produto.setIsActive(true);
 
+    if (dto.categoriaIds() != null && !dto.categoriaIds().isEmpty()) {
+      List<Category> categorias =
+          categoryRepository.findAllById(dto.categoriaIds()).stream()
+              .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
+              .collect(Collectors.toList());
+      produto.setCategories(categorias);
+    }
+
     Product salvo = productRepository.save(produto);
     return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(salvo));
   }
@@ -117,6 +131,14 @@ public class ProductController {
     produto.setBadgeClass(dto.badgeClass());
     produto.setDisplayOrder(dto.ordemExibicao() != null ? dto.ordemExibicao() : 0);
 
+    if (dto.categoriaIds() != null) {
+      List<Category> categorias =
+          categoryRepository.findAllById(dto.categoriaIds()).stream()
+              .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
+              .collect(Collectors.toList());
+      produto.setCategories(categorias);
+    }
+
     Product atualizado = productRepository.save(produto);
     return ResponseEntity.ok(toDTO(atualizado));
   }
@@ -135,10 +157,13 @@ public class ProductController {
   }
 
   private ProductDTO toDTO(Product p) {
-    List<String> categorias =
+    List<CategoriaDTO> categorias =
         p.getCategories() == null
             ? List.of()
-            : p.getCategories().stream().map(c -> c.getSlug()).toList();
+            : p.getCategories().stream()
+                .filter(c -> Boolean.TRUE.equals(c.getIsActive()))
+                .map(c -> new CategoriaDTO(c.getId(), c.getSlug(), c.getName()))
+                .collect(Collectors.toList());
 
     return new ProductDTO(
         p.getId(),

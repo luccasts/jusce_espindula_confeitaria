@@ -21,7 +21,6 @@ public class SecurityConfig {
   private final JwtAuthFilter jwtAuthFilter;
   private final org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
 
-  // Construtor atualizado apenas com o que o seu projeto realmente usa
   public SecurityConfig(
       org.springframework.security.core.userdetails.UserDetailsService userDetailsService,
       JwtAuthFilter jwtAuthFilter) {
@@ -45,15 +44,19 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.HEAD, "/api/health")
                     .permitAll()
 
-                    // Rotas públicas
+                    // Rotas públicas — produtos
                     .requestMatchers(HttpMethod.GET, "/api/produtos")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/produtos/**")
                     .permitAll()
+
+                    // Rotas públicas — categorias (somente leitura)
                     .requestMatchers(HttpMethod.GET, "/api/categorias")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/categorias/**")
                     .permitAll()
+
+                    // Rotas públicas — outros
                     .requestMatchers(HttpMethod.GET, "/api/tamanhos")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/grupos-opcoes/**")
@@ -67,15 +70,23 @@ public class SecurityConfig {
                     .requestMatchers("/uploads/**")
                     .permitAll()
 
-                    // Rotas protegidas — requerem JWT
+                    // Rotas protegidas — produtos
                     .requestMatchers(HttpMethod.POST, "/api/produtos")
                     .authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/produtos/**")
                     .authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/produtos/**")
                     .authenticated()
-                    .requestMatchers("/api/categorias/**")
+
+                    // Rotas protegidas — categorias (escrita separada do GET público acima)
+                    .requestMatchers(HttpMethod.POST, "/api/categorias")
                     .authenticated()
+                    .requestMatchers(HttpMethod.PUT, "/api/categorias/**")
+                    .authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/api/categorias/**")
+                    .authenticated()
+
+                    // Rotas protegidas — pedidos
                     .requestMatchers(HttpMethod.GET, "/api/pedidos")
                     .authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/pedidos/**")
@@ -100,14 +111,12 @@ public class SecurityConfig {
 
   @Bean
   public PasswordEncoder passwordEncoder() {
-
     return new BCryptPasswordEncoder();
   }
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
       throws Exception {
-
     return config.getAuthenticationManager();
   }
 }

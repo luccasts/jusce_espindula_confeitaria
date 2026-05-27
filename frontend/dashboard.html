@@ -48,15 +48,11 @@
   </div>
 </header>
 
-<!-- ================= DASHBOARD ================= -->
-
 <main>
-
 <section class="container">
 
 <h2 class="titulo">Painel Administrativo</h2>
 
-<!-- TABS NAVIGATION -->
 <div class="dashboard-tabs">
   <button class="tab-btn active" data-tab="produtos">
     <i class="lni lni-cake"></i> Produtos
@@ -68,7 +64,6 @@
 
 <!-- ================= TAB: PRODUTOS ================= -->
 <div class="tab-content active" id="tab-produtos">
-
   <div class="dashboard-section">
     <div class="section-header">
       <h3>Gerenciar Produtos</h3>
@@ -77,7 +72,6 @@
       </button>
     </div>
 
-    <!-- FORM: Novo/Editar Produto -->
     <div class="form-container" id="formProduto" style="display: none;">
       <h4>Adicionar/Editar Produto</h4>
       <form id="formProdutoElement">
@@ -125,6 +119,16 @@
           </div>
         </div>
 
+        <!-- CAMPO DE CATEGORIAS -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categorias</label>
+            <div id="produtoCategorias" style="display:flex; gap:16px; flex-wrap:wrap; margin-top:8px;">
+              <span style="color:#999; font-size:14px;">Carregando categorias...</span>
+            </div>
+          </div>
+        </div>
+
         <div class="form-actions">
           <button type="submit" class="btn-success">Salvar</button>
           <button type="button" class="btn-secondary" id="btnCancelarProduto">Cancelar</button>
@@ -132,21 +136,21 @@
       </form>
     </div>
 
-    <!-- LISTA: Produtos -->
     <div class="lista-container">
       <table class="table-responsive" id="tabelaProdutos">
         <thead>
           <tr>
-            <th>Imagem</th>
-            <th>Nome</th>
-            <th>Preço</th>
-            <th>Descrição</th>
-            <th>Ações</th>
+            <th style="text-align: center;">Imagem</th>
+            <th style="text-align: center;">Nome</th>
+            <th style="text-align: center;">Preço</th>
+            <th style="text-align: center;">Descrição</th>
+            <th style="text-align: center;">Categorias</th>
+            <th style="text-align: center;">Ações</th>
           </tr>
         </thead>
         <tbody id="produtosList">
           <tr>
-            <td colspan="5" class="loading">Carregando produtos...</td>
+            <td colspan="6" class="loading">Carregando produtos...</td>
           </tr>
         </tbody>
       </table>
@@ -156,7 +160,6 @@
 
 <!-- ================= TAB: CATEGORIAS ================= -->
 <div class="tab-content" id="tab-categorias">
-
   <div class="dashboard-section">
     <div class="section-header">
       <h3>Gerenciar Categorias</h3>
@@ -165,7 +168,6 @@
       </button>
     </div>
 
-    <!-- FORM: Nova/Editar Categoria -->
     <div class="form-container" id="formCategoria" style="display: none;">
       <h4>Adicionar/Editar Categoria</h4>
       <form id="formCategoriaElement">
@@ -194,7 +196,6 @@
       </form>
     </div>
 
-    <!-- LISTA: Categorias -->
     <div class="lista-container">
       <table class="table-responsive" id="tabelaCategorias">
         <thead>
@@ -239,11 +240,10 @@
 </div>
 
 <div style="text-align:center; margin-top:40px;">
-<button class="btn-secondary" id="logout">Sair do Painel</button>
+  <button class="btn-secondary" id="logout">Sair do Painel</button>
 </div>
 
 </section>
-
 </main>
 
 <footer>
