@@ -5,6 +5,17 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
+// ================= SEGURANÇA =================
+
+function escHtml(str) {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
 // Helper: envia FormData com JWT (para POST/PUT de produtos)
 async function fazerRequisicaoForm(endpoint, method, formData) {
   const token = sessionStorage.getItem('token');
@@ -169,17 +180,17 @@ function renderizarProdutos(produtos) {
 
   produtosList.innerHTML = produtos.map(p => {
     const descricaoExibida = p.descricao
-      ? (p.descricao.length > 50 ? p.descricao.substring(0, 50) + '...' : p.descricao)
+      ? (p.descricao.length > 50 ? escHtml(p.descricao.substring(0, 50)) + '...' : escHtml(p.descricao))
       : '-';
 
     return `
     <tr>
       <td>
         ${p.imagemUrl
-          ? `<img src="${p.imagemUrl}" alt="${p.nome}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;" onerror="this.style.display='none'">`
+          ? `<img src="${escHtml(p.imagemUrl)}" alt="${escHtml(p.nome)}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;" onerror="this.style.display='none'">`
           : `<div style="width:48px;height:48px;border-radius:6px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:20px;">🎂</div>`}
       </td>
-      <td><strong>${p.nome}</strong></td>
+      <td><strong>${escHtml(p.nome)}</strong></td>
       <td>${p.precoPorSolicitacao ? 'Sob consulta' : p.preco != null ? `R$ ${parseFloat(p.preco).toFixed(2)}` : '-'}</td>
       <td>${descricaoExibida}</td>
       <td>
@@ -238,7 +249,7 @@ window.editarProduto = async function(id) {
     document.getElementById('produtoImagemAntiga').value = produto.imagemUrl || '';
     const preview = document.getElementById('produtoImagemPreview');
     if (produto.imagemUrl) {
-      preview.innerHTML = `Imagem atual: <a href="${produto.imagemUrl}" target="_blank" style="color:var(--cor-principal);">Ver imagem</a>`;
+      preview.innerHTML = `Imagem atual: <a href="${escHtml(produto.imagemUrl)}" target="_blank" style="color:var(--cor-principal);">Ver imagem</a>`;
     } else {
       preview.innerHTML = 'Sem imagem cadastrada.';
     }
@@ -376,8 +387,8 @@ function renderizarCategorias(categorias) {
 
   categoriasList.innerHTML = categorias.map(c => `
     <tr>
-      <td><strong>${c.nome}</strong></td>
-      <td><code>${c.slug}</code></td>
+      <td><strong>${escHtml(c.nome)}</strong></td>
+      <td><code>${escHtml(c.slug)}</code></td>
       <td>${c.ordemExibicao || 0}</td>
       <td>
         <div class="table-actions">
