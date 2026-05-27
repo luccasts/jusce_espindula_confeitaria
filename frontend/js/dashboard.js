@@ -125,6 +125,18 @@ function setupEventListeners() {
     sessionStorage.removeItem('adminLogado');
     window.location.href = 'admin.html';
   });
+
+  const checkboxPrecoSolicitacao = document.getElementById('produtoPrecoSolicitacao');
+  const inputPreco = document.getElementById('produtoPreco');
+  if (checkboxPrecoSolicitacao && inputPreco) {
+    checkboxPrecoSolicitacao.addEventListener('change', (e) => {
+      inputPreco.required = !e.target.checked;
+      inputPreco.disabled = e.target.checked;
+      if (e.target.checked) {
+        inputPreco.value = '';
+      }
+    });
+  }
 }
 
 // ================= TABS ================= 
@@ -202,6 +214,8 @@ function limparFormularioProduto() {
   formProdutoElement.reset();
   document.getElementById('produtoNome').value = '';
   document.getElementById('produtoPreco').value = '';
+  document.getElementById('produtoPreco').required = true;
+  document.getElementById('produtoPreco').disabled = false;
   document.getElementById('produtoDescricao').value = '';
   document.getElementById('produtoImagem').value = '';
   document.getElementById('produtoImagemAntiga').value = '';
@@ -232,6 +246,8 @@ window.editarProduto = async function(id) {
     document.getElementById('produtoBadge').value = produto.badge || '';
     document.getElementById('produtoOrdem').value = produto.ordemExibicao || '';
     document.getElementById('produtoPrecoSolicitacao').checked = produto.precoPorSolicitacao || false;
+    document.getElementById('produtoPreco').required = !(produto.precoPorSolicitacao || false);
+    document.getElementById('produtoPreco').disabled = produto.precoPorSolicitacao || false;
 
     estadoEdicao.tipoProduto = 'editar';
     estadoEdicao.idProduto = id;
