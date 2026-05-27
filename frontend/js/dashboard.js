@@ -1,8 +1,9 @@
 // ================= CONFIGURAÇÕES ================= 
 import { fazerRequisicao } from './config.js';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
-const IMGUR_CLIENT_ID = import.meta.env.VITE_IMGUR_CLIENT_ID;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081';
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 // Helper: envia FormData com JWT (para POST/PUT de produtos)
 async function fazerRequisicaoForm(endpoint, method, formData) {
@@ -70,8 +71,6 @@ let deleteCallback = null;
 
 // ================= INICIALIZAÇÃO =================
 
-// FIX: módulos ES com type="module" rodam com defer — o DOMContentLoaded pode já ter
-// disparado quando o script executa. Checar readyState garante que o init sempre roda.
 async function init() {
   setupEventListeners();
   await Promise.all([
@@ -157,7 +156,6 @@ function renderizarProdutos(produtos) {
   }
 
   produtosList.innerHTML = produtos.map(p => {
-    // FIX: só adiciona '...' se a descrição for de fato maior que 50 caracteres
     const descricaoExibida = p.descricao
       ? (p.descricao.length > 50 ? p.descricao.substring(0, 50) + '...' : p.descricao)
       : '-';
@@ -222,11 +220,11 @@ window.editarProduto = async function(id) {
     document.getElementById('produtoPreco').value = produto.preco || '';
     document.getElementById('produtoDescricao').value = produto.descricao || '';
     
-    document.getElementById('produtoImagem').value = ''; // Limpa o input file
+    document.getElementById('produtoImagem').value = '';
     document.getElementById('produtoImagemAntiga').value = produto.imagemUrl || '';
     const preview = document.getElementById('produtoImagemPreview');
     if (produto.imagemUrl) {
-      preview.innerHTML = `Imagem atual: <a href="${produto.imagemUrl}" target="_blank" style="color:var(--cor-principal);">Ver imagem no Imgur</a>`;
+      preview.innerHTML = `Imagem atual: <a href="${produto.imagemUrl}" target="_blank" style="color:var(--cor-principal);">Ver imagem</a>`;
     } else {
       preview.innerHTML = 'Sem imagem cadastrada.';
     }
@@ -245,30 +243,30 @@ window.editarProduto = async function(id) {
   }
 }
 
-// ================= UPLOAD IMGUR =================
-async function uploadImgur(file) {
-  const clientId = IMGUR_CLIENT_ID;
-  if (!clientId) {
-    throw new Error('Imgur Client-ID não configurado. Adicione VITE_IMGUR_CLIENT_ID no arquivo .env');
+// ================= UPLOAD CLOUDINARY =================
+async function uploadCloudinary(file) {
+  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+    throw new Error('Cloudinary não configurado. Verifique VITE_CLOUDINARY_CLOUD_NAME e VITE_CLOUDINARY_UPLOAD_PRESET no .env');
   }
 
   const formData = new FormData();
-  formData.append('image', file);
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
 
-  const response = await fetch('https://api.imgur.com/3/image', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Client-ID ${clientId}`
-    },
-    body: formData
-  });
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    {
+      method: 'POST',
+      body: formData
+    }
+  );
 
   if (!response.ok) {
-    throw new Error('Falha ao fazer upload da imagem no Imgur');
+    throw new Error('Falha ao fazer upload da imagem no Cloudinary');
   }
 
   const data = await response.json();
-  return data.data.link;
+  return data.secure_url;
 }
 
 // FIX: Envia payload JSON, compatível com o novo endpoint Spring
@@ -282,14 +280,14 @@ async function salvarProduto() {
 
     if (imagemInput.files && imagemInput.files.length > 0) {
       const file = imagemInput.files[0];
-      const tamanhoMaximoMB = 20; // Limite padrão do Imgur para imagens
+      const tamanhoMaximoMB = 10;
       
       if (file.size > tamanhoMaximoMB * 1024 * 1024) {
         mostrarAlerta('Arquivo Muito Grande', `O arquivo selecionado é muito pesado. O limite suportado é de ${tamanhoMaximoMB}MB. Por favor, comprima a imagem e tente novamente.`);
-        return; // Impede o envio
+        return;
       }
       
-      imagemUrl = await uploadImgur(file);
+      imagemUrl = await uploadCloudinary(file);
     }
 
     const payload = {

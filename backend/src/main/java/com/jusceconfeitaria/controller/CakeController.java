@@ -1,12 +1,10 @@
 package com.jusceconfeitaria.controller;
 
-import com.jusceconfeitaria.model.OptionGroup;
 import com.jusceconfeitaria.repository.CakeOptionRepository;
 import com.jusceconfeitaria.repository.CakeSizeRepository;
 import com.jusceconfeitaria.repository.OptionGroupRepository;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,21 +34,6 @@ public class CakeController {
       BigDecimal precoExtra,
       String imagemUrl,
       Integer ordemExibicao) {}
-
-  // ========== TESTE DEBUG ==========
-  @GetMapping("/api/debug/grupos-count")
-  public Map<String, Object> debugGruposCount() {
-    try {
-      long total = optionGroupRepository.count();
-      List<OptionGroup> todos = optionGroupRepository.findAll();
-      return Map.of(
-          "totalGrupos", total,
-          "todosGrupos", todos,
-          "status", "sucesso");
-    } catch (Exception e) {
-      return Map.of("erro", e.getMessage(), "status", "erro");
-    }
-  }
 
   @GetMapping("/api/tamanhos")
   public List<TamanhoDTO> listarTamanhos() {
