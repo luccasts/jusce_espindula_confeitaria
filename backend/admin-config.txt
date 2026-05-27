@@ -1,3 +1,0 @@
-email=admin@jusce.com
-senha=admin123
-nome=Administrador Jusce
