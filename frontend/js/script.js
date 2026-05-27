@@ -88,10 +88,29 @@ window.selecionar = function(botao) {
 
 // ===== PROTEÇÃO DO DASHBOARD =====
 if (window.location.pathname.includes("dashboard.html")) {
-  const token = sessionStorage.getItem("token");
-  if (!token) {
-    window.location.href = "admin.html";
-  }
+  (async function () {
+    const token = sessionStorage.getItem("token");
+
+    if (!token) {
+      window.location.href = "admin.html";
+      return;
+    }
+
+    try {
+      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081';
+      const response = await fetch(`${API_BASE_URL}/api/pedidos`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("adminLogado");
+        window.location.href = "admin.html";
+      }
+    } catch (e) {
+      console.warn("Não foi possível validar o token com o servidor.", e);
+    }
+  })();
 }
 
 // ================= CARRINHO =================
